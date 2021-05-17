@@ -8,7 +8,18 @@ export const configureCSP = () =>
         ? {
             directives: {
               ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-              'img-src': ["'self'", 'blob:', 'data:', 'res.cloudinary.com'],
+              'img-src': [
+                "'self'",
+                'blob:',
+                'data:',
+                'res.cloudinary.com',
+                'cdn.jsdelivr.net',
+              ],
+              'script-src': [
+                "'self'",
+                'cdn.jsdelivr.net',
+                `https: 'unsafe-inline'`,
+              ],
             },
           }
         : false,
