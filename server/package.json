@@ -8,6 +8,7 @@
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts --ext ts,graphql",
     "build": "tsc",
+    "postinstall": "npm run build",
     "generate": "graphql-codegen"
   },
   "author": "",
