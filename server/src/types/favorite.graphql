@@ -1,0 +1,44 @@
+type Favorite {
+  id: Int!
+  user: User!
+  post: Post!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+extend type Query {
+  favorites(
+    postId: Int
+    userId: Int
+    orderBy: FavoriteOrderByInput = { field: CREATED_AT, direction: DESC }
+    limit: Int = 20
+    page: Int = 0
+  ): FavoritesResponse!
+}
+
+extend type Mutation {
+  createFavorite(postId: Int!): FavoriteResponse
+  deleteFavorite(postId: Int!): FavoriteResponse
+}
+
+type FavoriteResponse {
+  result: Favorite!
+  count: Int!
+}
+
+type FavoritesResponse {
+  results: [Favorite!]!
+  prevPage: Int
+  nextPage: Int
+  totalPages: Int!
+}
+
+input FavoriteOrderByInput {
+  field: FavoriteSortField!
+  direction: SortDirection!
+}
+
+enum FavoriteSortField {
+  CREATED_AT
+  UPDATED_AT
+}

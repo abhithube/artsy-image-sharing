@@ -1,0 +1,63 @@
+type Post {
+  id: Int!
+  title: String!
+  body: String
+  imageUrl: String!
+  user: User!
+  favorites(
+    orderBy: FavoriteOrderByInput = { field: CREATED_AT, direction: DESC }
+    limit: Int = 20
+    page: Int = 0
+  ): FavoritesResponse
+  favoriteCount: Int
+  comments(
+    orderBy: CommentOrderByInput = { field: CREATED_AT, direction: DESC }
+    limit: Int = 20
+    page: Int = 0
+  ): CommentsResponse
+  commentCount: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+extend type Query {
+  posts(
+    userId: Int
+    orderBy: PostOrderByInput = { field: CREATED_AT, direction: DESC }
+    limit: Int = 20
+    page: Int = 0
+  ): PostsResponse!
+  post(id: Int!): PostResponse
+  relatedPosts(postId: Int!): [Post!]
+}
+
+extend type Mutation {
+  createPost(title: String!, body: String, file: String!): Post!
+  updatePost(id: Int!, title: String, body: String): Post!
+  deletePost(id: Int!): Post!
+}
+
+type PostsResponse {
+  results: [Post!]!
+  prevPage: Int
+  nextPage: Int
+  totalPages: Int!
+}
+
+type PostResponse {
+  result: Post!
+  isFavorite: Boolean!
+}
+
+input PostOrderByInput {
+  field: PostSortField!
+  direction: SortDirection!
+}
+
+enum PostSortField {
+  TITLE
+  FAVORITE_COUNT
+  COMMENT_COUNT
+  CREATED_AT
+  UPDATED_AT
+}

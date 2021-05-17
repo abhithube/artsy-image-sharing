@@ -1,0 +1,61 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["orderByRelation"]
+}
+
+model User {
+  id            Int         @default(autoincrement()) @id
+  username      String      @db.VarChar(255) @unique
+  password      String      @db.VarChar(255)
+  avatarUrl     String?     @db.VarChar @map("avatar_url")
+  confirmed     Boolean     @default(false)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  posts         Post[]
+  favorites     Favorite[]
+  comments      Comment[]
+  @@map("users")
+}
+
+model Post {
+  id            Int         @default(autoincrement()) @id
+  title         String      @db.VarChar(255)
+  body          String?
+  imageUrl      String      @db.VarChar @map("image_url")
+  userId        Int         @map("user_id")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  user          User        @relation(fields: [userId], references: [id])
+  favorites     Favorite[]
+  comments      Comment[]
+  @@map("posts")
+}
+
+model Favorite {
+  id        Int       @default(autoincrement()) @id
+  postId    Int       @map("post_id")
+  userId    Int       @map("user_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  post      Post      @relation(fields: [postId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  @@map("favorites")
+  @@unique([postId, userId])
+}
+
+model Comment {
+  id        Int       @default(autoincrement()) @id
+  body      String
+  postId    Int       @map("post_id")
+  userId    Int       @map("user_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  post      Post      @relation(fields: [postId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  @@map("comments")
+}

@@ -1,0 +1,7 @@
+query relatedPosts($postId: Int!) {
+  relatedPosts(postId: $postId) {
+    id
+    title
+    imageUrl
+  }
+}

@@ -1,0 +1,41 @@
+type Comment {
+  id: Int!
+  body: String!
+  user: User!
+  post: Post!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+extend type Query {
+  comments(
+    postId: Int
+    userId: Int
+    orderBy: CommentOrderByInput = { field: CREATED_AT, direction: DESC }
+    limit: Int = 20
+    page: Int = 0
+  ): CommentsResponse!
+}
+
+extend type Mutation {
+  createComment(body: String!, postId: Int!): Comment!
+  updateComment(id: Int!, body: String!): Comment!
+  deleteComment(id: Int!): Comment!
+}
+
+type CommentsResponse {
+  results: [Comment!]!
+  prevPage: Int
+  nextPage: Int
+  totalPages: Int!
+}
+
+input CommentOrderByInput {
+  field: CommentSortField!
+  direction: SortDirection!
+}
+
+enum CommentSortField {
+  CREATED_AT
+  UPDATED_AT
+}

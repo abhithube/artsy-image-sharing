@@ -1,0 +1,8 @@
+fragment posts on PostsResponse {
+  results {
+    ...postSummary
+  }
+  prevPage
+  nextPage
+  totalPages
+}

@@ -1,0 +1,40 @@
+type User {
+  id: Int!
+  username: String!
+  avatarUrl: String
+  posts(
+    orderBy: PostOrderByInput = { field: CREATED_AT, direction: DESC }
+    limit: Int = 20
+    page: Int = 0
+  ): PostsResponse
+  postCount: Int
+  favorites(
+    orderBy: FavoriteOrderByInput = { field: CREATED_AT, direction: DESC }
+    limit: Int = 20
+    page: Int = 0
+  ): FavoritesResponse
+  favoriteCount: Int
+  comments(
+    orderBy: CommentOrderByInput = { field: CREATED_AT, direction: DESC }
+    limit: Int = 20
+    page: Int = 0
+  ): CommentsResponse
+  commentCount: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+extend type Query {
+  user(id: Int!): User!
+}
+
+extend type Mutation {
+  updateUser(
+    currentPassword: String!
+    username: String
+    email: String
+    password: String
+    avatarUrl: String
+  ): User!
+  deleteUser: User!
+}

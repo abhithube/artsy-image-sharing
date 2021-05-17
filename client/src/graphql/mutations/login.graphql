@@ -1,0 +1,8 @@
+mutation login($username: String!, $password: String!, $avatarUrl: String) {
+  auth: login(username: $username, password: $password, avatarUrl: $avatarUrl) {
+    id
+    username
+    avatarUrl
+    confirmed
+  }
+}

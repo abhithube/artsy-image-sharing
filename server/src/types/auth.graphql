@@ -1,0 +1,16 @@
+type Auth {
+  id: Int!
+  username: String!
+  avatarUrl: String
+  confirmed: Boolean!
+}
+
+extend type Query {
+  auth: Auth
+}
+
+extend type Mutation {
+  register(username: String!, password: String!): Boolean!
+  login(username: String!, password: String!, avatarUrl: String): Auth!
+  logout: Boolean!
+}

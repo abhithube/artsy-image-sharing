@@ -1,0 +1,14 @@
+fragment postDetails on Post {
+  id
+  title
+  body
+  imageUrl
+  createdAt
+  user {
+    id
+    username
+    avatarUrl
+  }
+  favoriteCount
+  commentCount
+}

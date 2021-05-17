@@ -1,0 +1,10 @@
+fragment comment on Comment {
+  id
+  body
+  user {
+    id
+    username
+    avatarUrl
+  }
+  createdAt
+}
