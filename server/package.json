@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts --ext ts,graphql",
-    "build": "npx tsc",
+    "build": "tsc",
+    "postinstall": "npm run build",
     "generate": "graphql-codegen"
   },
   "author": "",
@@ -31,8 +32,7 @@
     "graphql-scalars": "^1.9.3",
     "graphql-tools": "^7.0.5",
     "helmet": "^4.6.0",
-    "ioredis": "^4.27.2",
-    "typescript": "^4.2.4"
+    "ioredis": "^4.27.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.21.4",
@@ -47,7 +47,8 @@
     "@types/node": "^15.3.0",
     "nodemon": "^2.0.7",
     "prisma": "^2.22.1",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
   },
   "keywords": []
 }
