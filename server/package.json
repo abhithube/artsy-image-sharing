@@ -7,9 +7,10 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts --ext ts,graphql",
-    "build": "tsc",
+    "build": "tsc && npm run copy",
     "postinstall": "npm run build",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "copy": "cpx \"src/**/*.graphql\" dist"
   },
   "author": "",
   "license": "ISC",
@@ -27,6 +28,7 @@
     "compression": "^1.7.4",
     "connect-redis": "^5.2.0",
     "cors": "^2.8.5",
+    "cpx": "^1.5.0",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
