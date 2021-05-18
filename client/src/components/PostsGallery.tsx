@@ -4,6 +4,7 @@ import {
   HStack,
   IconButton,
   SimpleGrid,
+  Spinner,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -56,14 +57,16 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
     },
   });
 
+  console.log(data);
+
   const bgColor = useColorModeValue('gray.100', 'gray.900');
 
   return (
     <Box mt='8'>
-      <Heading fontSize='xl' mb='4'>
+      <Heading fontSize='2xl' mb='4'>
         Posts
       </Heading>
-      {data?.posts && (
+      {!isFetching && data?.posts && data.posts.results.length > 0 && (
         <HStack spacing='4' bgColor={bgColor} p='4' rounded='md'>
           <IconButton
             icon={<FaChevronLeft />}
@@ -91,7 +94,10 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
           />
         </HStack>
       )}
-      {!data?.posts && !isFetching && <Text m='4'>No posts to show.</Text>}
+      {!isFetching && data?.posts.results.length === 0 && (
+        <Text color='gray.500'>No posts to show.</Text>
+      )}
+      {isFetching && <Spinner speed='1s' />}
     </Box>
   );
 };

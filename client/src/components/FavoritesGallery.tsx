@@ -4,6 +4,7 @@ import {
   HStack,
   IconButton,
   SimpleGrid,
+  Spinner,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -60,10 +61,10 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
 
   return (
     <Box mt='8'>
-      <Heading fontSize='xl' mb='4'>
+      <Heading fontSize='2xl' mb='4'>
         Favorites
       </Heading>
-      {data?.favorites && (
+      {!isFetching && data?.favorites && data.favorites.results.length > 0 && (
         <HStack spacing='4' bgColor={bgColor} p='4' rounded='md'>
           <IconButton
             icon={<FaChevronLeft />}
@@ -72,7 +73,7 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
             aria-label='previous page'
             colorScheme='purple'
           />
-          <SimpleGrid columns={5} gap='4' h='25vh' w='100%'>
+          <SimpleGrid columns={5} gap='4' w='100%'>
             {data?.favorites.results.map(favorite => (
               <Fragment key={favorite.id}>
                 <PreviewImage post={favorite.post} />
@@ -91,9 +92,10 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
           />
         </HStack>
       )}
-      {!data?.favorites && !isFetching && (
-        <Text m='4'>No favorites to show.</Text>
+      {!isFetching && data?.favorites.results.length === 0 && (
+        <Text color='gray.500'>No favorites to show.</Text>
       )}
+      {isFetching && <Spinner speed='1s' />}
     </Box>
   );
 };

@@ -30,7 +30,7 @@ const ProfilePage = () => {
         </>
       )}
       {!isLoading && !data?.user && <Redirect to='/404' />}
-      {isLoading && <Spinner />}
+      {isLoading && <Spinner speed='1s' />}
     </Box>
   );
 };
