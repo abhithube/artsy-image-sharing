@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthContextProvider from './context/AuthContext';
+import AboutPage from './pages/AboutPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import PostPage from './pages/PostPage';
@@ -47,6 +48,7 @@ function App() {
                   <Route exact path='/posts' component={PostsPage} />
                   <Route path='/posts/:id' component={PostPage} />
                   <Route path='/users/:id' component={ProfilePage} />
+                  <Route path='/about' component={AboutPage} />
                   <ProtectedRoute
                     path='/register'
                     component={RegisterPage}

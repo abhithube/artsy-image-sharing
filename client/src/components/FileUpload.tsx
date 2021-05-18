@@ -26,6 +26,8 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
   const inputBgColor = useColorModeValue('gray.50', 'gray.800');
   const inputBorderColor = useColorModeValue('gray.900', 'gray.500');
 
+  const [isOverlayActive, setIsOverlayActive] = useState(false);
+
   const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
 
@@ -69,21 +71,35 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
     <Box w='100%'>
       {thumbnail && (
         <Flex direction='column' align='center'>
-          <Center w='100%' h='300px' bgColor='black' mb='2'>
-            <Image src={thumbnail} alt='media to upload' maxH='100%' />
+          <Center
+            w='100%'
+            h='300px'
+            bgColor='black'
+            mb='8'
+            pos='relative'
+            onMouseEnter={() => setIsOverlayActive(true)}
+            onMouseLeave={() => setIsOverlayActive(false)}
+          >
+            <Image
+              src={thumbnail}
+              alt='media to upload'
+              maxH='100%'
+              opacity={isOverlayActive ? '0.5' : '1'}
+            />
+            <IconButton
+              icon={<FaTrashAlt color='white' />}
+              onClick={() => {
+                setFile(null);
+                setThumbnail('');
+              }}
+              aria-label='remove image'
+              d={isOverlayActive ? 'flex' : 'none'}
+              pos='absolute'
+              size='lg'
+              bgColor='red.400'
+              _hover={{ bgColor: 'red.500' }}
+            />
           </Center>
-          <IconButton
-            icon={<FaTrashAlt color='white' />}
-            onClick={() => {
-              setFile(null);
-              setThumbnail('');
-            }}
-            aria-label='remove image'
-            w='100'
-            mb='4'
-            bgColor='red.400'
-            _hover={{ bgColor: 'red.500' }}
-          />
         </Flex>
       )}
       {!thumbnail && (
