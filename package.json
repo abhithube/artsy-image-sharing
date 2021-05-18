@@ -1,8 +1,6 @@
 {
-  "name": "express-react-image-sharing",
+  "name": "graphql-react-image-sharing",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "npm start --prefix server",
     "dev": "concurrently \"npm run dev --prefix server\" \"npm start --prefix client\"",
