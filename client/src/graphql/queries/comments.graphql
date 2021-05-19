@@ -14,5 +14,6 @@ query comments(
     results {
       ...comment
     }
+    nextPage
   }
 }

@@ -7,25 +7,29 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { FormEvent, useContext, useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import { graphQLClient } from '../App';
 import { AuthContext } from '../context/AuthContext';
 import {
-  CommentFragment,
+  useCommentsQuery,
   useCreateCommentMutation,
 } from '../generated/graphql';
 
 type AddCommentProps = {
   postId: number;
-  addComment: (comment: CommentFragment) => void;
 };
 
-const AddComment = ({ postId, addComment }: AddCommentProps) => {
+const AddComment = ({ postId }: AddCommentProps) => {
   const { authenticatedUser } = useContext(AuthContext);
 
+  const queryClient = useQueryClient();
+  const queryKey = useCommentsQuery.getKey({ postId });
+
   const mutation = useCreateCommentMutation(graphQLClient, {
-    onSuccess: data => {
+    onSuccess: () => {
       setComment('');
-      addComment(data.comment);
+      queryClient.fetchInfiniteQuery(queryKey);
+
       toast({
         status: 'success',
         title: 'Added comment',

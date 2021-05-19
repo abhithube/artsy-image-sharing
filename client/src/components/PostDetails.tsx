@@ -10,7 +10,7 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { FaCommentAlt, FaDownload, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useQueryClient } from 'react-query';
 import { Link as RouterLink } from 'react-router-dom';
@@ -30,11 +30,8 @@ type PostDetailsProps = {
   isFavorite: boolean;
 };
 
-const PostDetails = ({ post, isFavorite: hasFavorited }: PostDetailsProps) => {
+const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
   const { authenticatedUser } = useContext(AuthContext);
-  const [commentCount, setCommentCount] = useState(post.commentCount!);
-  const [favoriteCount, setFavoriteCount] = useState(post.favoriteCount!);
-  const [isFavorite, setIsFavorite] = useState(hasFavorited);
 
   const queryClient = useQueryClient();
   const queryKey = usePostQuery.getKey({ id: post.id });
@@ -66,13 +63,10 @@ const PostDetails = ({ post, isFavorite: hasFavorited }: PostDetailsProps) => {
   const handleSuccess = (data: CreateFavoriteMutation) => {
     if (!data.favorite) return;
 
-    setFavoriteCount(data.favorite.count);
-    setIsFavorite(prev => !prev);
-
     queryClient.setQueryData(queryKey, {
       post: {
         result: { ...post, favoriteCount: data.favorite.count },
-        isFavorite: true,
+        isFavorite: !isFavorite,
       },
     });
 
@@ -137,13 +131,13 @@ const PostDetails = ({ post, isFavorite: hasFavorited }: PostDetailsProps) => {
       <HStack mb='4'>
         <Icon as={FaHeart} />
         <Text pr='2'>
-          {`${favoriteCount} `}
-          {favoriteCount === 1 ? 'favorite' : 'favorites'}
+          {`${post.favoriteCount} `}
+          {post.favoriteCount === 1 ? 'favorite' : 'favorites'}
         </Text>
         <Icon as={FaCommentAlt} />
         <Text>
-          {`${commentCount} `}
-          {commentCount === 1 ? 'comment' : 'comments'}
+          {`${post.commentCount} `}
+          {post.commentCount === 1 ? 'comment' : 'comments'}
         </Text>
       </HStack>
       <Box mb='8'>
@@ -152,11 +146,7 @@ const PostDetails = ({ post, isFavorite: hasFavorited }: PostDetailsProps) => {
           Published on {new Date(post.createdAt).toDateString()}
         </Text>
       </Box>
-      <CommentsList
-        commentCount={commentCount}
-        setCommentCount={setCommentCount}
-        postId={post.id}
-      />
+      <CommentsList commentCount={post.commentCount || 0} postId={post.id} />
     </>
   );
 };

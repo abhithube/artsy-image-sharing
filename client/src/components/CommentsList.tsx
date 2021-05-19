@@ -1,57 +1,55 @@
 import { Box, Button, Heading, Spinner, Text, VStack } from '@chakra-ui/react';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
+import { useInfiniteQuery } from 'react-query';
 import { graphQLClient } from '../App';
-import { CommentFragment, useCommentsQuery } from '../generated/graphql';
+import { CommentsQuery, useCommentsQuery } from '../generated/graphql';
 import AddComment from './AddComment';
 import CommentItem from './CommentItem';
 
 type CommentsListProp = {
   postId: number;
   commentCount: number;
-  setCommentCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const CommentsList = ({
-  postId,
-  commentCount,
-  setCommentCount,
-}: CommentsListProp) => {
+const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
   const [shouldFetch, setShouldFetch] = useState(false);
 
-  const { data, isLoading } = useCommentsQuery(
-    graphQLClient,
-    {
-      postId,
-      limit: commentCount,
-    },
-    { enabled: shouldFetch, onSuccess: () => setShouldFetch(false) }
-  );
-
-  const [comments, setComments] = useState<CommentFragment[]>([]);
-
-  const addComment = (comment: CommentFragment) => {
-    setComments(prev => [comment, ...prev]);
-    setCommentCount(prev => prev + 1);
-    setShouldFetch(true);
-  };
-
-  useEffect(() => setComments(data?.comments.results || []), [data]);
+  const { data, fetchNextPage, hasNextPage, isLoading } =
+    useInfiniteQuery<CommentsQuery>(
+      ['comments', { postId }],
+      ctx =>
+        graphQLClient.request(useCommentsQuery.document, {
+          postId,
+          page: ctx.pageParam,
+        }),
+      {
+        getNextPageParam: lastPage => lastPage.comments.nextPage,
+        enabled: shouldFetch,
+      }
+    );
 
   return (
     <Box>
-      <AddComment postId={postId} addComment={addComment} />
+      <AddComment postId={postId} />
       <Heading mb='4'>Comments</Heading>
       <VStack align='stretch' spacing='4' mt='4'>
         {!isLoading && commentCount > 0 && (
           <>
-            {comments.map(comment => (
-              <Fragment key={comment.id}>
-                <CommentItem comment={comment} />
-              </Fragment>
-            ))}
-            {comments.length < commentCount && (
+            {data?.pages.map(page =>
+              page.comments.results.map(comment => (
+                <Fragment key={comment.id}>
+                  <CommentItem comment={comment} />
+                </Fragment>
+              ))
+            )}
+            {!shouldFetch && (
               <Button onClick={() => setShouldFetch(true)} colorScheme='purple'>
-                Load All Comments
+                Load Comments
+              </Button>
+            )}
+            {hasNextPage && (
+              <Button onClick={() => fetchNextPage()} colorScheme='purple'>
+                Load More Comments
               </Button>
             )}
           </>
