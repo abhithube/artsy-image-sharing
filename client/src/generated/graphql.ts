@@ -360,7 +360,7 @@ export type PostSummaryFragment = (
 
 export type PostsFragment = (
   { __typename?: 'PostsResponse' }
-  & Pick<PostsResponse, 'prevPage' | 'nextPage' | 'totalPages'>
+  & Pick<PostsResponse, 'prevPage' | 'nextPage'>
   & { results: Array<(
     { __typename?: 'Post' }
     & PostSummaryFragment
@@ -488,6 +488,7 @@ export type CommentsQuery = (
   { __typename?: 'Query' }
   & { comments: (
     { __typename?: 'CommentsResponse' }
+    & Pick<CommentsResponse, 'nextPage'>
     & { results: Array<(
       { __typename?: 'Comment' }
       & CommentFragment
@@ -510,6 +511,24 @@ export type FavoritesQuery = (
   & { favorites: (
     { __typename?: 'FavoritesResponse' }
     & FavoritesFragment
+  ) }
+);
+
+export type FeaturedQueryVariables = Exact<{
+  field: PostSortField;
+  direction: SortDirection;
+  limit?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type FeaturedQuery = (
+  { __typename?: 'Query' }
+  & { posts: (
+    { __typename?: 'PostsResponse' }
+    & { results: Array<(
+      { __typename?: 'Post' }
+      & PostDetailsFragment
+    )> }
   ) }
 );
 
@@ -637,7 +656,6 @@ export const PostsFragmentDoc = `
   }
   prevPage
   nextPage
-  totalPages
 }
     ${PostSummaryFragmentDoc}`;
 export const CreateCommentDocument = `
@@ -809,6 +827,7 @@ export const CommentsDocument = `
     results {
       ...comment
     }
+    nextPage
   }
 }
     ${CommentFragmentDoc}`;
@@ -858,6 +877,32 @@ export const useFavoritesQuery = <
 useFavoritesQuery.document = FavoritesDocument;
 
 useFavoritesQuery.getKey = (variables?: FavoritesQueryVariables) => ['favorites', variables];
+
+export const FeaturedDocument = `
+    query featured($field: PostSortField!, $direction: SortDirection!, $limit: Int) {
+  posts(orderBy: {field: $field, direction: $direction}, limit: $limit) {
+    results {
+      ...postDetails
+    }
+  }
+}
+    ${PostDetailsFragmentDoc}`;
+export const useFeaturedQuery = <
+      TData = FeaturedQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient, 
+      variables: FeaturedQueryVariables, 
+      options?: UseQueryOptions<FeaturedQuery, TError, TData>
+    ) => 
+    useQuery<FeaturedQuery, TError, TData>(
+      ['featured', variables],
+      fetcher<FeaturedQuery, FeaturedQueryVariables>(client, FeaturedDocument, variables),
+      options
+    );
+useFeaturedQuery.document = FeaturedDocument;
+
+useFeaturedQuery.getKey = (variables: FeaturedQueryVariables) => ['featured', variables];
 
 export const PostDocument = `
     query post($id: Int!) {

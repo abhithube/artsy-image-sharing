@@ -21,7 +21,7 @@ type Uploaded = Location & {
 const PostsPage = () => {
   const location = useLocation<Uploaded>();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isLoading } =
     useInfiniteQuery<PostsQuery>(
       'posts',
       ctx =>
@@ -64,21 +64,22 @@ const PostsPage = () => {
           ))
         )}
       </SimpleGrid>
-      {!isFetchingNextPage && !data?.pages && (
+      {!isLoading && data?.pages.length === 0 && (
         <Text>Posts are not available at this time.</Text>
       )}
       {hasNextPage && (
         <Button
           onClick={() => fetchNextPage()}
-          isLoading={isFetchingNextPage}
+          isLoading={isLoading}
           loadingText='Loading...'
           spinner={<Spinner speed='1s' />}
           mt='4'
           colorScheme='purple'
         >
-          Load More!
+          Load More Posts
         </Button>
       )}
+      {isLoading && <Spinner speed='1s' />}
     </Flex>
   );
 };

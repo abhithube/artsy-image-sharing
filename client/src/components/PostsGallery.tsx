@@ -57,8 +57,6 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
     },
   });
 
-  console.log(data);
-
   const bgColor = useColorModeValue('gray.100', 'gray.900');
 
   return (

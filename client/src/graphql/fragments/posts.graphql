@@ -4,5 +4,4 @@ fragment posts on PostsResponse {
   }
   prevPage
   nextPage
-  totalPages
 }

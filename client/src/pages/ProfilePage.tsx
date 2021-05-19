@@ -21,7 +21,7 @@ const ProfilePage = () => {
           <Heading as='h1'>{data.user.username}'s Gallery</Heading>
           <PostsGallery
             userId={data.user.id}
-            initPosts={data.user.posts || { results: [], totalPages: 0 }}
+            initPosts={data.user.posts || { results: [] }}
           />
           <FavoritesGallery
             userId={data.user.id}

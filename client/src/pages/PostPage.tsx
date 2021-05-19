@@ -4,7 +4,7 @@ import { Redirect, useParams } from 'react-router';
 import { graphQLClient } from '../App';
 import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
-import { Post, usePostQuery } from '../generated/graphql';
+import { usePostQuery } from '../generated/graphql';
 
 type Params = {
   id: string;
@@ -42,8 +42,8 @@ const PostPage = () => {
               </Skeleton>
             </Center>
             <PostDetails
-              post={data.post.result as Post}
-              isFavorite={data.post.isFavorite!}
+              post={data.post.result}
+              isFavorite={data.post.isFavorite}
             />
           </Box>
           <Box

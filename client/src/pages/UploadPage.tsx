@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { FormEvent, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { graphQLClient } from '../App';
 import FileUpload from '../components/FileUpload';
 import { useCreatePostMutation, usePostQuery } from '../generated/graphql';
@@ -23,7 +23,8 @@ const UploadPage = () => {
       queryClient.setQueryData(usePostQuery.getKey({ id: data.post.id }), {
         post: { result: data.post, isFavorite: false },
       });
-      setSuccess(true);
+
+      history.push({ pathname: '/posts', state: { uploaded: true } });
     },
     onError: () => setLoading(false),
   });
@@ -32,16 +33,15 @@ const UploadPage = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
 
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const history = useHistory();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     mutation.mutate({ title, body, file: file?.toString()! });
-    try {
-    } catch (err) {}
   };
 
   return (
@@ -101,9 +101,6 @@ const UploadPage = () => {
           Upload
         </Button>
       </Flex>
-      {success && (
-        <Redirect push to={{ pathname: '/posts', state: { uploaded: true } }} />
-      )}
     </Flex>
   );
 };

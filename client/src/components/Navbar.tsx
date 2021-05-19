@@ -16,7 +16,8 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useContext } from 'react';
-import { FaChevronDown, FaMoon, FaPhotoVideo, FaSun } from 'react-icons/fa';
+import { FaChevronDown, FaMoon, FaSun } from 'react-icons/fa';
+import { IoMdImages } from 'react-icons/io';
 import { useQueryClient } from 'react-query';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { graphQLClient } from '../App';
@@ -68,7 +69,7 @@ const Navbar = () => {
               _hover={{ textDecoration: 'none' }}
             >
               <HStack>
-                <Icon as={FaPhotoVideo} boxSize='8' mr='2' color='purple.500' />
+                <Icon as={IoMdImages} boxSize='8' mr='2' color='purple.500' />
                 <Text fontSize='2xl'>Artsy</Text>
               </HStack>
             </Link>
