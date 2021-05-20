@@ -1,36 +1,44 @@
-import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
+import { Box, Heading, HStack, SimpleGrid, Spinner } from '@chakra-ui/react';
 import { Fragment } from 'react';
+import { IoMdImages } from 'react-icons/io';
 import { graphQLClient } from '../App';
-import PreviewImage from '../components/PreviewImage';
+import FeaturedHero from '../components/FeaturedHero';
+import FeaturedPost from '../components/FeaturedPost';
 import {
   PostSortField,
   SortDirection,
-  usePostsQuery,
+  useFeaturedQuery,
 } from '../generated/graphql';
 
 const HomePage = () => {
-  const { data, isLoading } = usePostsQuery(graphQLClient, {
+  const { data, isLoading } = useFeaturedQuery(graphQLClient, {
     field: PostSortField.FavoriteCount,
-    direction: SortDirection.Asc,
-    limit: 20,
+    direction: SortDirection.Desc,
+    limit: 5,
   });
 
   return (
     <Box>
-      <Heading as='h1' mb='4'>
-        Featured
-      </Heading>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 4, xl: 5 }} gap='4'>
+      <HStack spacing='8' mb='8'>
+        <Heading as='h1' fontSize='6xl'>
+          Welcome to Artsy
+        </Heading>
+        <IoMdImages size='80' />
+      </HStack>
+      {data?.posts && <FeaturedHero featuredPost={data.posts.results[0]} />}
+      <Heading mb='4'>More Posts</Heading>
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 4, xl: 4 }} gap='4'>
         {!isLoading &&
-          data?.posts.results?.map(post => (
+          data?.posts.results?.slice(1).map(post => (
             <Fragment key={post.id}>
-              <PreviewImage post={post} />
+              <FeaturedPost post={post} />
             </Fragment>
           ))}
       </SimpleGrid>
       {!isLoading && data?.posts.results?.length === 0 && (
         <Box>Posts are not available at this time.</Box>
       )}
+      {isLoading && <Spinner speed='1s' />}
     </Box>
   );
 };
