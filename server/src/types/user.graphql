@@ -1,3 +1,4 @@
+# A user account containing profile info
 type User {
   # The ID of a user
   id: Int!
@@ -7,24 +8,33 @@ type User {
   avatarUrl: String
   # The list of posts created by a user
   posts(
+    # The way in which to order the list of posts
     orderBy: PostOrderByInput = { field: CREATED_AT, direction: DESC }
+    # The number of posts per page
     limit: Int = 20
+    # The page number of posts to query
     page: Int = 0
   ): PostsResponse
   # The number of posts created by a user
   postCount: Int
   # The list of favorites created by a user
   favorites(
+    # The way in which to order the list of favorites
     orderBy: FavoriteOrderByInput = { field: CREATED_AT, direction: DESC }
+    # The number of favorites per page
     limit: Int = 20
+    # The page number of favorites to query
     page: Int = 0
   ): FavoritesResponse
   # The number of favorites created by a user
   favoriteCount: Int
   # The list of comments created by a user
   comments(
+    # The way in which to order the list of comments
     orderBy: CommentOrderByInput = { field: CREATED_AT, direction: DESC }
+    # The number of comments per page
     limit: Int = 20
+    # The page number of comments to query
     page: Int = 0
   ): CommentsResponse
   # The number of comments created by a user
@@ -43,10 +53,13 @@ extend type Query {
 extend type Mutation {
   # Update an existing user's details
   updateUser(
+    # The current password of the user to update
     currentPassword: String!
+    # The new username of the user to update
     username: String
-    email: String
+    # The new password of the user to update
     password: String
+    # The new avatar image URL of the user to update
     avatarUrl: String
   ): User!
   # Delete an existing user

@@ -18,90 +18,142 @@ export type Scalars = {
   DateTime: any;
 };
 
+/** The authenticated user */
 export type Auth = {
   __typename?: 'Auth';
+  /** The ID of the authenticated user */
   id: Scalars['Int'];
+  /** The username of the authenticated user */
   username: Scalars['String'];
+  /** The avatar image URL of the authenticated user */
   avatarUrl?: Maybe<Scalars['String']>;
+  /** The account status of the authenticated user */
   confirmed: Scalars['Boolean'];
 };
 
+/** A piece of written feedback submitted by a user on a post */
 export type Comment = {
   __typename?: 'Comment';
+  /** The ID of a comment */
   id: Scalars['Int'];
+  /** The contents of a comment */
   body: Scalars['String'];
+  /** The user that added a comment */
   user: User;
+  /** The post a comment was addded to */
   post: Post;
+  /** The time a comment was created */
   createdAt: Scalars['DateTime'];
+  /** The time a comment was most recently updated */
   updatedAt: Scalars['DateTime'];
 };
 
+/** The inputs needed to sort a list of comments */
 export type CommentOrderByInput = {
+  /** The field to sort comments by */
   field: CommentSortField;
+  /** The direction to sort comments in */
   direction: SortDirection;
 };
 
+/** The possible fields that comments can be sorted by */
 export enum CommentSortField {
   CreatedAt = 'CREATED_AT',
   UpdatedAt = 'UPDATED_AT'
 }
 
+/** The response from a paginated comments query */
 export type CommentsResponse = {
   __typename?: 'CommentsResponse';
+  /** The current page of comments */
   results: Array<Comment>;
+  /** The previous page number */
   prevPage?: Maybe<Scalars['Int']>;
+  /** The next page number */
   nextPage?: Maybe<Scalars['Int']>;
+  /** The total number of pages */
   totalPages: Scalars['Int'];
 };
 
 
+/** A piece of feedback indicating a user likes a post */
 export type Favorite = {
   __typename?: 'Favorite';
+  /** The ID of a favorite */
   id: Scalars['Int'];
+  /** The user that added a favorite */
   user: User;
+  /** The post a favorite was added to */
   post: Post;
+  /** The time a favorite was created */
   createdAt: Scalars['DateTime'];
+  /** The time a favorite was most recently updated */
   updatedAt: Scalars['DateTime'];
 };
 
+/** The inputs needed to sort a list of favorites */
 export type FavoriteOrderByInput = {
+  /** The field to sort favorites by */
   field: FavoriteSortField;
+  /** The direction to sort favorites in */
   direction: SortDirection;
 };
 
+/** The response from creating or deleting a favorite */
 export type FavoriteResponse = {
   __typename?: 'FavoriteResponse';
+  /** The favorite created or deleted */
   result: Favorite;
+  /** The new favorite count on a post */
   count: Scalars['Int'];
 };
 
+/** The possible fields that favorites can be sorted by */
 export enum FavoriteSortField {
   CreatedAt = 'CREATED_AT',
   UpdatedAt = 'UPDATED_AT'
 }
 
+/** The response from a paginated favorites query */
 export type FavoritesResponse = {
   __typename?: 'FavoritesResponse';
+  /** The current page of favorites */
   results: Array<Favorite>;
+  /** The previous page number */
   prevPage?: Maybe<Scalars['Int']>;
+  /** The next page number */
   nextPage?: Maybe<Scalars['Int']>;
+  /** The total number of pages */
   totalPages: Scalars['Int'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Register a user account */
   register: Scalars['Boolean'];
+  /** Log in to a user account */
   login: Auth;
+  /** Log out of a user account */
   logout: Scalars['Boolean'];
+  /** Create a new comment */
   createComment: Comment;
+  /** Update an existing comment */
   updateComment: Comment;
+  /** Delete an existing comment */
   deleteComment: Comment;
+  /** Create a new favorite */
   createFavorite?: Maybe<FavoriteResponse>;
+  /** Delete an existing favorite */
   deleteFavorite?: Maybe<FavoriteResponse>;
+  /** Create a new post */
   createPost: Post;
+  /** Update an existing post */
   updatePost: Post;
+  /** Deleting an existing post */
   deletePost: Post;
+  /** Update an existing user's details */
   updateUser: User;
+  /** Delete an existing user */
   deleteUser: User;
 };
 
@@ -168,27 +220,39 @@ export type MutationDeletePostArgs = {
 export type MutationUpdateUserArgs = {
   currentPassword: Scalars['String'];
   username?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   avatarUrl?: Maybe<Scalars['String']>;
 };
 
+/** An upload containing an image and related details */
 export type Post = {
   __typename?: 'Post';
+  /** The ID of a post */
   id: Scalars['Int'];
+  /** The title of a post */
   title: Scalars['String'];
+  /** The description of a post */
   body?: Maybe<Scalars['String']>;
+  /** The URL of the uploaded image */
   imageUrl: Scalars['String'];
+  /** The user who created the post */
   user: User;
+  /** The list of favorites added to a post */
   favorites?: Maybe<FavoritesResponse>;
+  /** The number of favorites added to a post */
   favoriteCount?: Maybe<Scalars['Int']>;
+  /** The list of comments added to a post */
   comments?: Maybe<CommentsResponse>;
+  /** The number of comments added to a post */
   commentCount?: Maybe<Scalars['Int']>;
+  /** The time a post was created */
   createdAt: Scalars['DateTime'];
+  /** The time a post was most recently updated */
   updatedAt: Scalars['DateTime'];
 };
 
 
+/** An upload containing an image and related details */
 export type PostFavoritesArgs = {
   orderBy?: Maybe<FavoriteOrderByInput>;
   limit?: Maybe<Scalars['Int']>;
@@ -196,23 +260,31 @@ export type PostFavoritesArgs = {
 };
 
 
+/** An upload containing an image and related details */
 export type PostCommentsArgs = {
   orderBy?: Maybe<CommentOrderByInput>;
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
 };
 
+/** The inputs needed to sort a list of posts */
 export type PostOrderByInput = {
+  /** The field to sort posts by */
   field: PostSortField;
+  /** The direction to sort posts in */
   direction: SortDirection;
 };
 
+/** The response from a single post query */
 export type PostResponse = {
   __typename?: 'PostResponse';
+  /** The post that has been queried */
   result: Post;
+  /** The boolean indicating if the authenticated user has favorited the post */
   isFavorite: Scalars['Boolean'];
 };
 
+/** The possible fields that posts can be sorted by */
 export enum PostSortField {
   Title = 'TITLE',
   FavoriteCount = 'FAVORITE_COUNT',
@@ -221,22 +293,34 @@ export enum PostSortField {
   UpdatedAt = 'UPDATED_AT'
 }
 
+/** The response from a paginated posts query */
 export type PostsResponse = {
   __typename?: 'PostsResponse';
+  /** The current page of posts */
   results: Array<Post>;
+  /** The previous page number */
   prevPage?: Maybe<Scalars['Int']>;
+  /** The next page number */
   nextPage?: Maybe<Scalars['Int']>;
+  /** The total number of pages */
   totalPages: Scalars['Int'];
 };
 
 export type Query = {
   __typename?: 'Query';
+  /** Get the currently authenticated user */
   auth?: Maybe<Auth>;
+  /** Get a paginated list of comments */
   comments: CommentsResponse;
+  /** Get a list of paginated favorites */
   favorites: FavoritesResponse;
+  /** Get a list of paginated posts */
   posts: PostsResponse;
+  /** Get a post by ID */
   post?: Maybe<PostResponse>;
+  /** Get posts related to a given post */
   relatedPosts?: Maybe<Array<Post>>;
+  /** Get a user by ID */
   user: User;
 };
 
@@ -281,27 +365,41 @@ export type QueryUserArgs = {
   id: Scalars['Int'];
 };
 
+/** The possible directions that posts can be sorted in */
 export enum SortDirection {
   Asc = 'ASC',
   Desc = 'DESC'
 }
 
+/** A user account containing profile info */
 export type User = {
   __typename?: 'User';
+  /** The ID of a user */
   id: Scalars['Int'];
+  /** The username of a user */
   username: Scalars['String'];
+  /** The avatar image URL of a user */
   avatarUrl?: Maybe<Scalars['String']>;
+  /** The list of posts created by a user */
   posts?: Maybe<PostsResponse>;
+  /** The number of posts created by a user */
   postCount?: Maybe<Scalars['Int']>;
+  /** The list of favorites created by a user */
   favorites?: Maybe<FavoritesResponse>;
+  /** The number of favorites created by a user */
   favoriteCount?: Maybe<Scalars['Int']>;
+  /** The list of comments created by a user */
   comments?: Maybe<CommentsResponse>;
+  /** The number of comments created by a user */
   commentCount?: Maybe<Scalars['Int']>;
+  /** The time a user was created */
   createdAt: Scalars['DateTime'];
+  /** The time a user was most recently updated */
   updatedAt: Scalars['DateTime'];
 };
 
 
+/** A user account containing profile info */
 export type UserPostsArgs = {
   orderBy?: Maybe<PostOrderByInput>;
   limit?: Maybe<Scalars['Int']>;
@@ -309,6 +407,7 @@ export type UserPostsArgs = {
 };
 
 
+/** A user account containing profile info */
 export type UserFavoritesArgs = {
   orderBy?: Maybe<FavoriteOrderByInput>;
   limit?: Maybe<Scalars['Int']>;
@@ -316,6 +415,7 @@ export type UserFavoritesArgs = {
 };
 
 
+/** A user account containing profile info */
 export type UserCommentsArgs = {
   orderBy?: Maybe<CommentOrderByInput>;
   limit?: Maybe<Scalars['Int']>;

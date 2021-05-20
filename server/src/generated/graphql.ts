@@ -165,7 +165,6 @@ export type MutationUpdatePostArgs = {
 export type MutationUpdateUserArgs = {
   currentPassword: Scalars['String'];
   username?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   avatarUrl?: Maybe<Scalars['String']>;
 };

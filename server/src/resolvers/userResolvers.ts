@@ -150,7 +150,7 @@ export const resolvers: Resolvers = {
       const { user: authUser } = ctx.req.session;
       if (!authUser) throw new Error('User not authenticated');
 
-      const { currentPassword, username, email, password, avatarUrl } = args;
+      const { currentPassword, username, password, avatarUrl } = args;
 
       let user = (await ctx.prisma.user.findUnique({
         where: { id: authUser.id },
@@ -161,13 +161,11 @@ export const resolvers: Resolvers = {
 
       const data: {
         username?: string;
-        email?: string;
         password?: string;
         avatarUrl?: string;
         confirmed?: boolean;
       } = {};
       if (username) data.username = username;
-      if (email) data.email = email;
       if (password) data.password = password;
       if (avatarUrl) data.avatarUrl = avatarUrl;
 
