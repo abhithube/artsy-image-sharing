@@ -129,7 +129,7 @@ export const resolvers: Resolvers = {
         skip: limit * page,
       });
 
-      const count = await ctx.prisma.post.count();
+      const count = await ctx.prisma.post.count({ where });
       const totalPages = Math.ceil(count / limit);
       const prevPage = page === 0 ? null : page - 1;
       const nextPage = page === totalPages - 1 ? null : page + 1;
