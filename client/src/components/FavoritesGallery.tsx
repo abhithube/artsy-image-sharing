@@ -64,17 +64,17 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
       <Heading fontSize='2xl' mb='4'>
         Favorites
       </Heading>
-      {!isFetching && data?.favorites && data.favorites.results.length > 0 && (
+      {data && data.favorites.results.length > 0 && (
         <HStack spacing='4' bgColor={bgColor} p='4' rounded='md'>
           <IconButton
             icon={<FaChevronLeft />}
-            onClick={() => setPage(data?.favorites.prevPage || 0)}
-            disabled={data?.favorites.prevPage === null}
+            onClick={() => setPage(data.favorites.prevPage || 0)}
+            disabled={data.favorites.prevPage === null}
             aria-label='previous page'
             colorScheme='purple'
           />
           <SimpleGrid columns={5} gap='4' w='100%'>
-            {data?.favorites.results.map(favorite => (
+            {data.favorites.results.map(favorite => (
               <Fragment key={favorite.id}>
                 <PreviewImage post={favorite.post} />
               </Fragment>
@@ -83,10 +83,9 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
           <IconButton
             icon={<FaChevronRight />}
             onClick={() => {
-              const nextPage = data?.favorites.nextPage;
-              if (nextPage) setPage(nextPage);
+              if (data.favorites.nextPage) setPage(data.favorites.nextPage);
             }}
-            disabled={data?.favorites.nextPage === null}
+            disabled={data.favorites.nextPage === null}
             aria-label='next page'
             colorScheme='purple'
           />
@@ -95,7 +94,7 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
       {!isFetching && data?.favorites.results.length === 0 && (
         <Text color='gray.500'>No favorites to show.</Text>
       )}
-      {isFetching && <Spinner speed='1s' />}
+      {isFetching && !data && <Spinner speed='1s' />}
     </Box>
   );
 };

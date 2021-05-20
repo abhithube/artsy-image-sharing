@@ -64,16 +64,16 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
       <Heading fontSize='2xl' mb='4'>
         Posts
       </Heading>
-      {!isFetching && data?.posts && data.posts.results.length > 0 && (
+      {data && data.posts.results.length > 0 && (
         <HStack spacing='4' bgColor={bgColor} p='4' rounded='md'>
           <IconButton
             icon={<FaChevronLeft />}
-            onClick={() => setPage(data?.posts.prevPage || 0)}
-            disabled={data?.posts.prevPage === null}
+            onClick={() => setPage(data.posts.prevPage || 0)}
+            disabled={data.posts.prevPage === null}
             aria-label='previous page'
             colorScheme='purple'
           />
-          <SimpleGrid columns={5} gap='4' h='25vh' w='100%'>
+          <SimpleGrid columns={5} gap='4' w='100%'>
             {data.posts.results.map(post => (
               <Fragment key={post.id}>
                 <PreviewImage post={post} />
@@ -83,8 +83,7 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
           <IconButton
             icon={<FaChevronRight />}
             onClick={() => {
-              const nextPage = data?.posts.nextPage;
-              if (nextPage) setPage(nextPage);
+              if (data.posts.nextPage) setPage(data.posts.nextPage);
             }}
             disabled={data?.posts.nextPage === null}
             aria-label='next page'
@@ -95,7 +94,7 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
       {!isFetching && data?.posts.results.length === 0 && (
         <Text color='gray.500'>No posts to show.</Text>
       )}
-      {isFetching && <Spinner speed='1s' />}
+      {isFetching && !data && <Spinner speed='1s' />}
     </Box>
   );
 };
