@@ -1,59 +1,89 @@
+# An upload containing an image and related details
 type Post {
+  # The ID of a post
   id: Int!
+  # The title of a post
   title: String!
+  # The description of a post
   body: String
+  # The URL of the uploaded image
   imageUrl: String!
+  # The user who created the post
   user: User!
+  # The list of favorites added to a post
   favorites(
     orderBy: FavoriteOrderByInput = { field: CREATED_AT, direction: DESC }
     limit: Int = 20
     page: Int = 0
   ): FavoritesResponse
+  # The number of favorites added to a post
   favoriteCount: Int
+  # The list of comments added to a post
   comments(
     orderBy: CommentOrderByInput = { field: CREATED_AT, direction: DESC }
     limit: Int = 20
     page: Int = 0
   ): CommentsResponse
+  # The number of comments added to a post
   commentCount: Int
+  # The time a post was created
   createdAt: DateTime!
+  # The time a post was most recently updated
   updatedAt: DateTime!
 }
 
 extend type Query {
+  # Get a list of paginated posts
   posts(
     userId: Int
     orderBy: PostOrderByInput = { field: CREATED_AT, direction: DESC }
     limit: Int = 20
     page: Int = 0
   ): PostsResponse!
+  # Get a post by ID
   post(id: Int!): PostResponse
+  # Get posts related to a given post
   relatedPosts(postId: Int!): [Post!]
 }
 
 extend type Mutation {
+  # Create a new post
   createPost(title: String!, body: String, file: String!): Post!
+  # Update an existing post
   updatePost(id: Int!, title: String, body: String): Post!
+  # Deleting an existing post
   deletePost(id: Int!): Post!
 }
 
+# The response from a paginated posts query
 type PostsResponse {
+  # The current page of posts
   results: [Post!]!
+  # The previous page number
   prevPage: Int
+  # The next page number
   nextPage: Int
+  # The total number of pages
   totalPages: Int!
 }
 
+# The response from a single post query
 type PostResponse {
+  # The post that has been queried
   result: Post!
+  # The boolean indicating if the authenticated user has favorited the post
   isFavorite: Boolean!
 }
 
+# The inputs needed to sort a list of posts
 input PostOrderByInput {
+  # The field to sort posts by
   field: PostSortField!
+  # The direction to sort posts in
   direction: SortDirection!
 }
 
+# The possible fields that posts can be sorted by
 enum PostSortField {
   TITLE
   FAVORITE_COUNT

@@ -1,12 +1,19 @@
+# A piece of feedback indicating a user likes a post
 type Favorite {
+  # The ID of a favorite
   id: Int!
+  # The user that added a favorite
   user: User!
+  # The post a favorite was added to
   post: Post!
+  # The time a favorite was created
   createdAt: DateTime!
+  # The time a favorite was most recently updated
   updatedAt: DateTime!
 }
 
 extend type Query {
+  # Get a list of paginated favorites
   favorites(
     postId: Int
     userId: Int
@@ -17,27 +24,41 @@ extend type Query {
 }
 
 extend type Mutation {
+  # Create a new favorite
   createFavorite(postId: Int!): FavoriteResponse
+  # Delete an existing favorite
   deleteFavorite(postId: Int!): FavoriteResponse
 }
 
+# The response from creating or deleting a favorite
 type FavoriteResponse {
+  # The favorite created or deleted
   result: Favorite!
+  # The new favorite count on a post
   count: Int!
 }
 
+# The response from a paginated favorites query
 type FavoritesResponse {
+  # The current page of favorites
   results: [Favorite!]!
+  # The previous page number
   prevPage: Int
+  # The next page number
   nextPage: Int
+  # The total number of pages
   totalPages: Int!
 }
 
+# The inputs needed to sort a list of favorites
 input FavoriteOrderByInput {
+  # The field to sort favorites by
   field: FavoriteSortField!
+  # The direction to sort favorites in
   direction: SortDirection!
 }
 
+# The possible fields that favorites can be sorted by
 enum FavoriteSortField {
   CREATED_AT
   UPDATED_AT

@@ -1,13 +1,21 @@
+# A piece of written feedback submitted by a user on a post
 type Comment {
+  # The ID of a comment
   id: Int!
+  # The contents of a comment
   body: String!
+  # The user that added a comment
   user: User!
+  # The post a comment was addded to
   post: Post!
+  # The time a comment was created
   createdAt: DateTime!
+  # The time a comment was most recently updated
   updatedAt: DateTime!
 }
 
 extend type Query {
+  # Get a paginated list of comments
   comments(
     postId: Int
     userId: Int
@@ -18,23 +26,35 @@ extend type Query {
 }
 
 extend type Mutation {
+  # Create a new comment
   createComment(body: String!, postId: Int!): Comment!
+  # Update an existing comment
   updateComment(id: Int!, body: String!): Comment!
+  # Delete an existing comment
   deleteComment(id: Int!): Comment!
 }
 
+# The response from a paginated comments query
 type CommentsResponse {
+  # The current page of comments
   results: [Comment!]!
+  # The previous page number
   prevPage: Int
+  # The next page number
   nextPage: Int
+  # The total number of pages
   totalPages: Int!
 }
 
+# The inputs needed to sort a list of comments
 input CommentOrderByInput {
+  # The field to sort comments by
   field: CommentSortField!
+  # The direction to sort comments in
   direction: SortDirection!
 }
 
+# The possible fields that comments can be sorted by
 enum CommentSortField {
   CREATED_AT
   UPDATED_AT

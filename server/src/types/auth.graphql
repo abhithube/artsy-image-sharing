@@ -1,16 +1,25 @@
+# The authenticated user
 type Auth {
+  # The ID of the authenticated user
   id: Int!
+  # The username of the authenticated user
   username: String!
+  # The avatar image URL of the authenticated user
   avatarUrl: String
+  # The account status of the authenticated user
   confirmed: Boolean!
 }
 
 extend type Query {
+  # Get the currently authenticated user
   auth: Auth
 }
 
 extend type Mutation {
+  # Register a user account
   register(username: String!, password: String!): Boolean!
+  # Log in to a user account
   login(username: String!, password: String!, avatarUrl: String): Auth!
+  # Log out of a user account
   logout: Boolean!
 }

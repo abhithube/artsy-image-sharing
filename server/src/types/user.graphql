@@ -1,34 +1,47 @@
 type User {
+  # The ID of a user
   id: Int!
+  # The username of a user
   username: String!
+  # The avatar image URL of a user
   avatarUrl: String
+  # The list of posts created by a user
   posts(
     orderBy: PostOrderByInput = { field: CREATED_AT, direction: DESC }
     limit: Int = 20
     page: Int = 0
   ): PostsResponse
+  # The number of posts created by a user
   postCount: Int
+  # The list of favorites created by a user
   favorites(
     orderBy: FavoriteOrderByInput = { field: CREATED_AT, direction: DESC }
     limit: Int = 20
     page: Int = 0
   ): FavoritesResponse
+  # The number of favorites created by a user
   favoriteCount: Int
+  # The list of comments created by a user
   comments(
     orderBy: CommentOrderByInput = { field: CREATED_AT, direction: DESC }
     limit: Int = 20
     page: Int = 0
   ): CommentsResponse
+  # The number of comments created by a user
   commentCount: Int
+  # The time a user was created
   createdAt: DateTime!
+  # The time a user was most recently updated
   updatedAt: DateTime!
 }
 
 extend type Query {
+  # Get a user by ID
   user(id: Int!): User!
 }
 
 extend type Mutation {
+  # Update an existing user's details
   updateUser(
     currentPassword: String!
     username: String
@@ -36,5 +49,6 @@ extend type Mutation {
     password: String
     avatarUrl: String
   ): User!
+  # Delete an existing user
   deleteUser: User!
 }

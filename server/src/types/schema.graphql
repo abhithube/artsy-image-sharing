@@ -4,6 +4,7 @@ type Mutation
 
 scalar DateTime
 
+# The possible directions that posts can be sorted in
 enum SortDirection {
   ASC
   DESC
