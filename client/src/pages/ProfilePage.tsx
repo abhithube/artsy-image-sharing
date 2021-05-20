@@ -1,5 +1,5 @@
-import { Box, Heading, Spinner } from '@chakra-ui/react';
-import { Redirect, useParams } from 'react-router';
+import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
+import { useParams } from 'react-router';
 import { graphQLClient } from '../App';
 import FavoritesGallery from '../components/FavoritesGallery';
 import PostsGallery from '../components/PostsGallery';
@@ -14,9 +14,11 @@ const ProfilePage = () => {
 
   const { data, isLoading } = useUserQuery(graphQLClient, { id: Number(id) });
 
+  if (isLoading) return <Spinner speed='1s' />;
+
   return (
     <Box h='100%'>
-      {!isLoading && data?.user && (
+      {data && (
         <>
           <Heading as='h1'>{data.user.username}'s Gallery</Heading>
           <PostsGallery
@@ -29,8 +31,7 @@ const ProfilePage = () => {
           />
         </>
       )}
-      {!isLoading && !data?.user && <Redirect to='/404' />}
-      {isLoading && <Spinner speed='1s' />}
+      {!data && <Text>User not found</Text>}
     </Box>
   );
 };

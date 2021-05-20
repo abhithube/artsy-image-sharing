@@ -50,6 +50,8 @@ const PostsPage = () => {
     return () => toast.closeAll();
   }, [location.state, toast]);
 
+  if (isLoading) return <Spinner speed='1s' />;
+
   return (
     <Flex direction='column'>
       <Heading as='h1' mb='4'>
@@ -64,7 +66,7 @@ const PostsPage = () => {
           ))
         )}
       </SimpleGrid>
-      {!isLoading && data?.pages.length === 0 && (
+      {data?.pages.length === 0 && (
         <Text>Posts are not available at this time.</Text>
       )}
       {hasNextPage && (
@@ -79,7 +81,6 @@ const PostsPage = () => {
           Load More Posts
         </Button>
       )}
-      {isLoading && <Spinner speed='1s' />}
     </Flex>
   );
 };

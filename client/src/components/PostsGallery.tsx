@@ -59,6 +59,8 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
 
   const bgColor = useColorModeValue('gray.100', 'gray.900');
 
+  if (isFetching && !data) return <Spinner speed='1s' />;
+
   return (
     <Box mt='8'>
       <Heading fontSize='2xl' mb='4'>
@@ -91,10 +93,9 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
           />
         </HStack>
       )}
-      {!isFetching && data?.posts.results.length === 0 && (
+      {data?.posts.results.length === 0 && (
         <Text color='gray.500'>No posts to show.</Text>
       )}
-      {isFetching && !data && <Spinner speed='1s' />}
     </Box>
   );
 };

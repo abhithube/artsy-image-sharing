@@ -33,7 +33,7 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
       <AddComment postId={postId} />
       <Heading mb='4'>Comments</Heading>
       <VStack align='stretch' spacing='4' mt='4'>
-        {!isLoading && commentCount > 0 && (
+        {commentCount > 0 && (
           <>
             {data?.pages.map(page =>
               page.comments.results.map(comment => (
@@ -54,10 +54,8 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
             )}
           </>
         )}
-        {!isLoading && commentCount === 0 && (
-          <Text>No comments on this post.</Text>
-        )}
-        {isLoading && <Spinner />}
+        {commentCount === 0 && <Text>No comments on this post.</Text>}
+        {isLoading && <Spinner speed='1s' />}
       </VStack>
     </Box>
   );

@@ -19,23 +19,21 @@ const RelatedPosts = ({ postId }: RelatedPostsProps) => {
 
   const bgColor = useColorModeValue('gray.100', 'gray.700');
 
+  if (isLoading) return <Spinner speed='1s' />;
+
   return (
     <VStack spacing='8' p='8' bgColor={bgColor} rounded='lg'>
       <Heading fontSize='3xl' textAlign='center'>
         More Posts
       </Heading>
       <VStack spacing={4} w='100%'>
-        {!isLoading &&
-          data?.relatedPosts?.slice(0, 5).map(post => (
-            <Fragment key={post.id}>
-              <PreviewImage post={post} />
-            </Fragment>
-          ))}
+        {data?.relatedPosts?.slice(0, 5).map(post => (
+          <Fragment key={post.id}>
+            <PreviewImage post={post} />
+          </Fragment>
+        ))}
       </VStack>
-      {!isLoading && !data?.relatedPosts && (
-        <Text>Posts are not available at this time.</Text>
-      )}
-      {isLoading && <Spinner />}
+      {!data && <Text>Posts are not available at this time.</Text>}
     </VStack>
   );
 };

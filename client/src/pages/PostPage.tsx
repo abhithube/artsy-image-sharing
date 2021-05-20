@@ -1,6 +1,14 @@
-import { Box, Center, Flex, Image, Skeleton, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Flex,
+  Image,
+  Skeleton,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Redirect, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { graphQLClient } from '../App';
 import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
@@ -19,9 +27,11 @@ const PostPage = () => {
 
   useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [id]);
 
+  if (isLoading) return <Spinner speed='1s' />;
+
   return (
     <Flex align='flex-start'>
-      {!isLoading && data?.post && (
+      {data?.post && (
         <>
           <Box
             flexBasis={['100%', '100%', '100%', '75%', '75%']}
@@ -54,8 +64,7 @@ const PostPage = () => {
           </Box>
         </>
       )}
-      {!isLoading && !data?.post && <Redirect to='/404' />}
-      {isLoading && <Spinner />}
+      {!data?.post && <Text>Post not found</Text>}
     </Flex>
   );
 };

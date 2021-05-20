@@ -17,6 +17,8 @@ const HomePage = () => {
     limit: 5,
   });
 
+  if (isLoading) return <Spinner speed='1s' />;
+
   return (
     <Box>
       <HStack spacing='8' mb='8'>
@@ -25,20 +27,22 @@ const HomePage = () => {
         </Heading>
         <IoMdImages size='80' />
       </HStack>
-      {data?.posts && <FeaturedHero featuredPost={data.posts.results[0]} />}
-      <Heading mb='4'>More Posts</Heading>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 4, xl: 4 }} gap='4'>
-        {!isLoading &&
-          data?.posts.results?.slice(1).map(post => (
-            <Fragment key={post.id}>
-              <FeaturedPost post={post} />
-            </Fragment>
-          ))}
-      </SimpleGrid>
-      {!isLoading && data?.posts.results?.length === 0 && (
+      {data && data?.posts.results.length > 0 && (
+        <>
+          <FeaturedHero featuredPost={data.posts.results[0]} />
+          <Heading mb='4'>More Posts</Heading>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 4, xl: 4 }} gap='4'>
+            {data?.posts.results.slice(1).map(post => (
+              <Fragment key={post.id}>
+                <FeaturedPost post={post} />
+              </Fragment>
+            ))}
+          </SimpleGrid>
+        </>
+      )}
+      {data?.posts.results.length === 0 && (
         <Box>Posts are not available at this time.</Box>
       )}
-      {isLoading && <Spinner speed='1s' />}
     </Box>
   );
 };
