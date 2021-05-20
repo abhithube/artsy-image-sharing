@@ -165,7 +165,7 @@ const LoginPage = () => {
             type='submit'
             isLoading={loading}
             isDisabled={!username || !password}
-            loadingText='Uploading'
+            loadingText='Loading'
             spinner={<Spinner speed='1s' />}
             mt='4'
             w='100%'

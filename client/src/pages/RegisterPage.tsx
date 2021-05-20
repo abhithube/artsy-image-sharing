@@ -145,7 +145,7 @@ const RegisterPage = () => {
             type='submit'
             isLoading={loading}
             isDisabled={!username || !password || !passwordConfirm}
-            loadingText='Uploading'
+            loadingText='Loading'
             spinner={<Spinner speed='1s' />}
             mt='4'
             w='100%'
