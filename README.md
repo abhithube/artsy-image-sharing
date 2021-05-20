@@ -24,6 +24,11 @@ The app, hosted on Heroku, can be found at https://artsy.abhithube.com.
 - View other users' artist profiles
 - Dark mode support :)
 
+## Todo
+
+- Add React functionality to edit/delete profile, posts, comments
+- Improve responsive design
+
 ## How It Works - Frontend
 
 The frontend is built in React and TypeScript. Data fetching, caching, and prefetching is handled by the `react-query` library. GraphQL queries and mutations are written in `.graphql` files, and the `graphql-codegen` library parses them and generates the necessary typings to be used in React components. The `react-query` plugin for the codegen library also creates custom React hooks for executing each query and mutation.
