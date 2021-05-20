@@ -17,21 +17,39 @@ type Comment {
 extend type Query {
   # Get a paginated list of comments
   comments(
+    # The ID of the post to filter results by
     postId: Int
+    # The ID of the user to filter results by
     userId: Int
+    # The way in which to order the list of comments
     orderBy: CommentOrderByInput = { field: CREATED_AT, direction: DESC }
+    # The number of comments per page
     limit: Int = 20
+    # The page number of comments to query
     page: Int = 0
   ): CommentsResponse!
 }
 
 extend type Mutation {
   # Create a new comment
-  createComment(body: String!, postId: Int!): Comment!
+  createComment(
+    # The contents of the comment to create
+    body: String!
+    # The ID of the post to add a comment to
+    postId: Int!
+  ): Comment!
   # Update an existing comment
-  updateComment(id: Int!, body: String!): Comment!
+  updateComment(
+    # The ID of the comment to update
+    id: Int!
+    # The new contents of the comment
+    body: String!
+  ): Comment!
   # Delete an existing comment
-  deleteComment(id: Int!): Comment!
+  deleteComment(
+    # The ID of the comment to delete
+    id: Int!
+  ): Comment!
 }
 
 # The response from a paginated comments query

@@ -17,9 +17,21 @@ extend type Query {
 
 extend type Mutation {
   # Register a user account
-  register(username: String!, password: String!): Boolean!
+  register(
+    # The username of the user account
+    username: String!
+    # The password of the user account
+    password: String!
+  ): Boolean!
   # Log in to a user account
-  login(username: String!, password: String!, avatarUrl: String): Auth!
+  login(
+    # The username of the user account
+    username: String!
+    # The password of the user account
+    password: String!
+    # The avatar image URL of the user account
+    avatarUrl: String
+  ): Auth!
   # Log out of a user account
   logout: Boolean!
 }

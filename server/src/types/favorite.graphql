@@ -15,19 +15,30 @@ type Favorite {
 extend type Query {
   # Get a list of paginated favorites
   favorites(
+    # The ID of the post to filter results by
     postId: Int
+    # The ID of the user to filter results by
     userId: Int
+    # The way in which to order the list of favorites
     orderBy: FavoriteOrderByInput = { field: CREATED_AT, direction: DESC }
+    # The number of favorites per page
     limit: Int = 20
+    # The page number of favorites to query
     page: Int = 0
   ): FavoritesResponse!
 }
 
 extend type Mutation {
   # Create a new favorite
-  createFavorite(postId: Int!): FavoriteResponse
+  createFavorite(
+    # The ID of the post to add a favorite to
+    postId: Int!
+  ): FavoriteResponse
   # Delete an existing favorite
-  deleteFavorite(postId: Int!): FavoriteResponse
+  deleteFavorite(
+    # The ID of the post to remove a favorite from
+    postId: Int!
+  ): FavoriteResponse
 }
 
 # The response from creating or deleting a favorite

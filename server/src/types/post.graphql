@@ -12,16 +12,22 @@ type Post {
   user: User!
   # The list of favorites added to a post
   favorites(
+    # The way in which to order the list of favorites
     orderBy: FavoriteOrderByInput = { field: CREATED_AT, direction: DESC }
+    # The number of favorites per page
     limit: Int = 20
+    # The page number of favorites to query
     page: Int = 0
   ): FavoritesResponse
   # The number of favorites added to a post
   favoriteCount: Int
   # The list of comments added to a post
   comments(
+    # The way in which to order the list of comments
     orderBy: CommentOrderByInput = { field: CREATED_AT, direction: DESC }
+    # The number of comments per page
     limit: Int = 20
+    # The page number of comments to query
     page: Int = 0
   ): CommentsResponse
   # The number of comments added to a post
@@ -35,24 +41,51 @@ type Post {
 extend type Query {
   # Get a list of paginated posts
   posts(
+    # The ID of the user to filter results by
     userId: Int
+    # The way in which to order the list of posts
     orderBy: PostOrderByInput = { field: CREATED_AT, direction: DESC }
+    # The number of posts per page
     limit: Int = 20
+    # The page number of posts to query
     page: Int = 0
   ): PostsResponse!
   # Get a post by ID
-  post(id: Int!): PostResponse
+  post(
+    # The ID of the post to query
+    id: Int!
+  ): PostResponse
   # Get posts related to a given post
-  relatedPosts(postId: Int!): [Post!]
+  relatedPosts(
+    # The ID of the post that results should be related to
+    postId: Int!
+  ): [Post!]
 }
 
 extend type Mutation {
   # Create a new post
-  createPost(title: String!, body: String, file: String!): Post!
+  createPost(
+    # The title of the post to create
+    title: String!
+    # The description of the post to create
+    body: String
+    # The data URI of the image to upload
+    file: String!
+  ): Post!
   # Update an existing post
-  updatePost(id: Int!, title: String, body: String): Post!
+  updatePost(
+    # The ID of the post to update
+    id: Int!
+    # The new title of the post
+    title: String
+    # The new description of the post
+    body: String
+  ): Post!
   # Deleting an existing post
-  deletePost(id: Int!): Post!
+  deletePost(
+    # The ID of the post to delete
+    id: Int!
+  ): Post!
 }
 
 # The response from a paginated posts query
