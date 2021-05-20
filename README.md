@@ -2,7 +2,7 @@
 
 Artsy is a full-stack web application that allows users to upload images, browse all uploaded content, and leave feedback on other users' posts.
 
-The app, hosted on Heroku, can be found at https://artsy.abhithube.com.
+The app, hosted on Heroku, can be found at https://artsy.abhithube.com. The GraphQL playground for testing queries and mutations can be found at https://artsy.abhithube.com/playground
 
 ## Tech Stack
 
