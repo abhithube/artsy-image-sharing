@@ -6,7 +6,7 @@
   "scripts": {
     "start": "yarn --cwd server start",
     "dev": "concurrently \"yarn --cwd server dev\" \"yarn --cwd client start\"",
-    "postinstall": "yarn --cwd server && yarn --cwd client",
+    "postinstall": "yarn --cwd server --prod=false && yarn --cwd client --prod=false",
     "build": "yarn --cwd server build && yarn --cwd client build"
   },
   "devDependencies": {
