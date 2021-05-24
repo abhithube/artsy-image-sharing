@@ -7,8 +7,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts --ext ts,graphql",
-    "build": "tsc && npm run copy",
-    "postinstall": "npm run build",
+    "build": "tsc && yarn copy",
+    "postinstall": "yarn build",
     "generate": "graphql-codegen",
     "copy": "cpx \"src/**/*.graphql\" dist"
   },

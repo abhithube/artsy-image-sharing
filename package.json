@@ -2,9 +2,9 @@
   "name": "graphql-react-image-sharing",
   "version": "1.0.0",
   "scripts": {
-    "start": "npm start --prefix server",
-    "dev": "concurrently \"npm run dev --prefix server\" \"npm start --prefix client\"",
-    "heroku-postbuild": "npm install --prefix server && npm install --prefix client && npm run build --prefix client"
+    "start": "yarn --cwd server start",
+    "dev": "concurrently \"yarn --cwd server dev\" \"yarn --cwd client start\"",
+    "heroku-postbuild": "yarn --prefix server && yarn --prefix client && yarn --cwd client build"
   },
   "keywords": [],
   "author": "",
