@@ -11,6 +11,9 @@ const sessionOptions: SessionOptions = {
   secret: process.env.EXPRESS_SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+  },
 };
 
 declare module 'express-session' {

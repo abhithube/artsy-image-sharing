@@ -1,15 +1,16 @@
 {
   "name": "graphql-react-image-sharing",
   "version": "1.0.0",
+  "description": "",
+  "main": "server/src/server.ts",
   "scripts": {
     "start": "yarn --cwd server start",
     "dev": "concurrently \"yarn --cwd server dev\" \"yarn --cwd client start\"",
-    "heroku-postbuild": "yarn --prefix server && yarn --prefix client && yarn --cwd client build"
+    "heroku-postbuild": "yarn --cwd server && yarn --cwd client && yarn --cwd client build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "concurrently": "^6.1.0"
-  }
+  },
+  "author": "",
+  "license": "ISC"
 }
