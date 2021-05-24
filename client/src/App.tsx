@@ -18,7 +18,7 @@ import UploadPage from './pages/UploadPage';
 import theme from './theme';
 
 export const graphQLClient = new GraphQLClient(
-  process.env.REACT_APP_SERVER_URL + '/graphql',
+  process.env.SERVER_URL + '/graphql',
   { credentials: 'include' }
 );
 
