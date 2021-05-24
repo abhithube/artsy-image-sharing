@@ -20,10 +20,6 @@ module.exports = {
         use: 'babel-loader',
       },
       {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
         test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i,
         type: 'asset',
       },
@@ -37,10 +33,4 @@ module.exports = {
       'process.env': JSON.stringify(dotenv.config().parsed),
     }),
   ],
-  mode: 'development',
-  devServer: {
-    port: 3000,
-    historyApiFallback: true,
-  },
-  devtool: 'eval-cheap-source-map',
 };
