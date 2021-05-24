@@ -6,8 +6,8 @@
   "scripts": {
     "start": "yarn --cwd server start",
     "dev": "concurrently \"yarn --cwd server dev\" \"yarn --cwd client start\"",
-    "heroku-prebuild": "yarn --cwd server && yarn --cwd client",
-    "heroku-postbuild": "yarn --cwd server build && yarn --cwd client build"
+    "postinstall": "yarn --cwd server && yarn --cwd client",
+    "build": "yarn --cwd server build && yarn --cwd client build"
   },
   "devDependencies": {
     "concurrently": "^6.1.0"
