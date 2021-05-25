@@ -4,6 +4,9 @@ const common = require('./webpack.common');
 
 module.exports = merge(common, {
   mode: 'development',
+  output: {
+    filename: '[name].bundle.js',
+  },
   module: {
     rules: [
       {
@@ -17,5 +20,5 @@ module.exports = merge(common, {
     port: 3000,
     historyApiFallback: true,
   },
-  devtool: 'eval-cheap-source-map',
+  devtool: 'eval-cheap-module-source-map',
 });
