@@ -1,6 +1,7 @@
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const DotenvWebpackPlugin = require('dotenv-webpack');
 
 module.exports = merge(common, {
   mode: 'production',
@@ -15,7 +16,12 @@ module.exports = merge(common, {
       },
     ],
   },
-  plugins: [new MiniCssExtractPlugin()],
+  plugins: [
+    new MiniCssExtractPlugin(),
+    new DotenvWebpackPlugin({
+      systemvars: true,
+    }),
+  ],
   optimization: {
     moduleIds: 'deterministic',
     runtimeChunk: 'single',
