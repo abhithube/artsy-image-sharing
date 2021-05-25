@@ -13,6 +13,7 @@ import { AuthContext } from '../context/AuthContext';
 import {
   useCommentsQuery,
   useCreateCommentMutation,
+  usePostQuery,
 } from '../generated/graphql';
 
 type AddCommentProps = {
@@ -23,12 +24,16 @@ const AddComment = ({ postId }: AddCommentProps) => {
   const { authenticatedUser } = useContext(AuthContext);
 
   const queryClient = useQueryClient();
-  const queryKey = useCommentsQuery.getKey({ postId });
+  const commentsQueryKey = useCommentsQuery.getKey({ postId });
+  const postQueryKey = usePostQuery.getKey({ id: postId });
 
   const mutation = useCreateCommentMutation(graphQLClient, {
     onSuccess: () => {
       setComment('');
-      queryClient.fetchInfiniteQuery(queryKey);
+      queryClient.fetchQuery(postQueryKey, () =>
+        graphQLClient.request(usePostQuery.document, { id: postId })
+      );
+      queryClient.fetchInfiniteQuery(commentsQueryKey);
 
       toast({
         status: 'success',

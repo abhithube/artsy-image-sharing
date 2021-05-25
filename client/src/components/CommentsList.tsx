@@ -33,7 +33,7 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
       <AddComment postId={postId} />
       <Heading mb='4'>Comments</Heading>
       <VStack align='stretch' spacing='4' mt='4'>
-        {commentCount > 0 && (
+        {(commentCount > 0 || data?.pages) && (
           <>
             {data?.pages.map(page =>
               page.comments.results.map(comment => (
@@ -42,7 +42,7 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
                 </Fragment>
               ))
             )}
-            {!shouldFetch && (
+            {!data?.pages && (
               <Button onClick={() => setShouldFetch(true)} colorScheme='purple'>
                 Load Comments
               </Button>
