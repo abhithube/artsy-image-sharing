@@ -20,6 +20,7 @@
   "scripts": {
     "start": "webpack serve --config webpack.dev.js",
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
+    "lint": "eslint --fix \"src/**/*.{ts,tsx}\"",
     "generate": "graphql-codegen"
   },
   "browserslist": {
@@ -49,9 +50,18 @@
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "@types/react-router-dom": "^5.1.7",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.5",
     "dotenv-webpack": "^7.0.2",
+    "eslint": "^7.27.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "html-webpack-plugin": "^5.3.1",
     "mini-css-extract-plugin": "^1.6.0",
     "react-refresh": "^0.10.0",
