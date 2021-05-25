@@ -1,4 +1,11 @@
-import { Box, Heading, HStack, SimpleGrid, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  HStack,
+  Icon,
+  SimpleGrid,
+  Spinner,
+} from '@chakra-ui/react';
 import { Fragment } from 'react';
 import { IoMdImages } from 'react-icons/io';
 import { graphQLClient } from '../App';
@@ -25,7 +32,7 @@ const HomePage = () => {
         <Heading as='h1' fontSize='6xl'>
           Welcome to Artsy
         </Heading>
-        <IoMdImages size='80' />
+        <Icon as={IoMdImages} fontSize='8xl' />
       </HStack>
       {data && data?.posts.results.length > 0 && (
         <>

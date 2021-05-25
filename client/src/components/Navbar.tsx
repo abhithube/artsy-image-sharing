@@ -69,7 +69,7 @@ const Navbar = () => {
               _hover={{ textDecoration: 'none' }}
             >
               <HStack>
-                <Icon as={IoMdImages} boxSize='8' mr='2' color='purple.500' />
+                <Icon as={IoMdImages} fontSize='4xl' color='purple.500' />
                 <Text fontSize='2xl'>Artsy</Text>
               </HStack>
             </Link>
@@ -109,7 +109,7 @@ const Navbar = () => {
                     borderWidth='1px'
                     borderColor='purple.500'
                   />
-                  <FaChevronDown />
+                  <Icon as={FaChevronDown} />
                 </HStack>
               </MenuButton>
               <MenuList>
@@ -151,7 +151,7 @@ const Navbar = () => {
           <IconButton
             aria-label='toggle dark mode'
             onClick={toggleColorMode}
-            icon={useColorModeValue(<FaMoon />, <FaSun />)}
+            icon={useColorModeValue(<Icon as={FaMoon} />, <Icon as={FaSun} />)}
             ml='6'
           />
         </Flex>

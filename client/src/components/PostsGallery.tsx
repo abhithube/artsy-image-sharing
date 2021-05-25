@@ -2,6 +2,7 @@ import {
   Box,
   Heading,
   HStack,
+  Icon,
   IconButton,
   SimpleGrid,
   Spinner,
@@ -69,7 +70,7 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
       {data && data.posts.results.length > 0 && (
         <HStack spacing='4' bgColor={bgColor} p='4' rounded='md'>
           <IconButton
-            icon={<FaChevronLeft />}
+            icon={<Icon as={FaChevronLeft} />}
             onClick={() => setPage(data.posts.prevPage || 0)}
             disabled={data.posts.prevPage === null}
             aria-label='previous page'
@@ -83,7 +84,7 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
             ))}
           </SimpleGrid>
           <IconButton
-            icon={<FaChevronRight />}
+            icon={<Icon as={FaChevronRight} />}
             onClick={() => {
               if (data.posts.nextPage) setPage(data.posts.nextPage);
             }}

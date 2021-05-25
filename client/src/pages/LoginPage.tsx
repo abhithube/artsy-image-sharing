@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   Heading,
+  Icon,
   Input,
   InputGroup,
   InputLeftElement,
@@ -120,7 +121,7 @@ const LoginPage = () => {
                 pointerEvents='none'
                 color='gray.300'
                 fontSize='1.2em'
-                children={<FaUserCircle />}
+                children={<Icon as={FaUserCircle} />}
               />
               <Input
                 value={username}
@@ -142,7 +143,7 @@ const LoginPage = () => {
                 pointerEvents='none'
                 color='gray.300'
                 fontSize='1.2em'
-                children={<FaLock />}
+                children={<Icon as={FaLock} />}
               />
               <Input
                 value={password}

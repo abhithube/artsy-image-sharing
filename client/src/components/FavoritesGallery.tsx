@@ -2,6 +2,7 @@ import {
   Box,
   Heading,
   HStack,
+  Icon,
   IconButton,
   SimpleGrid,
   Spinner,
@@ -69,7 +70,7 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
       {data && data.favorites.results.length > 0 && (
         <HStack spacing='4' bgColor={bgColor} p='4' rounded='md'>
           <IconButton
-            icon={<FaChevronLeft />}
+            icon={<Icon as={FaChevronLeft} />}
             onClick={() => setPage(data.favorites.prevPage || 0)}
             disabled={data.favorites.prevPage === null}
             aria-label='previous page'
@@ -83,7 +84,7 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
             ))}
           </SimpleGrid>
           <IconButton
-            icon={<FaChevronRight />}
+            icon={<Icon as={FaChevronRight} />}
             onClick={() => {
               if (data.favorites.nextPage) setPage(data.favorites.nextPage);
             }}

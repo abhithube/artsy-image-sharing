@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   Heading,
+  Icon,
   Input,
   InputGroup,
   InputLeftElement,
@@ -81,7 +82,7 @@ const RegisterPage = () => {
               pointerEvents='none'
               color='gray.300'
               fontSize='20'
-              children={<FaUserCircle />}
+              children={<Icon as={FaUserCircle} />}
             />
             <Input
               value={username}
@@ -102,7 +103,7 @@ const RegisterPage = () => {
               pointerEvents='none'
               color='gray.300'
               fontSize='20'
-              children={<FaLock />}
+              children={<Icon as={FaLock} />}
             />
             <Input
               value={password}
@@ -125,7 +126,7 @@ const RegisterPage = () => {
               pointerEvents='none'
               color='gray.300'
               fontSize='20'
-              children={<FaLock />}
+              children={<Icon as={FaLock} />}
             />
             <Input
               value={passwordConfirm}

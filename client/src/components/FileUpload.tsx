@@ -4,6 +4,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Icon,
   IconButton,
   Image,
   Input,
@@ -87,7 +88,7 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
               opacity={isOverlayActive ? '0.5' : '1'}
             />
             <IconButton
-              icon={<FaTrashAlt color='white' />}
+              icon={<Icon as={FaTrashAlt} />}
               onClick={() => {
                 setFile(null);
                 setThumbnail('');

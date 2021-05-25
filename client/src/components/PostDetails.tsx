@@ -111,7 +111,7 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
           <IconButton
             aria-label='toggle favorite'
             onClick={handleFavorite}
-            icon={<FaRegHeart />}
+            icon={<Icon as={FaRegHeart} />}
             colorScheme={isFavorite ? 'purple' : 'gray'}
             w='16'
           ></IconButton>
@@ -122,7 +122,7 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
           >
             <IconButton
               aria-label='download image'
-              icon={<FaDownload />}
+              icon={<Icon as={FaDownload} />}
               w='16'
             />
           </Link>

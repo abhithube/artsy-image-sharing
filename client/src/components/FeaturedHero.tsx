@@ -1,6 +1,7 @@
 import { Avatar } from '@chakra-ui/avatar';
 import { Button } from '@chakra-ui/button';
 import { useColorModeValue } from '@chakra-ui/color-mode';
+import Icon from '@chakra-ui/icon';
 import {
   Box,
   Heading,
@@ -65,12 +66,12 @@ const FeaturedHero = ({ featuredPost }: FeaturedHeroProps) => {
               {featuredPost.title}
             </Heading>
             <HStack>
-              <FaHeart />
+              <Icon as={FaHeart} />
               <Text pr='2'>
                 {`${featuredPost.favoriteCount} `}
                 {featuredPost.favoriteCount === 1 ? 'favorite' : 'favorites'}
               </Text>
-              <FaCommentAlt />
+              <Icon as={FaCommentAlt} />
               <Text>
                 {`${featuredPost.commentCount} `}
                 {featuredPost.commentCount === 1 ? 'comment' : 'comments'}

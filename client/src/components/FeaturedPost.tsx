@@ -1,5 +1,6 @@
 import { Avatar } from '@chakra-ui/avatar';
 import { useColorModeValue } from '@chakra-ui/color-mode';
+import Icon from '@chakra-ui/icon';
 import { Heading, HStack, Link, Text, VStack } from '@chakra-ui/layout';
 import { FaCommentAlt, FaHeart } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
@@ -46,9 +47,9 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
         </VStack>
       </HStack>
       <HStack mb='4'>
-        <FaHeart />
+        <Icon as={FaHeart} />
         <Text pr='2'>{post.favoriteCount}</Text>
-        <FaCommentAlt />
+        <Icon as={FaCommentAlt} />
         <Text>{post.commentCount}</Text>
       </HStack>
     </VStack>
