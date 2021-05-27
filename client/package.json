@@ -20,8 +20,8 @@
   "scripts": {
     "start": "webpack serve --config webpack.dev.js",
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
-    "lint": "eslint --fix src/**/*",
-    "format": "prettier --write src/**/*",
+    "lint": "eslint --fix src",
+    "format": "prettier --write src",
     "generate": "graphql-codegen"
   },
   "browserslist": {

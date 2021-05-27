@@ -20,7 +20,7 @@ const ProfilePage = () => {
     <Box h="100%">
       {data && (
         <>
-          <Heading as="h1">{data.user.username}'s Gallery</Heading>
+          <Heading as="h1">{data.user.username}&apos;s Gallery</Heading>
           <PostsGallery
             userId={data.user.id}
             initPosts={data.user.posts || { results: [] }}
