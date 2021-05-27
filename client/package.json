@@ -22,6 +22,7 @@
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
     "lint": "eslint --fix src",
     "format": "prettier --write src",
+    "analyze": "source-map-explorer 'dist/*.js'",
     "generate": "graphql-codegen"
   },
   "browserslist": {
@@ -70,6 +71,7 @@
     "mini-css-extract-plugin": "^1.6.0",
     "prettier": "^2.3.0",
     "react-refresh": "^0.10.0",
+    "source-map-explorer": "^2.5.2",
     "style-loader": "^2.0.0",
     "typescript": "^4.2.4",
     "webpack": "^5.37.1",
