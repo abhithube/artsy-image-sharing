@@ -27,27 +27,27 @@ const PostPage = () => {
 
   useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [id]);
 
-  if (isLoading) return <Spinner speed='1s' />;
+  if (isLoading) return <Spinner speed="1s" />;
 
   return (
-    <Flex align='flex-start'>
+    <Flex align="flex-start">
       {data?.post && (
         <>
           <Box
             flexBasis={['100%', '100%', '100%', '75%', '75%']}
-            pr={[null, null, null, '16', '16']}
+            pr={[null, null, null, 16, 16]}
           >
-            <Center h='72vh' mb='4' bgColor='black'>
-              <Skeleton isLoaded={imageLoaded} w='100%' h='100%'>
+            <Center h="72vh" mb={4} bgColor="black">
+              <Skeleton isLoaded={imageLoaded} w="100%" h="100%">
                 <Image
                   src={`https://res.cloudinary.com/athube/image/upload/q_auto:eco/${
                     data.post.result.imageUrl.split('upload/')[1]
                   }`}
                   alt={data?.post?.result.title}
                   onLoad={() => setImageLoaded(true)}
-                  h='100%'
-                  w='100%'
-                  objectFit='contain'
+                  h="100%"
+                  w="100%"
+                  objectFit="contain"
                 />
               </Skeleton>
             </Center>

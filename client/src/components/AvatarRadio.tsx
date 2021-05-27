@@ -1,7 +1,4 @@
-import { Image } from '@chakra-ui/image';
-import { Input } from '@chakra-ui/input';
-import { Box } from '@chakra-ui/layout';
-import { useRadio, UseRadioProps } from '@chakra-ui/radio';
+import { Box, Image, Input, useRadio, UseRadioProps } from '@chakra-ui/react';
 
 type RadioProps = UseRadioProps & {
   avatarUrl: string;
@@ -10,24 +7,23 @@ type RadioProps = UseRadioProps & {
 const AvatarRadio = (props: RadioProps) => {
   const { getInputProps, getCheckboxProps } = useRadio(props);
 
-  const input = getInputProps();
-  const checkbox = getCheckboxProps();
+  const { avatarUrl } = props;
 
   return (
-    <Box as='label'>
-      <Input {...input} />
+    <Box as="label">
+      <Input {...getInputProps()} />
       <Image
-        {...checkbox}
+        {...getCheckboxProps()}
         src={`https://res.cloudinary.com/athube/image/upload/q_auto:eco,w_200,h_200,r_max/${
-          props.avatarUrl.split('upload/')[1]
+          avatarUrl.split('upload/')[1]
         }`}
-        alt='avatar'
-        cursor='pointer'
-        borderRadius='full'
+        alt="avatar"
+        cursor="pointer"
+        borderRadius="full"
         _checked={{
           bgColor: 'purple.500',
         }}
-        p='1.5'
+        p={1.5}
       />
     </Box>
   );

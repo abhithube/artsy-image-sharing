@@ -36,7 +36,7 @@ const Navbar = () => {
   const queryKey = useAuthQuery.getKey();
 
   const mutation = useLogoutMutation(graphQLClient, {
-    onSuccess: data => {
+    onSuccess: (data) => {
       if (data.isLoggedOut) {
         setAuthenticatedUser(null);
         queryClient.setQueryData(queryKey, { auth: null });
@@ -50,33 +50,33 @@ const Navbar = () => {
 
   return (
     <Box
-      as='nav'
-      w='100vw'
+      as="nav"
+      w="100vw"
       bg={useColorModeValue('gray.50', 'gray.900')}
-      boxShadow='sm'
-      pos='fixed'
-      top='0'
-      zIndex='sticky'
+      boxShadow="sm"
+      pos="fixed"
+      top={0}
+      zIndex="sticky"
     >
-      <Container maxW='80%'>
-        <Flex align='center' h='16'>
-          <HStack flex='1' spacing='4'>
+      <Container maxW="80%">
+        <Flex align="center" h={16}>
+          <HStack flex="1" spacing={4}>
             <Link
               as={RouterLink}
-              to='/'
-              mr='8'
+              to="/"
+              mr={8}
               _focus={{ outline: 'none' }}
               _hover={{ textDecoration: 'none' }}
             >
               <HStack>
-                <Icon as={IoMdImages} fontSize='4xl' color='purple.500' />
-                <Text fontSize='2xl'>Artsy</Text>
+                <Icon as={IoMdImages} fontSize="4xl" color="purple.500" />
+                <Text fontSize="2xl">Artsy</Text>
               </HStack>
             </Link>
             <Link
               as={RouterLink}
-              to='/posts'
-              mr='4'
+              to="/posts"
+              mr={4}
               _hover={{ color: 'purple.400' }}
               _focus={{ outline: 'none' }}
             >
@@ -84,7 +84,7 @@ const Navbar = () => {
             </Link>
             <Link
               as={RouterLink}
-              to='/about'
+              to="/about"
               _hover={{ color: 'purple.400' }}
               _focus={{ outline: 'none' }}
             >
@@ -94,7 +94,7 @@ const Navbar = () => {
           {!isLoading && authenticatedUser && (
             <Menu>
               <MenuButton>
-                <HStack spacing='4'>
+                <HStack spacing={4}>
                   <Avatar
                     src={
                       authenticatedUser.avatarUrl
@@ -103,18 +103,18 @@ const Navbar = () => {
                           }`
                         : undefined
                     }
-                    cursor='pointer'
-                    size='md'
-                    bg='purple.500'
-                    borderWidth='1px'
-                    borderColor='purple.500'
+                    cursor="pointer"
+                    size="md"
+                    bg="purple.500"
+                    borderWidth="1px"
+                    borderColor="purple.500"
                   />
                   <Icon as={FaChevronDown} />
                 </HStack>
               </MenuButton>
               <MenuList>
                 <MenuItem>
-                  <Link as={RouterLink} to='/upload' _hover={{}}>
+                  <Link as={RouterLink} to="/upload" _hover={{}}>
                     <Text>Upload</Text>
                   </Link>
                 </MenuItem>
@@ -134,7 +134,7 @@ const Navbar = () => {
           {!isLoading && !authenticatedUser && (
             <Link
               as={RouterLink}
-              to='/login'
+              to="/login"
               onClick={() => {
                 if (
                   location.pathname !== '/login' &&
@@ -149,10 +149,10 @@ const Navbar = () => {
             </Link>
           )}
           <IconButton
-            aria-label='toggle dark mode'
+            aria-label="toggle dark mode"
             onClick={toggleColorMode}
             icon={useColorModeValue(<Icon as={FaMoon} />, <Icon as={FaSun} />)}
-            ml='6'
+            ml={6}
           />
         </Flex>
       </Container>

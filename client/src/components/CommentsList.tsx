@@ -17,13 +17,13 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
   const { data, fetchNextPage, hasNextPage, isLoading } =
     useInfiniteQuery<CommentsQuery>(
       ['comments', { postId }],
-      ctx =>
+      (ctx) =>
         graphQLClient.request(useCommentsQuery.document, {
           postId,
           page: ctx.pageParam,
         }),
       {
-        getNextPageParam: lastPage => lastPage.comments.nextPage,
+        getNextPageParam: (lastPage) => lastPage.comments.nextPage,
         enabled: shouldFetch,
       }
     );
@@ -31,31 +31,31 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
   return (
     <Box>
       <AddComment postId={postId} />
-      <Heading mb='4'>Comments</Heading>
-      <VStack align='stretch' spacing='4' mt='4'>
+      <Heading mb={4}>Comments</Heading>
+      <VStack align="stretch" spacing={4} mt={4}>
         {(commentCount > 0 || data?.pages) && (
           <>
-            {data?.pages.map(page =>
-              page.comments.results.map(comment => (
+            {data?.pages.map((page) =>
+              page.comments.results.map((comment) => (
                 <Fragment key={comment.id}>
                   <CommentItem comment={comment} />
                 </Fragment>
               ))
             )}
             {!data?.pages && (
-              <Button onClick={() => setShouldFetch(true)} colorScheme='purple'>
+              <Button onClick={() => setShouldFetch(true)} colorScheme="purple">
                 Load Comments
               </Button>
             )}
             {hasNextPage && (
-              <Button onClick={() => fetchNextPage()} colorScheme='purple'>
+              <Button onClick={() => fetchNextPage()} colorScheme="purple">
                 Load More Comments
               </Button>
             )}
           </>
         )}
         {commentCount === 0 && <Text>No comments on this post.</Text>}
-        {isLoading && <Spinner speed='1s' />}
+        {isLoading && <Spinner speed="1s" />}
       </VStack>
     </Box>
   );

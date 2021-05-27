@@ -33,32 +33,10 @@ type PostDetailsProps = {
 const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
   const { authenticatedUser } = useContext(AuthContext);
 
-  const queryClient = useQueryClient();
-  const queryKey = usePostQuery.getKey({ id: post.id });
-
-  const createMutation = useCreateFavoriteMutation(graphQLClient, {
-    onSuccess: data => handleSuccess(data),
-  });
-  const deleteMutation = useDeleteFavoriteMutation(graphQLClient, {
-    onSuccess: data => handleSuccess(data),
-  });
-
   const toast = useToast();
 
-  useEffect(() => () => toast.closeAll(), [toast]);
-
-  const handleFavorite = async () => {
-    if (!authenticatedUser) {
-      return toast({
-        status: 'error',
-        title: 'You must be signed in to add a favorite',
-        isClosable: true,
-      });
-    }
-
-    if (isFavorite) deleteMutation.mutate({ postId: post.id });
-    else createMutation.mutate({ postId: post.id });
-  };
+  const queryClient = useQueryClient();
+  const queryKey = usePostQuery.getKey({ id: post.id });
 
   const handleSuccess = (data: CreateFavoriteMutation) => {
     if (!data.favorite) return;
@@ -77,9 +55,29 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
     });
   };
 
+  const createMutation = useCreateFavoriteMutation(graphQLClient, {
+    onSuccess: (data) => handleSuccess(data),
+  });
+  const deleteMutation = useDeleteFavoriteMutation(graphQLClient, {
+    onSuccess: (data) => handleSuccess(data),
+  });
+
+  useEffect(() => () => toast.closeAll(), [toast]);
+
+  const handleFavorite = async () => {
+    if (!authenticatedUser) {
+      toast({
+        status: 'error',
+        title: 'You must be signed in to add a favorite',
+        isClosable: true,
+      });
+    } else if (isFavorite) deleteMutation.mutate({ postId: post.id });
+    else createMutation.mutate({ postId: post.id });
+  };
+
   return (
     <>
-      <HStack mb='4' align='stretch'>
+      <HStack mb={4} align="stretch">
         <Avatar
           src={
             post.user.avatarUrl
@@ -88,49 +86,49 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
                 }`
               : undefined
           }
-          mr='4'
-          bg='purple.500'
-          borderWidth='1px'
-          borderColor='purple.500'
+          mr={4}
+          bg="purple.500"
+          borderWidth="1px"
+          borderColor="purple.500"
         />
-        <Box flexGrow={1} pr='4'>
-          <Heading as='h1'>{post.title}</Heading>
+        <Box flexGrow={1} pr={4}>
+          <Heading as="h1">{post.title}</Heading>
           <Text>
             {`by `}
             <Link
               as={RouterLink}
               to={`/users/${post.user?.id}`}
-              textDecoration='underline'
+              textDecoration="underline"
               _hover={{ color: 'purple.200' }}
             >
               {post.user.username}
             </Link>
           </Text>
         </Box>
-        <ButtonGroup spacing='4' h='100%'>
+        <ButtonGroup spacing={4} h="100%">
           <IconButton
-            aria-label='toggle favorite'
+            aria-label="toggle favorite"
             onClick={handleFavorite}
             icon={<Icon as={FaRegHeart} />}
             colorScheme={isFavorite ? 'purple' : 'gray'}
-            w='16'
-          ></IconButton>
+            w={16}
+          />
           <Link
             href={`https://res.cloudinary.com/athube/image/upload/fl_attachment/${
               post.imageUrl.split('upload/')[1]
             }`}
           >
             <IconButton
-              aria-label='download image'
+              aria-label="download image"
               icon={<Icon as={FaDownload} />}
-              w='16'
+              w={16}
             />
           </Link>
         </ButtonGroup>
       </HStack>
-      <HStack mb='4'>
+      <HStack mb={4}>
         <Icon as={FaHeart} />
-        <Text pr='2'>
+        <Text pr={2}>
           {`${post.favoriteCount} `}
           {post.favoriteCount === 1 ? 'favorite' : 'favorites'}
         </Text>
@@ -140,9 +138,9 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
           {post.commentCount === 1 ? 'comment' : 'comments'}
         </Text>
       </HStack>
-      <Box mb='8'>
-        <Text color='gray.500'>{post.body}</Text>
-        <Text color='gray.500'>
+      <Box mb={8}>
+        <Text color="gray.500">{post.body}</Text>
+        <Text color="gray.500">
           Published on {new Date(post.createdAt).toDateString()}
         </Text>
       </Box>

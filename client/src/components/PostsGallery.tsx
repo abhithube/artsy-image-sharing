@@ -46,12 +46,12 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
   const { data, isFetching } = usePostsQuery(graphQLClient, variables, {
     initialData: { posts: initPosts },
     keepPreviousData: true,
-    onSuccess: data => {
-      if (data.posts.nextPage) {
+    onSuccess: ({ posts }) => {
+      if (posts.nextPage) {
         queryClient.prefetchQuery(queryKey, () =>
           graphQLClient.request(PostsDocument, {
             ...variables,
-            page: data.posts.nextPage,
+            page: posts.nextPage,
           })
         );
       }
@@ -60,24 +60,24 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
 
   const bgColor = useColorModeValue('gray.100', 'gray.900');
 
-  if (isFetching && !data) return <Spinner speed='1s' />;
+  if (isFetching && !data) return <Spinner speed="1s" />;
 
   return (
-    <Box mt='8'>
-      <Heading fontSize='2xl' mb='4'>
+    <Box mt={8}>
+      <Heading fontSize="2xl" mb={4}>
         Posts
       </Heading>
       {data && data.posts.results.length > 0 && (
-        <HStack spacing='4' bgColor={bgColor} p='4' rounded='md'>
+        <HStack spacing={4} bgColor={bgColor} p="4" rounded="md">
           <IconButton
             icon={<Icon as={FaChevronLeft} />}
             onClick={() => setPage(data.posts.prevPage || 0)}
             disabled={data.posts.prevPage === null}
-            aria-label='previous page'
-            colorScheme='purple'
+            aria-label="previous page"
+            colorScheme="purple"
           />
-          <SimpleGrid columns={5} gap='4' w='100%'>
-            {data.posts.results.map(post => (
+          <SimpleGrid columns={5} gap={4} w="100%">
+            {data.posts.results.map((post) => (
               <Fragment key={post.id}>
                 <PreviewImage post={post} />
               </Fragment>
@@ -89,13 +89,13 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
               if (data.posts.nextPage) setPage(data.posts.nextPage);
             }}
             disabled={data?.posts.nextPage === null}
-            aria-label='next page'
-            colorScheme='purple'
+            aria-label="next page"
+            colorScheme="purple"
           />
         </HStack>
       )}
       {data?.posts.results.length === 0 && (
-        <Text color='gray.500'>No posts to show.</Text>
+        <Text color="gray.500">No posts to show.</Text>
       )}
     </Box>
   );

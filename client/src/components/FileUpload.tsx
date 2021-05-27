@@ -29,19 +29,6 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
 
   const [isOverlayActive, setIsOverlayActive] = useState(false);
 
-  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
-    e.preventDefault();
-
-    const files = e.dataTransfer.files;
-    if (files.length > 1) {
-      toast({
-        status: 'error',
-        title: 'Single file upload only',
-        isClosable: true,
-      });
-    } else handleFile(files[0]);
-  };
-
   const handleFile = (file: File) => {
     const fileType = file.type.split('/')[0];
 
@@ -68,24 +55,37 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
     }
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+
+    const { files } = e.dataTransfer;
+    if (files.length > 1) {
+      toast({
+        status: 'error',
+        title: 'Single file upload only',
+        isClosable: true,
+      });
+    } else handleFile(files[0]);
+  };
+
   return (
-    <Box w='100%'>
+    <Box w="100%">
       {thumbnail && (
-        <Flex direction='column' align='center'>
+        <Flex direction="column" align="center">
           <Center
-            w='100%'
-            h='300px'
-            bgColor='black'
-            mb='8'
-            pos='relative'
+            w="100%"
+            h="300px"
+            bgColor="black"
+            mb={8}
+            pos="relative"
             onMouseEnter={() => setIsOverlayActive(true)}
             onMouseLeave={() => setIsOverlayActive(false)}
           >
             <Image
               src={thumbnail}
-              alt='media to upload'
-              maxH='100%'
-              opacity={isOverlayActive ? '0.5' : '1'}
+              alt="media to upload"
+              maxH="100%"
+              opacity={isOverlayActive ? 0.5 : 1}
             />
             <IconButton
               icon={<Icon as={FaTrashAlt} />}
@@ -93,11 +93,11 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
                 setFile(null);
                 setThumbnail('');
               }}
-              aria-label='remove image'
+              aria-label="remove image"
               d={isOverlayActive ? 'flex' : 'none'}
-              pos='absolute'
-              size='lg'
-              bgColor='red.400'
+              pos="absolute"
+              size="lg"
+              bgColor="red.400"
               _hover={{ bgColor: 'red.500' }}
             />
           </Center>
@@ -105,34 +105,34 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
       )}
       {!thumbnail && (
         <FormControl
-          w='300px'
-          h='300px'
-          mb='8'
-          border='2px dashed'
+          w="300px"
+          h="300px"
+          mb={8}
+          border="2px dashed"
           borderColor={inputBorderColor}
         >
           <FormLabel
-            htmlFor='file-input'
-            onDragOver={e => e.preventDefault()}
+            htmlFor="file-input"
+            onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            h='100%'
-            w='100%'
-            d='flex'
-            alignItems='center'
-            justifyContent='center'
+            h="100%"
+            w="100%"
+            d="flex"
+            alignItems="center"
+            justifyContent="center"
             bgColor={inputBgColor}
             _hover={{ cursor: 'pointer' }}
           >
-            <Text textAlign='center' px='8'>
+            <Text textAlign="center" px={8}>
               Drop an image here, or click to select one.
             </Text>
           </FormLabel>
           <Input
-            id='file-input'
-            type='file'
-            accept='image/*'
-            onChange={e => handleFile(e.target.files![0])}
-            d='none'
+            id="file-input"
+            type="file"
+            accept="image/*"
+            onChange={(e) => e.target.files && handleFile(e.target.files[0])}
+            d="none"
           />
         </FormControl>
       )}

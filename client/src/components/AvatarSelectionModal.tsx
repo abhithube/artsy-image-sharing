@@ -1,6 +1,5 @@
-import { Button } from '@chakra-ui/button';
-import { SimpleGrid, Text } from '@chakra-ui/layout';
 import {
+  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -8,8 +7,10 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '@chakra-ui/modal';
-import { useRadioGroup } from '@chakra-ui/radio';
+  SimpleGrid,
+  Text,
+  useRadioGroup,
+} from '@chakra-ui/react';
 import { useState } from 'react';
 import AvatarRadio from './AvatarRadio';
 
@@ -40,7 +41,7 @@ const AvatarSelectionModal = ({
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'avatar',
     defaultValue: options[0],
-    onChange: value => setAvatarUrl(value),
+    onChange: (value) => setAvatarUrl(value),
   });
 
   const group = getRootProps();
@@ -51,16 +52,16 @@ const AvatarSelectionModal = ({
       onClose={onClose}
       closeOnEsc={false}
       closeOnOverlayClick={false}
-      allowPinchZoom={true}
+      allowPinchZoom
     >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Welcome to Artsy!</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text mb='4'>Choose an avatar for your profile.</Text>
+          <Text mb={4}>Choose an avatar for your profile.</Text>
           <SimpleGrid columns={4} {...group}>
-            {options.map(value => {
+            {options.map((value) => {
               const radio = getRadioProps({ value });
               return <AvatarRadio key={value} {...radio} avatarUrl={value} />;
             })}
@@ -69,14 +70,14 @@ const AvatarSelectionModal = ({
         <ModalFooter>
           <Button
             onClick={() => handleAvatarSelection(null)}
-            mr='4'
-            colorScheme='red'
+            mr={4}
+            colorScheme="red"
           >
             Continue without an avatar
           </Button>
           <Button
             onClick={() => handleAvatarSelection(avatarUrl)}
-            colorScheme='purple'
+            colorScheme="purple"
           >
             Select
           </Button>

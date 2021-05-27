@@ -14,13 +14,13 @@ const ProfilePage = () => {
 
   const { data, isLoading } = useUserQuery(graphQLClient, { id: Number(id) });
 
-  if (isLoading) return <Spinner speed='1s' />;
+  if (isLoading) return <Spinner speed="1s" />;
 
   return (
-    <Box h='100%'>
+    <Box h="100%">
       {data && (
         <>
-          <Heading as='h1'>{data.user.username}'s Gallery</Heading>
+          <Heading as="h1">{data.user.username}'s Gallery</Heading>
           <PostsGallery
             userId={data.user.id}
             initPosts={data.user.posts || { results: [] }}

@@ -24,13 +24,13 @@ const PostsPage = () => {
   const { data, fetchNextPage, hasNextPage, isLoading } =
     useInfiniteQuery<PostsQuery>(
       'posts',
-      ctx =>
+      (ctx) =>
         graphQLClient.request(usePostsQuery.document, {
           limit: 20,
           page: ctx.pageParam,
         }),
       {
-        getNextPageParam: lastPage => lastPage.posts.nextPage,
+        getNextPageParam: (lastPage) => lastPage.posts.nextPage,
       }
     );
 
@@ -50,16 +50,16 @@ const PostsPage = () => {
     return () => toast.closeAll();
   }, [location.state, toast]);
 
-  if (isLoading) return <Spinner speed='1s' />;
+  if (isLoading) return <Spinner speed="1s" />;
 
   return (
-    <Flex direction='column'>
-      <Heading as='h1' mb='4'>
+    <Flex direction="column">
+      <Heading as="h1" mb={4}>
         Browse All Posts
       </Heading>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 4, xl: 5 }} gap='4'>
-        {data?.pages.map(page =>
-          page.posts.results.map(post => (
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 4, xl: 5 }} gap={4}>
+        {data?.pages.map((page) =>
+          page.posts.results.map((post) => (
             <Fragment key={post.id}>
               <PreviewImage post={post} />
             </Fragment>
@@ -73,10 +73,10 @@ const PostsPage = () => {
         <Button
           onClick={() => fetchNextPage()}
           isLoading={isLoading}
-          loadingText='Loading...'
-          spinner={<Spinner speed='1s' />}
-          mt='4'
-          colorScheme='purple'
+          loadingText="Loading..."
+          spinner={<Spinner speed="1s" />}
+          mt={4}
+          colorScheme="purple"
         >
           Load More Posts
         </Button>

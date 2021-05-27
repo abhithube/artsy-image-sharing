@@ -19,15 +19,15 @@ const RelatedPosts = ({ postId }: RelatedPostsProps) => {
 
   const bgColor = useColorModeValue('gray.100', 'gray.700');
 
-  if (isLoading) return <Spinner speed='1s' />;
+  if (isLoading) return <Spinner speed="1s" />;
 
   return (
-    <VStack spacing='8' p='8' bgColor={bgColor} rounded='lg'>
-      <Heading fontSize='3xl' textAlign='center'>
+    <VStack spacing={8} p={8} bgColor={bgColor} rounded="lg">
+      <Heading fontSize="3xl" textAlign="center">
         More Posts
       </Heading>
-      <VStack spacing={4} w='100%'>
-        {data?.relatedPosts?.slice(0, 5).map(post => (
+      <VStack spacing={4} w="100%">
+        {data?.relatedPosts?.slice(0, 5).map((post) => (
           <Fragment key={post.id}>
             <PreviewImage post={post} />
           </Fragment>

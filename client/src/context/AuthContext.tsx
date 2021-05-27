@@ -15,15 +15,17 @@ type AuthContextProviderProps = {
 export const AuthContext = createContext<AuthContextType>({
   isLoading: false,
   authenticatedUser: null,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setAuthenticatedUser: () => {},
 });
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
+  const [authenticatedUser, setAuthenticatedUser] = useState<Auth | null>(null);
+
   const { isLoading } = useAuthQuery(graphQLClient, undefined, {
-    onSuccess: data =>
+    onSuccess: (data) =>
       setAuthenticatedUser(data.auth?.confirmed ? data.auth : null),
   });
-  const [authenticatedUser, setAuthenticatedUser] = useState<Auth | null>(null);
 
   return (
     <AuthContext.Provider

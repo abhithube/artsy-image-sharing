@@ -15,9 +15,9 @@ type CommentProps = {
 const CommentItem = ({ comment }: CommentProps) => {
   return (
     <HStack
-      p='4'
+      p={4}
       bgColor={useColorModeValue('gray.100', 'gray.700')}
-      rounded='lg'
+      rounded="lg"
     >
       <Avatar
         src={
@@ -27,17 +27,17 @@ const CommentItem = ({ comment }: CommentProps) => {
               }`
             : undefined
         }
-        mr='4'
-        bg='purple.500'
-        borderWidth='1px'
-        borderColor='purple.500'
+        mr={4}
+        bg="purple.500"
+        borderWidth="1px"
+        borderColor="purple.500"
       />
       <Box>
-        <Flex mb='1'>
+        <Flex mb={1}>
           <Text
-            mr='4'
+            mr={4}
             color={useColorModeValue('gray.600', 'gray.400')}
-            fontWeight='semibold'
+            fontWeight="semibold"
           >
             {comment.user.username}
           </Text>

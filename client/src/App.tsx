@@ -15,6 +15,7 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthContextProvider from './context/AuthContext';
 import theme from './theme';
+
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const HomePage = lazy(() => import('./pages/HomePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -25,7 +26,7 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const UploadPage = lazy(() => import('./pages/UploadPage'));
 
 export const graphQLClient = new GraphQLClient(
-  process.env.SERVER_URL + '/graphql',
+  `${process.env.SERVER_URL}/graphql`,
   { credentials: 'include' }
 );
 
@@ -37,43 +38,43 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <CSSReset />
-      <Box minH='100%'>
+      <Box minH="100%">
         <Router>
           <QueryClientProvider client={queryClient}>
             <AuthContextProvider>
               <Navbar />
               <Container
-                as='main'
-                maxW='80%'
-                mt='16'
-                pt='8'
-                pb='16'
-                h='calc(100% - 128px)'
+                as="main"
+                maxW="80%"
+                mt={16}
+                pt={8}
+                pb={16}
+                h="calc(100% - 128px)"
               >
-                <Suspense fallback={<Spinner speed='1s' />}>
+                <Suspense fallback={<Spinner speed="1s" />}>
                   <Switch>
-                    <Route exact path='/' component={HomePage} />
-                    <Route exact path='/posts' component={PostsPage} />
-                    <Route path='/posts/:id' component={PostPage} />
-                    <Route path='/users/:id' component={ProfilePage} />
-                    <Route path='/about' component={AboutPage} />
+                    <Route exact path="/" component={HomePage} />
+                    <Route exact path="/posts" component={PostsPage} />
+                    <Route path="/posts/:id" component={PostPage} />
+                    <Route path="/users/:id" component={ProfilePage} />
+                    <Route path="/about" component={AboutPage} />
                     <ProtectedRoute
-                      path='/register'
+                      path="/register"
                       component={RegisterPage}
-                      inverted={true}
+                      inverted
                     />
                     <ProtectedRoute
-                      path='/login'
+                      path="/login"
                       component={LoginPage}
-                      inverted={true}
+                      inverted
                     />
-                    <ProtectedRoute path='/upload' component={UploadPage} />
-                    <Route path='*' render={() => '404 Not Found'} />
+                    <ProtectedRoute path="/upload" component={UploadPage} />
+                    <Route path="*" render={() => '404 Not Found'} />
                   </Switch>
                 </Suspense>
               </Container>
             </AuthContextProvider>
-            <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
+            <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
           </QueryClientProvider>
         </Router>
       </Box>

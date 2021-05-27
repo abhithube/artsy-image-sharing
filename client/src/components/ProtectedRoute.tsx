@@ -1,4 +1,4 @@
-import { Spinner } from '@chakra-ui/spinner';
+import { Spinner } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { Redirect, Route } from 'react-router';
 import { AuthContext } from '../context/AuthContext';
@@ -23,7 +23,7 @@ const ProtectedRoute = ({
       {(authenticatedUser !== null) !== inverted ? (
         <Route path={path} component={component} />
       ) : (
-        <Redirect to='/' />
+        <Redirect to="/" />
       )}
     </>
   );
