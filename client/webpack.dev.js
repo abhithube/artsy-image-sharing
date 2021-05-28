@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const { merge } = require('webpack-merge');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const common = require('./webpack.common');
 const DotenvWebpackPlugin = require('dotenv-webpack');
+const common = require('./webpack.common');
 
 module.exports = merge(common, {
   mode: 'development',
@@ -25,6 +26,7 @@ module.exports = merge(common, {
   ],
   target: 'web',
   devServer: {
+    host: '0.0.0.0',
     port: 3000,
     historyApiFallback: true,
     hot: true,
