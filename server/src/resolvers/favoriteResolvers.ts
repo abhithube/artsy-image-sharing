@@ -4,7 +4,8 @@ import { Resolvers } from '../generated/graphql';
 export const resolvers: Resolvers = {
   Query: {
     favorites: async (_parent, args, ctx) => {
-      let { postId, userId, orderBy: orderByInput, limit, page } = args;
+      const { postId, userId, orderBy: orderByInput } = args;
+      let { limit, page } = args;
 
       const direction =
         orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;

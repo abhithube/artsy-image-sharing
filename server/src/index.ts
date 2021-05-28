@@ -4,9 +4,12 @@ import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import playground from 'graphql-playground-middleware-express';
 import path from 'path';
-import { prisma } from './config/db';
-import { configureCORS, configureCSP } from './config/security';
-import { configureSession } from './config/session';
+import {
+  configureCORS,
+  configureCSP,
+  configureSession,
+  prisma,
+} from './config';
 import { schema } from './schema';
 
 export const app = express();

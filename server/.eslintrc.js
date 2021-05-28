@@ -23,7 +23,6 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'import/prefer-default-export': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',
@@ -32,5 +31,7 @@ module.exports = {
         ts: 'never',
       },
     ],
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'import/prefer-default-export': 'off',
   },
 };

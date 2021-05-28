@@ -1,11 +1,12 @@
-import { uploader } from '../config/upload';
+import { uploader } from '../config';
 import { SortOrder } from '../constants';
 import { Resolvers } from '../generated/graphql';
 
 export const resolvers: Resolvers = {
   Post: {
     favorites: async (parent, args, ctx) => {
-      let { orderBy: orderByInput, limit, page } = args;
+      const { orderBy: orderByInput } = args;
+      let { limit, page } = args;
 
       const direction =
         orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
@@ -47,7 +48,8 @@ export const resolvers: Resolvers = {
     favoriteCount: (parent, _args, ctx) =>
       ctx.prisma.favorite.count({ where: { postId: parent.id } }),
     comments: async (parent, args, ctx) => {
-      let { orderBy: orderByInput, limit, page } = args;
+      const { orderBy: orderByInput } = args;
+      let { limit, page } = args;
 
       const direction =
         orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
@@ -91,7 +93,8 @@ export const resolvers: Resolvers = {
   },
   Query: {
     posts: async (_parent, args, ctx) => {
-      let { orderBy: orderByInput, limit, page, userId } = args;
+      const { userId, orderBy: orderByInput } = args;
+      let { limit, page } = args;
 
       const where = userId ? { userId } : {};
 
@@ -162,7 +165,7 @@ export const resolvers: Resolvers = {
       const post = await ctx.prisma.post.findUnique({ where: { id: postId } });
       if (!post) throw new Error('Post not found');
 
-      let posts = await ctx.prisma.post.findMany({
+      const posts = await ctx.prisma.post.findMany({
         where: { AND: { userId: post.userId, id: { not: post.id } } },
         include: { user: true },
         orderBy: { createdAt: 'desc' },
@@ -186,10 +189,11 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     createPost: async (_parent, args, ctx) => {
-      const user = ctx.req.session.user;
+      const { user } = ctx.req.session;
       if (!user) throw new Error('User not authenticated');
 
       const { title, body, file } = args;
+      // eslint-disable-next-line camelcase
       const { secure_url } = await uploader.upload(file, {
         upload_preset: 'q_eco',
       });
@@ -199,7 +203,7 @@ export const resolvers: Resolvers = {
       });
     },
     updatePost: async (_parent, args, ctx) => {
-      const user = ctx.req.session.user;
+      const { user } = ctx.req.session;
       if (!user) throw new Error('User not authenticated');
 
       const { id, title, body } = args;
@@ -219,7 +223,7 @@ export const resolvers: Resolvers = {
       });
     },
     deletePost: async (_parent, args, ctx) => {
-      const user = ctx.req.session.user;
+      const { user } = ctx.req.session;
       if (!user) throw new Error('User not authenticated');
 
       const { id } = args;

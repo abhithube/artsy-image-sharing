@@ -3,11 +3,7 @@ import { Resolvers } from '../generated/graphql';
 
 export const resolvers: Resolvers = {
   Query: {
-    auth: (_parent, _args, ctx) => {
-      const { user } = ctx.req.session;
-      if (user) return user;
-      else return null;
-    },
+    auth: (_parent, _args, ctx) => ctx.req.session.user || null,
   },
   Mutation: {
     register: async (_parent, args, ctx) => {
@@ -51,17 +47,14 @@ export const resolvers: Resolvers = {
       ctx.req.session.user = authUser;
       return authUser;
     },
-    logout: async (_parent, _args, ctx) => {
+    logout: (_parent, _args, ctx) => {
       const sessionDestroyPromise = () => {
         return new Promise<boolean>((resolve, reject) => {
-          ctx.req.session.destroy(err => {
-            if (err) return reject(err);
-            resolve(true);
-          });
+          ctx.req.session.destroy((err) => (err ? reject(err) : resolve(true)));
         });
       };
 
-      return await sessionDestroyPromise();
+      return sessionDestroyPromise();
     },
   },
 };

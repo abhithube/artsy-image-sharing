@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { SortOrder } from '../constants';
 import { Resolvers } from '../generated/graphql';
@@ -6,7 +5,8 @@ import { Resolvers } from '../generated/graphql';
 export const resolvers: Resolvers = {
   User: {
     posts: async (parent, args, ctx) => {
-      let { orderBy: orderByInput, limit, page } = args;
+      const { orderBy: orderByInput } = args;
+      let { limit, page } = args;
 
       const direction =
         orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
@@ -53,7 +53,8 @@ export const resolvers: Resolvers = {
     postCount: (parent, _args, ctx) =>
       ctx.prisma.favorite.count({ where: { userId: parent.id } }),
     favorites: async (parent, args, ctx) => {
-      let { orderBy: orderByInput, limit, page } = args;
+      const { orderBy: orderByInput } = args;
+      let { limit, page } = args;
 
       const direction =
         orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
@@ -95,7 +96,8 @@ export const resolvers: Resolvers = {
     favoriteCount: (parent, _args, ctx) =>
       ctx.prisma.favorite.count({ where: { userId: parent.id } }),
     comments: async (parent, args, ctx) => {
-      let { orderBy: orderByInput, limit, page } = args;
+      const { orderBy: orderByInput } = args;
+      let { limit, page } = args;
 
       const direction =
         orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
@@ -152,9 +154,10 @@ export const resolvers: Resolvers = {
 
       const { currentPassword, username, password, avatarUrl } = args;
 
-      let user = (await ctx.prisma.user.findUnique({
+      let user = await ctx.prisma.user.findUnique({
         where: { id: authUser.id },
-      })) as User;
+      });
+      if (!user) throw new Error('User not found');
 
       const match = await bcrypt.compare(currentPassword, user.password);
       if (!match) throw new Error('Invalid credentials');
@@ -182,10 +185,7 @@ export const resolvers: Resolvers = {
       const user = await ctx.prisma.user.delete({ where: { id: authUser.id } });
       const sessionDestroyPromise = () => {
         return new Promise<boolean>((resolve, reject) => {
-          ctx.req.session.destroy(err => {
-            if (err) return reject(err);
-            resolve(true);
-          });
+          ctx.req.session.destroy((err) => (err ? reject(err) : resolve(true)));
         });
       };
 
