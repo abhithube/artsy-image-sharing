@@ -1,9 +1,9 @@
 import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
-import { useParams } from 'react-router';
-import { graphQLClient } from '../App';
+import { useParams } from 'react-router-dom';
 import FavoritesGallery from '../components/FavoritesGallery';
 import PostsGallery from '../components/PostsGallery';
 import { useUserQuery } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 
 type Params = {
   id: string;

@@ -8,11 +8,11 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import { graphQLClient } from '../App';
+import { useParams } from 'react-router-dom';
 import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
 import { usePostQuery } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 
 type Params = {
   id: string;

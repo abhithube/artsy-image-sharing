@@ -1,6 +1,6 @@
 import { createContext, SetStateAction, useState } from 'react';
-import { graphQLClient } from '../App';
 import { Auth, useAuthQuery } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 
 type AuthContextType = {
   isLoading: boolean;

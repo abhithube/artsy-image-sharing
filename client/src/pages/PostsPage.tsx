@@ -9,10 +9,10 @@ import {
 } from '@chakra-ui/react';
 import { Fragment, useEffect } from 'react';
 import { useInfiniteQuery } from 'react-query';
-import { useLocation } from 'react-router';
-import { graphQLClient } from '../App';
+import { useLocation } from 'react-router-dom';
 import PreviewImage from '../components/PreviewImage';
 import { PostsQuery, usePostsQuery } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 
 type Uploaded = Location & {
   uploaded?: boolean;

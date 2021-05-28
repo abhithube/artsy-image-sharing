@@ -14,7 +14,6 @@ import { useContext, useEffect } from 'react';
 import { FaCommentAlt, FaDownload, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useQueryClient } from 'react-query';
 import { Link as RouterLink } from 'react-router-dom';
-import { graphQLClient } from '../App';
 import { AuthContext } from '../context/AuthContext';
 import {
   CreateFavoriteMutation,
@@ -23,6 +22,7 @@ import {
   useDeleteFavoriteMutation,
   usePostQuery,
 } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 import CommentsList from './CommentsList';
 
 type PostDetailsProps = {

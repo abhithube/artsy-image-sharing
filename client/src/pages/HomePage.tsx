@@ -8,7 +8,6 @@ import {
 } from '@chakra-ui/react';
 import { Fragment } from 'react';
 import { IoMdImages } from 'react-icons/io';
-import { graphQLClient } from '../App';
 import FeaturedHero from '../components/FeaturedHero';
 import FeaturedPost from '../components/FeaturedPost';
 import {
@@ -16,6 +15,7 @@ import {
   SortDirection,
   useFeaturedQuery,
 } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 
 const HomePage = () => {
   const { data, isLoading } = useFeaturedQuery(graphQLClient, {

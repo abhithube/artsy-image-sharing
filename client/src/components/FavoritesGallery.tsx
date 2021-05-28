@@ -12,12 +12,12 @@ import {
 import { Fragment, useMemo, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useQueryClient } from 'react-query';
-import { graphQLClient } from '../App';
 import {
   FavoritesDocument,
   FavoritesFragment,
   useFavoritesQuery,
 } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 import PreviewImage from './PreviewImage';
 
 type FavoritesGalleryProps = {

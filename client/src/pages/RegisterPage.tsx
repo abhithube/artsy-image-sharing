@@ -15,10 +15,9 @@ import {
 } from '@chakra-ui/react';
 import { FormEvent, useState } from 'react';
 import { FaLock, FaUserCircle } from 'react-icons/fa';
-import { useHistory } from 'react-router';
-import { Link as RouterLink } from 'react-router-dom';
-import { graphQLClient } from '../App';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useRegisterMutation } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');

@@ -11,9 +11,9 @@ import {
 import { FormEvent, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
-import { graphQLClient } from '../App';
 import FileUpload from '../components/FileUpload';
 import { useCreatePostMutation, usePostQuery } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 
 const UploadPage = () => {
   const queryClient = useQueryClient();

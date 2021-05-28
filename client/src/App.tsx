@@ -1,6 +1,5 @@
 import { Box, ChakraProvider, Container, CSSReset } from '@chakra-ui/react';
 import '@fontsource/inter';
-import { GraphQLClient } from 'graphql-request';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -16,11 +15,6 @@ import ProfilePage from './pages/ProfilePage';
 import RegisterPage from './pages/RegisterPage';
 import UploadPage from './pages/UploadPage';
 import theme from './theme';
-
-export const graphQLClient = new GraphQLClient(
-  `${process.env.SERVER_URL}/graphql`,
-  { credentials: 'include' }
-);
 
 function App() {
   const queryClient = new QueryClient({

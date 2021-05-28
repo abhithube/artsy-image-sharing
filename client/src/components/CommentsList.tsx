@@ -1,8 +1,8 @@
 import { Box, Button, Heading, Spinner, Text, VStack } from '@chakra-ui/react';
 import { Fragment, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
-import { graphQLClient } from '../App';
 import { CommentsQuery, useCommentsQuery } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 import AddComment from './AddComment';
 import CommentItem from './CommentItem';
 

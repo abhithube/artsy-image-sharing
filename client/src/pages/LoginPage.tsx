@@ -17,12 +17,11 @@ import {
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { FaLock, FaUserCircle } from 'react-icons/fa';
 import { useQueryClient } from 'react-query';
-import { useHistory, useLocation } from 'react-router';
-import { Link as RouterLink } from 'react-router-dom';
-import { graphQLClient } from '../App';
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import AvatarSelectionModal from '../components/AvatarSelectionModal';
 import { AuthContext } from '../context/AuthContext';
 import { useAuthQuery, useLoginMutation } from '../generated/graphql';
+import { graphQLClient } from '../graphql/client';
 
 type Registered = Location & {
   registered?: boolean;
