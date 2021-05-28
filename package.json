@@ -7,10 +7,12 @@
     "start": "yarn --cwd server start",
     "dev": "concurrently \"yarn --cwd server dev\" \"yarn --cwd client start\"",
     "postinstall": "yarn --cwd server --prod=false && yarn --cwd client --prod=false",
-    "build": "yarn --cwd server build && yarn --cwd client build"
+    "build": "yarn --cwd server build && yarn --cwd client build",
+    "prepare": "husky install"
   },
   "devDependencies": {
-    "concurrently": "^6.1.0"
+    "concurrently": "^6.1.0",
+    "husky": "^6.0.0"
   },
   "author": "",
   "license": "ISC"
