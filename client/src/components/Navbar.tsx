@@ -20,10 +20,10 @@ import { FaChevronDown, FaMoon, FaSun } from 'react-icons/fa';
 import { IoMdImages } from 'react-icons/io';
 import { useQueryClient } from 'react-query';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { useAuthQuery, useLogoutMutation } from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
 import { CLOUDINARY_URL } from '../lib/constants';
+import { AuthContext } from '../lib/context/AuthContext';
+import { useAuthQuery, useLogoutMutation } from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 
 type From = Location & {
   from: string;

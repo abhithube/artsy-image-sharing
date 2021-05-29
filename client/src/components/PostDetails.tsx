@@ -14,16 +14,16 @@ import { useContext, useEffect } from 'react';
 import { FaCommentAlt, FaDownload, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useQueryClient } from 'react-query';
 import { Link as RouterLink } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { CLOUDINARY_URL } from '../lib/constants';
+import { AuthContext } from '../lib/context/AuthContext';
 import {
   CreateFavoriteMutation,
   PostDetailsFragment,
   useCreateFavoriteMutation,
   useDeleteFavoriteMutation,
   usePostQuery,
-} from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
-import { CLOUDINARY_URL } from '../lib/constants';
+} from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 import CommentsList from './CommentsList';
 
 type PostDetailsProps = {

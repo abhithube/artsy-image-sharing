@@ -7,8 +7,8 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { PostSummaryFragment } from '../generated/graphql';
 import { CLOUDINARY_URL } from '../lib/constants';
+import { PostSummaryFragment } from '../lib/generated/graphql';
 
 type PreviewImageProps = {
   post: PostSummaryFragment;

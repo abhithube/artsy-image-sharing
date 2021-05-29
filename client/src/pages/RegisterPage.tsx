@@ -16,8 +16,8 @@ import {
 import { FormEvent, useState } from 'react';
 import { FaLock, FaUserCircle } from 'react-icons/fa';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { useRegisterMutation } from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
+import { useRegisterMutation } from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');

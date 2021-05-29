@@ -1,6 +1,6 @@
 import { uploader } from '../config';
-import { SortOrder } from '../constants';
-import { Resolvers } from '../generated/graphql';
+import { SortOrder } from '../lib/constants';
+import { Resolvers } from '../lib/generated/graphql';
 
 export const resolvers: Resolvers = {
   Post: {

@@ -6,8 +6,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Fragment } from 'react';
-import { useRelatedPostsQuery } from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
+import { useRelatedPostsQuery } from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 import PreviewImage from './PreviewImage';
 
 type RelatedPostsProps = {

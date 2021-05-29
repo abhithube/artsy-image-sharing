@@ -11,8 +11,8 @@ import { Fragment, useEffect } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import { useLocation } from 'react-router-dom';
 import PreviewImage from '../components/PreviewImage';
-import { PostsQuery, usePostsQuery } from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
+import { PostsQuery, usePostsQuery } from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 
 type Uploaded = Location & {
   uploaded?: boolean;

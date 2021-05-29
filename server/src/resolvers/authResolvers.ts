@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Resolvers } from '../generated/graphql';
+import { Resolvers } from '../lib/generated/graphql';
 
 export const resolvers: Resolvers = {
   Query: {

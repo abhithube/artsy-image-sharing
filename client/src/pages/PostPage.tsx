@@ -11,9 +11,9 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
-import { usePostQuery } from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
 import { CLOUDINARY_URL } from '../lib/constants';
+import { usePostQuery } from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 
 type Params = {
   id: string;

@@ -1,7 +1,7 @@
 import { Spinner } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../lib/context/AuthContext';
 
 type ProtectedRouteProps = {
   path: string;

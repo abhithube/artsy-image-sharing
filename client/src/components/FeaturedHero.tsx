@@ -13,8 +13,8 @@ import {
 } from '@chakra-ui/react';
 import { FaCommentAlt, FaHeart } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
-import { PostDetailsFragment } from '../generated/graphql';
 import { CLOUDINARY_URL } from '../lib/constants';
+import { PostDetailsFragment } from '../lib/generated/graphql';
 import PreviewImage from './PreviewImage';
 
 type FeaturedHeroProps = {

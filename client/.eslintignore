@@ -1,2 +1,2 @@
-src/generated
-src/graphql
+src/lib/generated
+src/lib/graphql

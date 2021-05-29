@@ -6,8 +6,8 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { CommentFragment } from '../generated/graphql';
 import { CLOUDINARY_URL } from '../lib/constants';
+import { CommentFragment } from '../lib/generated/graphql';
 
 type CommentProps = {
   comment: CommentFragment;

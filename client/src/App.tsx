@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
-import AuthContextProvider from './context/AuthContext';
+import AuthContextProvider from './lib/context/AuthContext';
 import AboutPage from './pages/AboutPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';

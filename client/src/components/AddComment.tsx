@@ -8,13 +8,13 @@ import {
 } from '@chakra-ui/react';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../lib/context/AuthContext';
 import {
   useCommentsQuery,
   useCreateCommentMutation,
   usePostQuery,
-} from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
+} from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 
 type AddCommentProps = {
   postId: number;

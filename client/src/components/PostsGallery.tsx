@@ -16,8 +16,8 @@ import {
   PostsDocument,
   PostsFragment,
   usePostsQuery,
-} from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
+} from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 import PreviewImage from './PreviewImage';
 
 type PostsGalleryProps = {

@@ -16,8 +16,8 @@ import {
   FavoritesDocument,
   FavoritesFragment,
   useFavoritesQuery,
-} from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
+} from '../lib/generated/graphql';
+import { graphQLClient } from '../lib/graphql/client';
 import PreviewImage from './PreviewImage';
 
 type FavoritesGalleryProps = {
