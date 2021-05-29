@@ -11,6 +11,7 @@ import {
 import { FaCommentAlt, FaHeart } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
 import { PostDetailsFragment } from '../generated/graphql';
+import { CLOUDINARY_URL } from '../lib/constants';
 import PreviewImage from './PreviewImage';
 
 type FeaturedPostProps = {
@@ -33,7 +34,7 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
         <Avatar
           src={
             post.user.avatarUrl
-              ? `https://res.cloudinary.com/athube/image/upload/q_auto:eco,w_200,h_200,r_max/${
+              ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
                   post.user.avatarUrl?.split('upload/')[1]
                 }`
               : undefined

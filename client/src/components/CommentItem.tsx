@@ -7,6 +7,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { CommentFragment } from '../generated/graphql';
+import { CLOUDINARY_URL } from '../lib/constants';
 
 type CommentProps = {
   comment: CommentFragment;
@@ -22,7 +23,7 @@ const CommentItem = ({ comment }: CommentProps) => {
       <Avatar
         src={
           comment.user.avatarUrl
-            ? `https://res.cloudinary.com/athube/image/upload/q_auto:eco,w_200,h_200,r_max/${
+            ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
                 comment.user.avatarUrl.split('upload/')[1]
               }`
             : undefined

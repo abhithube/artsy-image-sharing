@@ -12,17 +12,18 @@ import {
   useRadioGroup,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import { CLOUDINARY_URL } from '../lib/constants';
 import AvatarRadio from './AvatarRadio';
 
 const options = [
-  'https://res.cloudinary.com/athube/image/upload/m7pkednv7wsmc9onzcks.png',
-  'https://res.cloudinary.com/athube/image/upload/m42qvbxgjnqwdknupsib.png',
-  'https://res.cloudinary.com/athube/image/upload/ymeaat9zk745i53bqm3u.png',
-  'https://res.cloudinary.com/athube/image/upload/fecxna5bglcbybutdi2j.png',
-  'https://res.cloudinary.com/athube/image/upload/yfmzevv6pjsjlcinvuz9.png',
-  'https://res.cloudinary.com/athube/image/upload/wi9qswbjmvfon42y9dg5.png',
-  'https://res.cloudinary.com/athube/image/upload/lzm3sclqyj5jxniocg3v.png',
-  'https://res.cloudinary.com/athube/image/upload/nr9g20lini31sbo3z3mi.png',
+  `${CLOUDINARY_URL}/v1622234180/man1_peof9j.png`,
+  `${CLOUDINARY_URL}/v1622234180/man2_jfyenx.png`,
+  `${CLOUDINARY_URL}/v1622234181/man3_sfpahn.png`,
+  `${CLOUDINARY_URL}/v1622234181/man4_uglr0s.png`,
+  `${CLOUDINARY_URL}/v1622234180/woman1_fbwh8e.png`,
+  `${CLOUDINARY_URL}/v1622234181/woman2_qmpunu.png`,
+  `${CLOUDINARY_URL}/v1622234180/woman3_sup9dv.png`,
+  `${CLOUDINARY_URL}/v1622234181/woman4_jfjduk.png`,
 ];
 
 type AvatarSelectionModalProps = {

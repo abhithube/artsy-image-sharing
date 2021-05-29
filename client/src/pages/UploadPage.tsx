@@ -57,8 +57,8 @@ const UploadPage = () => {
         direction="column"
         align="center"
         w={400}
-        p={5}
-        pb={8}
+        p={8}
+        // pb={8}
         bg={useColorModeValue('gray.100', 'gray.900')}
         rounded="lg"
         boxShadow="md"

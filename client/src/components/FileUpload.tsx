@@ -105,7 +105,7 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
       )}
       {!thumbnail && (
         <FormControl
-          w="300px"
+          w="100%"
           h="300px"
           mb={8}
           border="2px dashed"

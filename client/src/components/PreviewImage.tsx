@@ -8,6 +8,7 @@ import {
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { PostSummaryFragment } from '../generated/graphql';
+import { CLOUDINARY_URL } from '../lib/constants';
 
 type PreviewImageProps = {
   post: PostSummaryFragment;
@@ -33,7 +34,7 @@ const PreviewImage = ({ post }: PreviewImageProps) => {
           h="100%"
         >
           <Image
-            src={`https://res.cloudinary.com/athube/image/upload/ar_1,c_fill,f_jpg,g_auto,q_auto:eco,w_480/${
+            src={`${CLOUDINARY_URL}/ar_1,c_fill,f_jpg,g_auto,q_auto:eco,w_480/${
               post.imageUrl.split('upload/')[1]
             }`}
             alt={post.title}

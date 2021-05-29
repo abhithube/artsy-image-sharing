@@ -23,6 +23,7 @@ import {
   usePostQuery,
 } from '../generated/graphql';
 import { graphQLClient } from '../graphql/client';
+import { CLOUDINARY_URL } from '../lib/constants';
 import CommentsList from './CommentsList';
 
 type PostDetailsProps = {
@@ -81,7 +82,7 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
         <Avatar
           src={
             post.user.avatarUrl
-              ? `https://res.cloudinary.com/athube/image/upload/q_auto:eco,w_200,h_200,r_max/${
+              ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
                   post.user.avatarUrl?.split('upload/')[1]
                 }`
               : undefined
@@ -114,7 +115,7 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
             w={16}
           />
           <Link
-            href={`https://res.cloudinary.com/athube/image/upload/fl_attachment/${
+            href={`${CLOUDINARY_URL}/fl_attachment/${
               post.imageUrl.split('upload/')[1]
             }`}
           >

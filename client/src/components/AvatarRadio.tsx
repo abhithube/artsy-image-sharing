@@ -1,4 +1,5 @@
 import { Box, Image, Input, useRadio, UseRadioProps } from '@chakra-ui/react';
+import { CLOUDINARY_URL } from '../lib/constants';
 
 type RadioProps = UseRadioProps & {
   avatarUrl: string;
@@ -14,7 +15,7 @@ const AvatarRadio = (props: RadioProps) => {
       <Input {...getInputProps()} />
       <Image
         {...getCheckboxProps()}
-        src={`https://res.cloudinary.com/athube/image/upload/q_auto:eco,w_200,h_200,r_max/${
+        src={`${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
           avatarUrl.split('upload/')[1]
         }`}
         alt="avatar"

@@ -23,6 +23,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { useAuthQuery, useLogoutMutation } from '../generated/graphql';
 import { graphQLClient } from '../graphql/client';
+import { CLOUDINARY_URL } from '../lib/constants';
 
 type From = Location & {
   from: string;
@@ -98,7 +99,7 @@ const Navbar = () => {
                   <Avatar
                     src={
                       authenticatedUser.avatarUrl
-                        ? `https://res.cloudinary.com/athube/image/upload/q_auto:eco,w_200,h_200/${
+                        ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200/${
                             authenticatedUser.avatarUrl.split('upload/')[1]
                           }`
                         : undefined

@@ -13,6 +13,7 @@ import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
 import { usePostQuery } from '../generated/graphql';
 import { graphQLClient } from '../graphql/client';
+import { CLOUDINARY_URL } from '../lib/constants';
 
 type Params = {
   id: string;
@@ -40,7 +41,7 @@ const PostPage = () => {
             <Center h="72vh" mb={4} bgColor="black">
               <Skeleton isLoaded={imageLoaded} w="100%" h="100%">
                 <Image
-                  src={`https://res.cloudinary.com/athube/image/upload/q_auto:eco/${
+                  src={`${CLOUDINARY_URL}/q_auto:eco/${
                     data.post.result.imageUrl.split('upload/')[1]
                   }`}
                   alt={data?.post?.result.title}
