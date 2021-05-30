@@ -76,19 +76,7 @@ const LoginPage = () => {
 
   const handleAvatarSelection = (avatar: string | null) => {
     setLoading(true);
-
-    if (avatar) {
-      mutation.mutate({
-        username,
-        password,
-        avatar: { publicId: avatar },
-      });
-    } else {
-      mutation.mutate({
-        username,
-        password,
-      });
-    }
+    mutation.mutate({ username, password, avatar: { publicId: avatar } });
   };
 
   useEffect(() => {

@@ -32,7 +32,7 @@ export type Auth = {
 };
 
 export type AvatarInput = {
-  publicId: Scalars['String'];
+  publicId?: Maybe<Scalars['String']>;
 };
 
 /** A piece of written feedback submitted by a user on a post */
@@ -173,7 +173,6 @@ export type Mutation = {
 export type MutationRegisterArgs = {
   username: Scalars['String'];
   password: Scalars['String'];
-  avatar: AvatarInput;
 };
 
 
@@ -606,7 +605,6 @@ export type LogoutMutation = (
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
-  avatar: AvatarInput;
 }>;
 
 
@@ -964,8 +962,8 @@ export const useLogoutMutation = <
       options
     );
 export const RegisterDocument = `
-    mutation register($username: String!, $password: String!, $avatar: AvatarInput!) {
-  registered: register(username: $username, password: $password, avatar: $avatar)
+    mutation register($username: String!, $password: String!) {
+  registered: register(username: $username, password: $password)
 }
     `;
 export const useRegisterMutation = <

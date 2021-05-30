@@ -22,8 +22,6 @@ extend type Mutation {
     username: String!
     # The password of the user account
     password: String!
-    # The avatar image of the user account
-    avatar: AvatarInput!
   ): Boolean!
   # Log in to a user account
   login(
@@ -39,5 +37,5 @@ extend type Mutation {
 }
 
 input AvatarInput {
-  publicId: String!
+  publicId: String
 }

@@ -1,11 +1,3 @@
-mutation register(
-  $username: String!
-  $password: String!
-  $avatar: AvatarInput!
-) {
-  registered: register(
-    username: $username
-    password: $password
-    avatar: $avatar
-  )
+mutation register($username: String!, $password: String!) {
+  registered: register(username: $username, password: $password)
 }

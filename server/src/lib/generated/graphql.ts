@@ -24,7 +24,7 @@ export type Auth = {
 };
 
 export type AvatarInput = {
-  publicId: Scalars['String'];
+  publicId?: Maybe<Scalars['String']>;
 };
 
 export type Comment = {
