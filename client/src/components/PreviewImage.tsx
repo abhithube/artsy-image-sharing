@@ -1,54 +1,40 @@
-import {
-  AspectRatio,
-  Image,
-  Link,
-  Skeleton,
-  useColorModeValue,
-} from '@chakra-ui/react';
-import { useState } from 'react';
+import { AspectRatio, Link, useColorModeValue } from '@chakra-ui/react';
+import { format, quality } from '@cloudinary/base/actions/delivery';
+import { fill } from '@cloudinary/base/actions/resize';
+import { autoGravity } from '@cloudinary/base/qualifiers/gravity';
+import { autoLow } from '@cloudinary/base/qualifiers/quality';
+import { lazyload } from '@cloudinary/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { CLOUDINARY_URL } from '../lib/constants';
+import { cld } from '../config/cloudinary';
 import { PostSummaryFragment } from '../lib/generated/graphql';
+import CloudinaryImage from './CloudinaryImage';
 
 type PreviewImageProps = {
   post: PostSummaryFragment;
 };
 
 const PreviewImage = ({ post }: PreviewImageProps) => {
-  const [loaded, setLoaded] = useState(false);
+  const cldImg = cld
+    .image(post.image.publicId)
+    .resize(fill(480, 480).gravity(autoGravity()))
+    .quality(quality(autoLow()))
+    .delivery(format('auto'));
 
   return (
-    <AspectRatio ratio={1} w="100%">
-      <Skeleton
-        isLoaded={loaded}
-        rounded="md"
-        overflow="hidden"
-        startColor={useColorModeValue('gray.300', 'gray.700')}
-        endColor={useColorModeValue('gray.200', 'gray.600')}
+    <AspectRatio
+      ratio={1}
+      w="100%"
+      bgColor={useColorModeValue('gray.100', 'gray.900')}
+    >
+      <Link
+        as={RouterLink}
+        to={`/posts/${post.id}`}
+        mx="auto"
+        w="100%"
+        h="100%"
       >
-        <Link
-          as={RouterLink}
-          to={`/posts/${post.id}`}
-          mx="auto"
-          w="100%"
-          h="100%"
-        >
-          <Image
-            src={`${CLOUDINARY_URL}/ar_1,c_fill,f_jpg,g_auto,q_auto:eco,w_480/${
-              post.imageUrl.split('upload/')[1]
-            }`}
-            alt={post.title}
-            htmlWidth={480}
-            htmlHeight={480}
-            objectFit="cover"
-            w="100%"
-            h="100%"
-            loading="lazy"
-            visibility={loaded ? 'visible' : 'hidden'}
-            onLoad={() => setLoaded(true)}
-          />
-        </Link>
-      </Skeleton>
+        <CloudinaryImage cldImg={cldImg} plugins={[lazyload()]} rounded="md" />
+      </Link>
     </AspectRatio>
   );
 };
