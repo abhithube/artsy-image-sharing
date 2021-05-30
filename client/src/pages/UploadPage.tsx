@@ -27,12 +27,15 @@ const UploadPage = () => {
   const history = useHistory();
 
   const mutation = useCreatePostMutation(graphQLClient, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(usePostQuery.getKey({ id: data.post.id }), {
-        post: { result: data.post, isFavorite: false },
+    onSuccess: async ({ post }) => {
+      queryClient.setQueryData(usePostQuery.getKey({ id: post.id }), {
+        post: { result: post, isFavorite: false },
       });
 
-      history.push({ pathname: '/posts', state: { uploaded: true } });
+      history.push({
+        pathname: `/posts/${post.id}`,
+        state: { uploaded: true },
+      });
     },
     onError: () => setLoading(false),
   });

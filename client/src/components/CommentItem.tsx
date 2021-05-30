@@ -1,13 +1,6 @@
-import {
-  Avatar,
-  Box,
-  Flex,
-  HStack,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
-import { CLOUDINARY_URL } from '../lib/constants';
+import { Box, Flex, HStack, Text, useColorModeValue } from '@chakra-ui/react';
 import { CommentFragment } from '../lib/generated/graphql';
+import Avatar from './Avatar';
 
 type CommentProps = {
   comment: CommentFragment;
@@ -20,19 +13,7 @@ const CommentItem = ({ comment }: CommentProps) => {
       bgColor={useColorModeValue('gray.100', 'gray.700')}
       rounded="lg"
     >
-      <Avatar
-        src={
-          comment.user.avatarUrl
-            ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
-                comment.user.avatarUrl.split('upload/')[1]
-              }`
-            : undefined
-        }
-        mr={4}
-        bg="purple.500"
-        borderWidth="1px"
-        borderColor="purple.500"
-      />
+      <Avatar avatar={comment.user.avatar} w={12} mr={2} />
       <Box>
         <Flex mb={1}>
           <Text

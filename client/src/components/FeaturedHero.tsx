@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   Heading,
@@ -13,8 +12,8 @@ import {
 } from '@chakra-ui/react';
 import { FaCommentAlt, FaHeart } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
-import { CLOUDINARY_URL } from '../lib/constants';
 import { PostDetailsFragment } from '../lib/generated/graphql';
+import Avatar from './Avatar';
 import PreviewImage from './PreviewImage';
 
 type FeaturedHeroProps = {
@@ -95,19 +94,7 @@ const FeaturedHero = ({ featuredPost }: FeaturedHeroProps) => {
           >
             <Text color="gray.500">User</Text>
             <HStack>
-              <Avatar
-                src={
-                  featuredPost.user.avatarUrl
-                    ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
-                        featuredPost.user.avatarUrl?.split('upload/')[1]
-                      }`
-                    : undefined
-                }
-                mr={2}
-                bg="purple.500"
-                borderWidth="1px"
-                borderColor="purple.500"
-              />
+              <Avatar avatar={featuredPost.user.avatar} w={12} mr={2} />
               <Text>{featuredPost.user.username}</Text>
             </HStack>
             <Button

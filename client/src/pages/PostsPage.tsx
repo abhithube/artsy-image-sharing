@@ -5,22 +5,14 @@ import {
   SimpleGrid,
   Spinner,
   Text,
-  useToast,
 } from '@chakra-ui/react';
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 import { useInfiniteQuery } from 'react-query';
-import { useLocation } from 'react-router-dom';
 import PreviewImage from '../components/PreviewImage';
 import { PostsQuery, usePostsQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
-type Uploaded = Location & {
-  uploaded?: boolean;
-};
-
 const PostsPage = () => {
-  const location = useLocation<Uploaded>();
-
   const { data, fetchNextPage, hasNextPage, isLoading } =
     useInfiniteQuery<PostsQuery>(
       'posts',
@@ -33,22 +25,6 @@ const PostsPage = () => {
         getNextPageParam: (lastPage) => lastPage.posts.nextPage,
       }
     );
-
-  const toast = useToast();
-
-  useEffect(() => {
-    if (location.state?.uploaded) {
-      toast({
-        status: 'success',
-        title: 'Created post successfully',
-        isClosable: true,
-      });
-
-      location.state.uploaded = false;
-    }
-
-    return () => toast.closeAll();
-  }, [location.state, toast]);
 
   if (isLoading) return <Spinner speed="1s" />;
 

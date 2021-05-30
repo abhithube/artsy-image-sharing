@@ -1,31 +1,31 @@
-import { Box, Image, Input, useRadio, UseRadioProps } from '@chakra-ui/react';
-import { CLOUDINARY_URL } from '../lib/constants';
+import { Box, Input, useRadio, UseRadioProps } from '@chakra-ui/react';
+import { AvatarFragment } from '../lib/generated/graphql';
+import Avatar from './Avatar';
 
 type RadioProps = UseRadioProps & {
-  avatarUrl: string;
+  avatar: AvatarFragment;
 };
 
 const AvatarRadio = (props: RadioProps) => {
   const { getInputProps, getCheckboxProps } = useRadio(props);
 
-  const { avatarUrl } = props;
+  const { avatar } = props;
 
   return (
     <Box as="label">
       <Input {...getInputProps()} />
-      <Image
+      <Box
         {...getCheckboxProps()}
-        src={`${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
-          avatarUrl.split('upload/')[1]
-        }`}
-        alt="avatar"
+        rounded="full"
         cursor="pointer"
-        borderRadius="full"
+        _hover={{ bgColor: 'purple.300' }}
         _checked={{
           bgColor: 'purple.500',
         }}
-        p={1.5}
-      />
+        p={1}
+      >
+        <Avatar avatar={avatar} />
+      </Box>
     </Box>
   );
 };

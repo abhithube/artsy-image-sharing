@@ -7,9 +7,10 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { FormEvent, useContext, useEffect, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { InfiniteData, useQueryClient } from 'react-query';
 import { AuthContext } from '../lib/context/AuthContext';
 import {
+  CommentsQuery,
   useCommentsQuery,
   useCreateCommentMutation,
   usePostQuery,
@@ -32,12 +33,45 @@ const AddComment = ({ postId }: AddCommentProps) => {
   const postQueryKey = usePostQuery.getKey({ id: postId });
 
   const mutation = useCreateCommentMutation(graphQLClient, {
+    onMutate: () => {
+      const data =
+        queryClient.getQueryData<InfiniteData<CommentsQuery>>(commentsQueryKey);
+
+      if (!authenticatedUser || !data) return;
+
+      const optimisticUpdate = {
+        id: 0,
+        body: comment,
+        createdAt: new Date(),
+        user: {
+          id: authenticatedUser.id,
+          username: authenticatedUser.username,
+          avatar: authenticatedUser.avatar,
+        },
+      };
+
+      data.pages[0].comments.results = [
+        optimisticUpdate,
+        ...data.pages[0].comments.results,
+      ];
+
+      queryClient.setQueryData<InfiniteData<CommentsQuery>>(
+        commentsQueryKey,
+        (d) => {
+          if (d)
+            return {
+              pages: data.pages,
+              pageParams: d?.pageParams,
+            };
+          return { pages: [], pageParams: [] };
+        }
+      );
+    },
     onSuccess: () => {
       setComment('');
-      queryClient.fetchQuery(postQueryKey, () => {
-        graphQLClient.request(usePostQuery.document, { id: postId });
-      });
+
       queryClient.fetchInfiniteQuery(commentsQueryKey);
+      queryClient.fetchQuery(postQueryKey);
 
       toast({
         status: 'success',

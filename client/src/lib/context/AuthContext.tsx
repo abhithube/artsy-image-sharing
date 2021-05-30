@@ -1,11 +1,11 @@
 import { createContext, SetStateAction, useState } from 'react';
-import { Auth, useAuthQuery } from '../generated/graphql';
+import { AuthFragment, useAuthQuery } from '../generated/graphql';
 import { graphQLClient } from '../graphql/client';
 
 type AuthContextType = {
   isLoading: boolean;
-  authenticatedUser: Auth | null;
-  setAuthenticatedUser: React.Dispatch<SetStateAction<Auth | null>>;
+  authenticatedUser: AuthFragment | null;
+  setAuthenticatedUser: React.Dispatch<SetStateAction<AuthFragment | null>>;
 };
 
 type AuthContextProviderProps = {
@@ -20,7 +20,8 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [authenticatedUser, setAuthenticatedUser] = useState<Auth | null>(null);
+  const [authenticatedUser, setAuthenticatedUser] =
+    useState<AuthFragment | null>(null);
 
   const { isLoading } = useAuthQuery(graphQLClient, undefined, {
     onSuccess: (data) =>

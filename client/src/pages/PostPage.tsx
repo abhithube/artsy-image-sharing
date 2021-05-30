@@ -1,17 +1,13 @@
-import {
-  Box,
-  Center,
-  Flex,
-  Image,
-  Skeleton,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Box, Center, Flex, Spinner, Text, useToast } from '@chakra-ui/react';
+import { format, quality } from '@cloudinary/base/actions/delivery';
+import { autoLow } from '@cloudinary/base/qualifiers/quality';
+import { placeholder } from '@cloudinary/react';
+import { useEffect } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+import CloudinaryImage from '../components/CloudinaryImage';
 import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
-import { CLOUDINARY_URL } from '../lib/constants';
+import { cld } from '../config/cloudinary';
 import { usePostQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
@@ -19,12 +15,36 @@ type Params = {
   id: string;
 };
 
+type Uploaded = Location & {
+  uploaded?: boolean;
+};
+
 const PostPage = () => {
   const { id } = useParams<Params>();
+  const location = useLocation<Uploaded>();
 
   const { data, isLoading } = usePostQuery(graphQLClient, { id: Number(id) });
 
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const cldImg = cld
+    .image(data?.post?.result.image.publicId)
+    .quality(quality(autoLow()))
+    .delivery(format('auto'));
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (location.state?.uploaded) {
+      toast({
+        status: 'success',
+        title: 'Created post successfully',
+        isClosable: true,
+      });
+
+      location.state.uploaded = false;
+    }
+
+    return () => toast.closeAll();
+  }, [location.state, toast]);
 
   useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [id]);
 
@@ -39,18 +59,10 @@ const PostPage = () => {
             pr={[null, null, null, 16, 16]}
           >
             <Center h="72vh" mb={4} bgColor="black">
-              <Skeleton isLoaded={imageLoaded} w="100%" h="100%">
-                <Image
-                  src={`${CLOUDINARY_URL}/q_auto:eco/${
-                    data.post.result.imageUrl.split('upload/')[1]
-                  }`}
-                  alt={data?.post?.result.title}
-                  onLoad={() => setImageLoaded(true)}
-                  h="100%"
-                  w="100%"
-                  objectFit="contain"
-                />
-              </Skeleton>
+              <CloudinaryImage
+                cldImg={cldImg}
+                plugins={[placeholder('blur')]}
+              />
             </Center>
             <PostDetails
               post={data.post.result}

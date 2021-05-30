@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Container,
   Flex,
@@ -20,10 +19,10 @@ import { FaChevronDown, FaMoon, FaSun } from 'react-icons/fa';
 import { IoMdImages } from 'react-icons/io';
 import { useQueryClient } from 'react-query';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { CLOUDINARY_URL } from '../lib/constants';
 import { AuthContext } from '../lib/context/AuthContext';
 import { useAuthQuery, useLogoutMutation } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
+import Avatar from './Avatar';
 
 type From = Location & {
   from: string;
@@ -96,38 +95,25 @@ const Navbar = () => {
             <Menu>
               <MenuButton>
                 <HStack spacing={4}>
-                  <Avatar
-                    src={
-                      authenticatedUser.avatarUrl
-                        ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200/${
-                            authenticatedUser.avatarUrl.split('upload/')[1]
-                          }`
-                        : undefined
-                    }
-                    cursor="pointer"
-                    size="md"
-                    bg="purple.500"
-                    borderWidth="1px"
-                    borderColor="purple.500"
-                  />
+                  <Avatar avatar={authenticatedUser.avatar} w={12} />
                   <Icon as={FaChevronDown} />
                 </HStack>
               </MenuButton>
               <MenuList>
-                <MenuItem>
-                  <Link as={RouterLink} to="/upload" _hover={{}}>
+                <Link as={RouterLink} to="/upload" _hover={{}}>
+                  <MenuItem>
                     <Text>Upload</Text>
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link
-                    as={RouterLink}
-                    to={`/users/${authenticatedUser.id}`}
-                    _hover={{}}
-                  >
+                  </MenuItem>
+                </Link>
+                <Link
+                  as={RouterLink}
+                  to={`/users/${authenticatedUser.id}`}
+                  _hover={{}}
+                >
+                  <MenuItem>
                     <Text>Profile</Text>
-                  </Link>
-                </MenuItem>
+                  </MenuItem>
+                </Link>
                 <MenuItem onClick={() => mutation.mutate({})}>Logout</MenuItem>
               </MenuList>
             </Menu>

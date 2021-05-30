@@ -16,6 +16,7 @@ import {
 import { FormEvent, useState } from 'react';
 import { FaLock, FaUserCircle } from 'react-icons/fa';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { AVATAR_DEFAULT } from '../lib/constants';
 import { useRegisterMutation } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
@@ -54,7 +55,11 @@ const RegisterPage = () => {
       });
     } else {
       setLoading(true);
-      mutation.mutate({ username, password });
+      mutation.mutate({
+        username,
+        password,
+        avatar: { publicId: AVATAR_DEFAULT },
+      });
     }
   };
 

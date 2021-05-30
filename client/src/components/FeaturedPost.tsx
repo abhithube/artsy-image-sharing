@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Heading,
   HStack,
   Icon,
@@ -10,8 +9,8 @@ import {
 } from '@chakra-ui/react';
 import { FaCommentAlt, FaHeart } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
-import { CLOUDINARY_URL } from '../lib/constants';
 import { PostDetailsFragment } from '../lib/generated/graphql';
+import Avatar from './Avatar';
 import PreviewImage from './PreviewImage';
 
 type FeaturedPostProps = {
@@ -31,19 +30,7 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
     >
       <PreviewImage post={post} />
       <HStack>
-        <Avatar
-          src={
-            post.user.avatarUrl
-              ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
-                  post.user.avatarUrl?.split('upload/')[1]
-                }`
-              : undefined
-          }
-          mr={2}
-          bg="purple.500"
-          borderWidth="1px"
-          borderColor="purple.500"
-        />
+        <Avatar avatar={post.user.avatar} w={12} mr={2} />
         <VStack alignItems="flex-start">
           <Heading as="h3" fontSize="lg" noOfLines={1}>
             <Link as={RouterLink} to={`posts/${post.id}`} _hover={{}}>

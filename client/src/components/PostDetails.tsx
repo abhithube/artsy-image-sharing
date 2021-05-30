@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   ButtonGroup,
   Heading,
@@ -10,20 +9,22 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
+import { Cloudinary } from '@cloudinary/base';
+import {} from '@cloudinary/base/qualifiers/flag';
 import { useContext, useEffect } from 'react';
 import { FaCommentAlt, FaDownload, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useQueryClient } from 'react-query';
 import { Link as RouterLink } from 'react-router-dom';
-import { CLOUDINARY_URL } from '../lib/constants';
 import { AuthContext } from '../lib/context/AuthContext';
 import {
-  CreateFavoriteMutation,
   PostDetailsFragment,
+  PostQuery,
   useCreateFavoriteMutation,
   useDeleteFavoriteMutation,
   usePostQuery,
 } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
+import Avatar from './Avatar';
 import CommentsList from './CommentsList';
 
 type PostDetailsProps = {
@@ -39,15 +40,8 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
   const queryClient = useQueryClient();
   const queryKey = usePostQuery.getKey({ id: post.id });
 
-  const handleSuccess = (data: CreateFavoriteMutation) => {
-    if (!data.favorite) return;
-
-    queryClient.setQueryData(queryKey, {
-      post: {
-        result: { ...post, favoriteCount: data.favorite.count },
-        isFavorite: !isFavorite,
-      },
-    });
+  const handleSuccess = async () => {
+    await queryClient.fetchQuery(queryKey);
 
     toast({
       status: 'success',
@@ -56,11 +50,25 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
     });
   };
 
+  const updateFavorited = (favorited: boolean) => {
+    const data = queryClient.getQueryData<PostQuery>(queryKey);
+
+    if (data?.post) {
+      queryClient.setQueryData<PostQuery>(queryKey, {
+        post: { ...data.post, isFavorite: favorited },
+      });
+    }
+  };
+
   const createMutation = useCreateFavoriteMutation(graphQLClient, {
-    onSuccess: (data) => handleSuccess(data),
+    onMutate: () => updateFavorited(true),
+    onSuccess: handleSuccess,
+    onError: () => updateFavorited(false),
   });
   const deleteMutation = useDeleteFavoriteMutation(graphQLClient, {
-    onSuccess: (data) => handleSuccess(data),
+    onMutate: () => updateFavorited(false),
+    onSuccess: handleSuccess,
+    onError: () => updateFavorited(true),
   });
 
   useEffect(() => () => toast.closeAll(), [toast]);
@@ -76,22 +84,15 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
     else createMutation.mutate({ postId: post.id });
   };
 
+  const cldUrl = new Cloudinary({ cloud: { cloudName: 'hnisqhgvp' } })
+    .image(post.image.publicId)
+    .addFlag('attachment')
+    .toURL();
+
   return (
     <>
-      <HStack mb={4} align="stretch">
-        <Avatar
-          src={
-            post.user.avatarUrl
-              ? `${CLOUDINARY_URL}/q_auto:eco,w_200,h_200,r_max/${
-                  post.user.avatarUrl?.split('upload/')[1]
-                }`
-              : undefined
-          }
-          mr={4}
-          bg="purple.500"
-          borderWidth="1px"
-          borderColor="purple.500"
-        />
+      <HStack mb={4} align="center">
+        <Avatar avatar={post.user.avatar} mr={2} w={16} />
         <Box flexGrow={1} pr={4}>
           <Heading as="h1">{post.title}</Heading>
           <Text>
@@ -114,11 +115,7 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
             colorScheme={isFavorite ? 'purple' : 'gray'}
             w={16}
           />
-          <Link
-            href={`${CLOUDINARY_URL}/fl_attachment/${
-              post.imageUrl.split('upload/')[1]
-            }`}
-          >
+          <Link href={cldUrl}>
             <IconButton
               aria-label="download image"
               icon={<Icon as={FaDownload} />}
