@@ -14,6 +14,7 @@ const sessionOptions: SessionOptions = {
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
+    httpOnly: process.env.NODE_ENV !== 'production',
   },
 };
 
