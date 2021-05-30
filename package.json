@@ -5,8 +5,9 @@
   "main": "server/src/server.ts",
   "scripts": {
     "start": "yarn --cwd server start",
-    "dev": "concurrently \"yarn --cwd server dev\" \"yarn --cwd client start\"",
-    "postinstall": "yarn --cwd server --prod=false && yarn --cwd client --prod=false",
+    "dev:up": "docker compose up -d --build",
+    "dev:down": "docker compose down",
+    "postinstall": "yarn --cwd server && yarn --cwd client",
     "build": "yarn --cwd server build && yarn --cwd client build",
     "prepare": "husky install"
   },
@@ -15,5 +16,6 @@
     "husky": "^6.0.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {}
 }
