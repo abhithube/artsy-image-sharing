@@ -1,0 +1,3 @@
+fragment avatar on Image {
+  publicId
+}

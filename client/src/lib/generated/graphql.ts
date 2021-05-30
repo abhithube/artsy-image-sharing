@@ -25,10 +25,14 @@ export type Auth = {
   id: Scalars['Int'];
   /** The username of the authenticated user */
   username: Scalars['String'];
-  /** The avatar image URL of the authenticated user */
-  avatarUrl?: Maybe<Scalars['String']>;
+  /** The avatar image of the authenticated user */
+  avatar: Image;
   /** The account status of the authenticated user */
   confirmed: Scalars['Boolean'];
+};
+
+export type AvatarInput = {
+  publicId: Scalars['String'];
 };
 
 /** A piece of written feedback submitted by a user on a post */
@@ -127,6 +131,14 @@ export type FavoritesResponse = {
   totalPages: Scalars['Int'];
 };
 
+export type Image = {
+  __typename?: 'Image';
+  publicId: Scalars['String'];
+  url: Scalars['String'];
+  width: Scalars['Int'];
+  height: Scalars['Int'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Register a user account */
@@ -161,13 +173,14 @@ export type Mutation = {
 export type MutationRegisterArgs = {
   username: Scalars['String'];
   password: Scalars['String'];
+  avatar: AvatarInput;
 };
 
 
 export type MutationLoginArgs = {
   username: Scalars['String'];
   password: Scalars['String'];
-  avatarUrl?: Maybe<Scalars['String']>;
+  avatar?: Maybe<AvatarInput>;
 };
 
 
@@ -233,8 +246,8 @@ export type Post = {
   title: Scalars['String'];
   /** The description of a post */
   body?: Maybe<Scalars['String']>;
-  /** The URL of the uploaded image */
-  imageUrl: Scalars['String'];
+  /** The uploaded image */
+  image: Image;
   /** The user who created the post */
   user: User;
   /** The list of favorites added to a post */
@@ -378,8 +391,8 @@ export type User = {
   id: Scalars['Int'];
   /** The username of a user */
   username: Scalars['String'];
-  /** The avatar image URL of a user */
-  avatarUrl?: Maybe<Scalars['String']>;
+  /** The avatar image of a user */
+  avatar: Image;
   /** The list of posts created by a user */
   posts?: Maybe<PostsResponse>;
   /** The number of posts created by a user */
@@ -422,12 +435,30 @@ export type UserCommentsArgs = {
   page?: Maybe<Scalars['Int']>;
 };
 
+export type AuthFragment = (
+  { __typename?: 'Auth' }
+  & Pick<Auth, 'id' | 'username' | 'confirmed'>
+  & { avatar: (
+    { __typename?: 'Image' }
+    & AvatarFragment
+  ) }
+);
+
+export type AvatarFragment = (
+  { __typename?: 'Image' }
+  & Pick<Image, 'publicId'>
+);
+
 export type CommentFragment = (
   { __typename?: 'Comment' }
   & Pick<Comment, 'id' | 'body' | 'createdAt'>
   & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'avatarUrl'>
+    & Pick<User, 'id' | 'username'>
+    & { avatar: (
+      { __typename?: 'Image' }
+      & AvatarFragment
+    ) }
   ) }
 );
 
@@ -439,23 +470,38 @@ export type FavoritesFragment = (
     & Pick<Favorite, 'id' | 'createdAt'>
     & { post: (
       { __typename?: 'Post' }
-      & Pick<Post, 'id' | 'title' | 'imageUrl'>
+      & Pick<Post, 'id' | 'title'>
+      & { image: (
+        { __typename?: 'Image' }
+        & Pick<Image, 'publicId' | 'url' | 'width' | 'height'>
+      ) }
     ) }
   )> }
 );
 
 export type PostDetailsFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'body' | 'imageUrl' | 'createdAt' | 'favoriteCount' | 'commentCount'>
-  & { user: (
+  & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'favoriteCount' | 'commentCount'>
+  & { image: (
+    { __typename?: 'Image' }
+    & Pick<Image, 'publicId' | 'url' | 'width' | 'height'>
+  ), user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'avatarUrl'>
+    & Pick<User, 'id' | 'username'>
+    & { avatar: (
+      { __typename?: 'Image' }
+      & AvatarFragment
+    ) }
   ) }
 );
 
 export type PostSummaryFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'imageUrl'>
+  & Pick<Post, 'id' | 'title'>
+  & { image: (
+    { __typename?: 'Image' }
+    & Pick<Image, 'publicId' | 'url' | 'width' | 'height'>
+  ) }
 );
 
 export type PostsFragment = (
@@ -533,7 +579,7 @@ export type DeleteFavoriteMutation = (
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
-  avatarUrl?: Maybe<Scalars['String']>;
+  avatar?: Maybe<AvatarInput>;
 }>;
 
 
@@ -541,7 +587,11 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { auth: (
     { __typename?: 'Auth' }
-    & Pick<Auth, 'id' | 'username' | 'avatarUrl' | 'confirmed'>
+    & Pick<Auth, 'id' | 'username' | 'confirmed'>
+    & { avatar: (
+      { __typename?: 'Image' }
+      & AvatarFragment
+    ) }
   ) }
 );
 
@@ -556,6 +606,7 @@ export type LogoutMutation = (
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
+  avatar: AvatarInput;
 }>;
 
 
@@ -571,7 +622,7 @@ export type AuthQuery = (
   { __typename?: 'Query' }
   & { auth?: Maybe<(
     { __typename?: 'Auth' }
-    & Pick<Auth, 'id' | 'username' | 'avatarUrl' | 'confirmed'>
+    & AuthFragment
   )> }
 );
 
@@ -675,7 +726,7 @@ export type RelatedPostsQuery = (
   { __typename?: 'Query' }
   & { relatedPosts?: Maybe<Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'imageUrl'>
+    & PostSummaryFragment
   )>> }
 );
 
@@ -688,8 +739,11 @@ export type UserQuery = (
   { __typename?: 'Query' }
   & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'avatarUrl' | 'postCount' | 'favoriteCount' | 'createdAt'>
-    & { posts?: Maybe<(
+    & Pick<User, 'id' | 'username' | 'postCount' | 'favoriteCount' | 'createdAt'>
+    & { avatar: (
+      { __typename?: 'Image' }
+      & AvatarFragment
+    ), posts?: Maybe<(
       { __typename?: 'PostsResponse' }
       & PostsFragment
     )>, favorites?: Maybe<(
@@ -699,6 +753,21 @@ export type UserQuery = (
   ) }
 );
 
+export const AvatarFragmentDoc = `
+    fragment avatar on Image {
+  publicId
+}
+    `;
+export const AuthFragmentDoc = `
+    fragment auth on Auth {
+  id
+  username
+  avatar {
+    ...avatar
+  }
+  confirmed
+}
+    ${AvatarFragmentDoc}`;
 export const CommentFragmentDoc = `
     fragment comment on Comment {
   id
@@ -706,11 +775,13 @@ export const CommentFragmentDoc = `
   user {
     id
     username
-    avatarUrl
+    avatar {
+      ...avatar
+    }
   }
   createdAt
 }
-    `;
+    ${AvatarFragmentDoc}`;
 export const FavoritesFragmentDoc = `
     fragment favorites on FavoritesResponse {
   results {
@@ -718,7 +789,12 @@ export const FavoritesFragmentDoc = `
     post {
       id
       title
-      imageUrl
+      image {
+        publicId
+        url
+        width
+        height
+      }
     }
     createdAt
   }
@@ -731,22 +807,34 @@ export const PostDetailsFragmentDoc = `
   id
   title
   body
-  imageUrl
+  image {
+    publicId
+    url
+    width
+    height
+  }
   createdAt
   user {
     id
     username
-    avatarUrl
+    avatar {
+      ...avatar
+    }
   }
   favoriteCount
   commentCount
 }
-    `;
+    ${AvatarFragmentDoc}`;
 export const PostSummaryFragmentDoc = `
     fragment postSummary on Post {
   id
   title
-  imageUrl
+  image {
+    publicId
+    url
+    width
+    height
+  }
 }
     `;
 export const PostsFragmentDoc = `
@@ -837,15 +925,17 @@ export const useDeleteFavoriteMutation = <
       options
     );
 export const LoginDocument = `
-    mutation login($username: String!, $password: String!, $avatarUrl: String) {
-  auth: login(username: $username, password: $password, avatarUrl: $avatarUrl) {
+    mutation login($username: String!, $password: String!, $avatar: AvatarInput) {
+  auth: login(username: $username, password: $password, avatar: $avatar) {
     id
     username
-    avatarUrl
+    avatar {
+      ...avatar
+    }
     confirmed
   }
 }
-    `;
+    ${AvatarFragmentDoc}`;
 export const useLoginMutation = <
       TError = unknown,
       TContext = unknown
@@ -874,8 +964,8 @@ export const useLogoutMutation = <
       options
     );
 export const RegisterDocument = `
-    mutation register($username: String!, $password: String!) {
-  registered: register(username: $username, password: $password)
+    mutation register($username: String!, $password: String!, $avatar: AvatarInput!) {
+  registered: register(username: $username, password: $password, avatar: $avatar)
 }
     `;
 export const useRegisterMutation = <
@@ -892,13 +982,10 @@ export const useRegisterMutation = <
 export const AuthDocument = `
     query auth {
   auth {
-    id
-    username
-    avatarUrl
-    confirmed
+    ...auth
   }
 }
-    `;
+    ${AuthFragmentDoc}`;
 export const useAuthQuery = <
       TData = AuthQuery,
       TError = unknown
@@ -1063,12 +1150,10 @@ usePostsQuery.getKey = (variables?: PostsQueryVariables) => ['posts', variables]
 export const RelatedPostsDocument = `
     query relatedPosts($postId: Int!) {
   relatedPosts(postId: $postId) {
-    id
-    title
-    imageUrl
+    ...postSummary
   }
 }
-    `;
+    ${PostSummaryFragmentDoc}`;
 export const useRelatedPostsQuery = <
       TData = RelatedPostsQuery,
       TError = unknown
@@ -1091,7 +1176,9 @@ export const UserDocument = `
   user(id: $id) {
     id
     username
-    avatarUrl
+    avatar {
+      ...avatar
+    }
     posts(limit: 5) {
       ...posts
     }
@@ -1103,7 +1190,8 @@ export const UserDocument = `
     createdAt
   }
 }
-    ${PostsFragmentDoc}
+    ${AvatarFragmentDoc}
+${PostsFragmentDoc}
 ${FavoritesFragmentDoc}`;
 export const useUserQuery = <
       TData = UserQuery,

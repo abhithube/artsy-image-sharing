@@ -2,12 +2,19 @@ fragment postDetails on Post {
   id
   title
   body
-  imageUrl
+  image {
+    publicId
+    url
+    width
+    height
+  }
   createdAt
   user {
     id
     username
-    avatarUrl
+    avatar {
+      ...avatar
+    }
   }
   favoriteCount
   commentCount

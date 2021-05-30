@@ -4,7 +4,9 @@ fragment comment on Comment {
   user {
     id
     username
-    avatarUrl
+    avatar {
+      ...avatar
+    }
   }
   createdAt
 }

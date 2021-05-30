@@ -4,7 +4,12 @@ fragment favorites on FavoritesResponse {
     post {
       id
       title
-      imageUrl
+      image {
+        publicId
+        url
+        width
+        height
+      }
     }
     createdAt
   }

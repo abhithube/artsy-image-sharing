@@ -2,7 +2,9 @@ query user($id: Int!) {
   user(id: $id) {
     id
     username
-    avatarUrl
+    avatar {
+      ...avatar
+    }
     posts(limit: 5) {
       ...posts
     }

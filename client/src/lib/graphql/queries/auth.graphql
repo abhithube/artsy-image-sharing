@@ -1,8 +1,5 @@
 query auth {
   auth {
-    id
-    username
-    avatarUrl
-    confirmed
+    ...auth
   }
 }

@@ -1,0 +1,8 @@
+fragment auth on Auth {
+  id
+  username
+  avatar {
+    ...avatar
+  }
+  confirmed
+}
