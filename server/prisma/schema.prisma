@@ -12,10 +12,11 @@ model User {
   id            Int         @default(autoincrement()) @id
   username      String      @db.VarChar(255) @unique
   password      String      @db.VarChar(255)
-  avatarUrl     String?     @db.VarChar @map("avatar_url")
+  avatarId      String      @db.VarChar(255) @map("avatar_id")
   confirmed     Boolean     @default(false)
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
+  avatar        Image       @relation(fields: [avatarId], references: [publicId])
   posts         Post[]
   favorites     Favorite[]
   comments      Comment[]
@@ -26,14 +27,27 @@ model Post {
   id            Int         @default(autoincrement()) @id
   title         String      @db.VarChar(255)
   body          String?
-  imageUrl      String      @db.VarChar @map("image_url")
   userId        Int         @map("user_id")
+  imageId       String      @db.VarChar(255) @map("image_id")
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
+  image         Image       @relation(fields: [imageId], references: [publicId])
   user          User        @relation(fields: [userId], references: [id])
   favorites     Favorite[]
   comments      Comment[]
   @@map("posts")
+}
+
+model Image {
+  publicId  String    @db.VarChar(255) @unique @map("public_id")
+  url       String    @db.VarChar
+  width     Int
+  height    Int
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  post      Post?
+  users     User[]
+  @@map("images")
 }
 
 model Favorite {

@@ -30,7 +30,12 @@ export const resolvers: Resolvers = {
 
       const results = await ctx.prisma.comment.findMany({
         where,
-        include: { post: { include: { user: true } }, user: true },
+        include: {
+          post: {
+            include: { image: true, user: { include: { avatar: true } } },
+          },
+          user: { include: { avatar: true } },
+        },
         orderBy,
         take: limit,
         skip: limit * page,
@@ -56,7 +61,12 @@ export const resolvers: Resolvers = {
 
       return ctx.prisma.comment.create({
         data: { body, postId, userId: user.id },
-        include: { post: { include: { user: true } }, user: true },
+        include: {
+          post: {
+            include: { image: true, user: { include: { avatar: true } } },
+          },
+          user: { include: { avatar: true } },
+        },
       });
     },
     updateComment: async (_parent, args, ctx) => {
@@ -72,7 +82,12 @@ export const resolvers: Resolvers = {
       return ctx.prisma.comment.update({
         where: { id },
         data: { body },
-        include: { post: { include: { user: true } }, user: true },
+        include: {
+          post: {
+            include: { image: true, user: { include: { avatar: true } } },
+          },
+          user: { include: { avatar: true } },
+        },
       });
     },
     deleteComment: async (_parent, args, ctx) => {
@@ -87,7 +102,12 @@ export const resolvers: Resolvers = {
 
       return ctx.prisma.comment.delete({
         where: { id },
-        include: { post: { include: { user: true } }, user: true },
+        include: {
+          post: {
+            include: { image: true, user: { include: { avatar: true } } },
+          },
+          user: { include: { avatar: true } },
+        },
       });
     },
   },

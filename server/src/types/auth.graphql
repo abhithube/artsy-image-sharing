@@ -4,8 +4,8 @@ type Auth {
   id: Int!
   # The username of the authenticated user
   username: String!
-  # The avatar image URL of the authenticated user
-  avatarUrl: String
+  # The avatar image of the authenticated user
+  avatar: Image!
   # The account status of the authenticated user
   confirmed: Boolean!
 }
@@ -22,6 +22,8 @@ extend type Mutation {
     username: String!
     # The password of the user account
     password: String!
+    # The avatar image of the user account
+    avatar: AvatarInput!
   ): Boolean!
   # Log in to a user account
   login(
@@ -29,9 +31,13 @@ extend type Mutation {
     username: String!
     # The password of the user account
     password: String!
-    # The avatar image URL of the user account
-    avatarUrl: String
+    # The avatar image of the user account
+    avatar: AvatarInput
   ): Auth!
   # Log out of a user account
   logout: Boolean!
+}
+
+input AvatarInput {
+  publicId: String!
 }

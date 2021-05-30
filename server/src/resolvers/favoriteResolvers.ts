@@ -30,7 +30,12 @@ export const resolvers: Resolvers = {
 
       const results = await ctx.prisma.favorite.findMany({
         where,
-        include: { post: { include: { user: true } }, user: true },
+        include: {
+          post: {
+            include: { image: true, user: { include: { avatar: true } } },
+          },
+          user: { include: { avatar: true } },
+        },
         orderBy,
         take: limit,
         skip: limit * page,
@@ -56,7 +61,12 @@ export const resolvers: Resolvers = {
 
       const result = await ctx.prisma.favorite.create({
         data: { postId, userId: user.id },
-        include: { post: { include: { user: true } }, user: true },
+        include: {
+          post: {
+            include: { image: true, user: { include: { avatar: true } } },
+          },
+          user: { include: { avatar: true } },
+        },
       });
 
       const count = await ctx.prisma.favorite.count({
@@ -79,7 +89,12 @@ export const resolvers: Resolvers = {
 
       const result = await ctx.prisma.favorite.delete({
         where: { id: favorite.id },
-        include: { post: { include: { user: true } }, user: true },
+        include: {
+          post: {
+            include: { image: true, user: { include: { avatar: true } } },
+          },
+          user: { include: { avatar: true } },
+        },
       });
 
       const count = await ctx.prisma.favorite.count({

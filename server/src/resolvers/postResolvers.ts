@@ -30,7 +30,12 @@ export const resolvers: Resolvers = {
           where: { id: parent.id },
         })
         .favorites({
-          include: { post: { include: { user: true } }, user: true },
+          include: {
+            post: {
+              include: { image: true, user: { include: { avatar: true } } },
+            },
+            user: { include: { avatar: true } },
+          },
           orderBy,
           take: limit,
           skip: limit * page,
@@ -73,7 +78,12 @@ export const resolvers: Resolvers = {
           where: { id: parent.id },
         })
         .comments({
-          include: { post: { include: { user: true } }, user: true },
+          include: {
+            post: {
+              include: { image: true, user: { include: { avatar: true } } },
+            },
+            user: { include: { avatar: true } },
+          },
           orderBy,
           take: limit,
           skip: limit * page,
@@ -126,7 +136,7 @@ export const resolvers: Resolvers = {
 
       const results = await ctx.prisma.post.findMany({
         where,
-        include: { user: true },
+        include: { image: true, user: { include: { avatar: true } } },
         orderBy,
         take: limit,
         skip: limit * page,
@@ -145,7 +155,7 @@ export const resolvers: Resolvers = {
 
       const post = await ctx.prisma.post.findUnique({
         where: { id },
-        include: { user: true },
+        include: { image: true, user: { include: { avatar: true } } },
       });
       if (!post) throw new Error('Post not found');
 
@@ -167,7 +177,7 @@ export const resolvers: Resolvers = {
 
       const posts = await ctx.prisma.post.findMany({
         where: { AND: { userId: post.userId, id: { not: post.id } } },
-        include: { user: true },
+        include: { image: true, user: { include: { avatar: true } } },
         orderBy: { createdAt: 'desc' },
         take: 10,
       });
@@ -177,7 +187,10 @@ export const resolvers: Resolvers = {
       if (posts.length < 10) {
         const more = await ctx.prisma.post.findMany({
           where: { id: { notIn: ids } },
-          include: { user: true },
+          include: {
+            image: true,
+            user: { include: { avatar: true } },
+          },
           orderBy: { favorites: { count: 'desc' } },
           take: 10 - posts.length,
         });
@@ -193,13 +206,28 @@ export const resolvers: Resolvers = {
       if (!user) throw new Error('User not authenticated');
 
       const { title, body, file } = args;
-      // eslint-disable-next-line camelcase
-      const { secure_url } = await uploader.upload(file, {
-        upload_preset: 'q_eco',
-      });
+      const {
+        height,
+        public_id: publicId,
+        secure_url: url,
+        width,
+      } = await uploader.upload(file, { upload_preset: 'q_eco' });
+
       return ctx.prisma.post.create({
-        data: { title, body, imageUrl: secure_url, userId: user.id },
-        include: { user: true },
+        data: {
+          title,
+          body,
+          image: {
+            create: {
+              publicId,
+              url,
+              width,
+              height,
+            },
+          },
+          user: { connect: { id: user.id } },
+        },
+        include: { image: true, user: { include: { avatar: true } } },
       });
     },
     updatePost: async (_parent, args, ctx) => {
@@ -219,7 +247,7 @@ export const resolvers: Resolvers = {
       return ctx.prisma.post.update({
         where: { id },
         data,
-        include: { user: true },
+        include: { image: true, user: { include: { avatar: true } } },
       });
     },
     deletePost: async (_parent, args, ctx) => {
@@ -234,7 +262,7 @@ export const resolvers: Resolvers = {
 
       return ctx.prisma.post.delete({
         where: { id },
-        include: { user: true },
+        include: { image: true, user: { include: { avatar: true } } },
       });
     },
   },

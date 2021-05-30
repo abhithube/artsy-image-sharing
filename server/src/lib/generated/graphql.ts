@@ -19,8 +19,12 @@ export type Auth = {
   __typename?: 'Auth';
   id: Scalars['Int'];
   username: Scalars['String'];
-  avatarUrl?: Maybe<Scalars['String']>;
+  avatar: Image;
   confirmed: Scalars['Boolean'];
+};
+
+export type AvatarInput = {
+  publicId: Scalars['String'];
 };
 
 export type Comment = {
@@ -85,6 +89,14 @@ export type FavoritesResponse = {
   totalPages: Scalars['Int'];
 };
 
+export type Image = {
+  __typename?: 'Image';
+  publicId: Scalars['String'];
+  url: Scalars['String'];
+  width: Scalars['Int'];
+  height: Scalars['Int'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createComment: Comment;
@@ -139,13 +151,14 @@ export type MutationDeletePostArgs = {
 export type MutationLoginArgs = {
   username: Scalars['String'];
   password: Scalars['String'];
-  avatarUrl?: Maybe<Scalars['String']>;
+  avatar?: Maybe<AvatarInput>;
 };
 
 
 export type MutationRegisterArgs = {
   username: Scalars['String'];
   password: Scalars['String'];
+  avatar: AvatarInput;
 };
 
 
@@ -174,7 +187,7 @@ export type Post = {
   id: Scalars['Int'];
   title: Scalars['String'];
   body?: Maybe<Scalars['String']>;
-  imageUrl: Scalars['String'];
+  image: Image;
   user: User;
   favorites?: Maybe<FavoritesResponse>;
   favoriteCount?: Maybe<Scalars['Int']>;
@@ -286,7 +299,7 @@ export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
   username: Scalars['String'];
-  avatarUrl?: Maybe<Scalars['String']>;
+  avatar: Image;
   posts?: Maybe<PostsResponse>;
   postCount?: Maybe<Scalars['Int']>;
   favorites?: Maybe<FavoritesResponse>;
@@ -400,6 +413,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  AvatarInput: AvatarInput;
   Comment: ResolverTypeWrapper<Comment>;
   CommentOrderByInput: CommentOrderByInput;
   CommentSortField: CommentSortField;
@@ -410,6 +424,7 @@ export type ResolversTypes = {
   FavoriteResponse: ResolverTypeWrapper<FavoriteResponse>;
   FavoriteSortField: FavoriteSortField;
   FavoritesResponse: ResolverTypeWrapper<FavoritesResponse>;
+  Image: ResolverTypeWrapper<Image>;
   Mutation: ResolverTypeWrapper<{}>;
   Post: ResolverTypeWrapper<Post>;
   PostOrderByInput: PostOrderByInput;
@@ -427,6 +442,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   String: Scalars['String'];
   Boolean: Scalars['Boolean'];
+  AvatarInput: AvatarInput;
   Comment: Comment;
   CommentOrderByInput: CommentOrderByInput;
   CommentsResponse: CommentsResponse;
@@ -435,6 +451,7 @@ export type ResolversParentTypes = {
   FavoriteOrderByInput: FavoriteOrderByInput;
   FavoriteResponse: FavoriteResponse;
   FavoritesResponse: FavoritesResponse;
+  Image: Image;
   Mutation: {};
   Post: Post;
   PostOrderByInput: PostOrderByInput;
@@ -447,7 +464,7 @@ export type ResolversParentTypes = {
 export type AuthResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Auth'] = ResolversParentTypes['Auth']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  avatarUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  avatar?: Resolver<ResolversTypes['Image'], ParentType, ContextType>;
   confirmed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -497,6 +514,14 @@ export type FavoritesResponseResolvers<ContextType = Context, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ImageResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Image'] = ResolversParentTypes['Image']> = {
+  publicId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  width?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  height?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'body' | 'postId'>>;
   createFavorite?: Resolver<Maybe<ResolversTypes['FavoriteResponse']>, ParentType, ContextType, RequireFields<MutationCreateFavoriteArgs, 'postId'>>;
@@ -507,7 +532,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   deleteUser?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   login?: Resolver<ResolversTypes['Auth'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>;
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  register?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'username' | 'password'>>;
+  register?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'username' | 'password' | 'avatar'>>;
   updateComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationUpdateCommentArgs, 'id' | 'body'>>;
   updatePost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationUpdatePostArgs, 'id'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'currentPassword'>>;
@@ -517,7 +542,7 @@ export type PostResolvers<ContextType = Context, ParentType extends ResolversPar
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  image?: Resolver<ResolversTypes['Image'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   favorites?: Resolver<Maybe<ResolversTypes['FavoritesResponse']>, ParentType, ContextType, RequireFields<PostFavoritesArgs, 'orderBy' | 'limit' | 'page'>>;
   favoriteCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -555,7 +580,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  avatarUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  avatar?: Resolver<ResolversTypes['Image'], ParentType, ContextType>;
   posts?: Resolver<Maybe<ResolversTypes['PostsResponse']>, ParentType, ContextType, RequireFields<UserPostsArgs, 'orderBy' | 'limit' | 'page'>>;
   postCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   favorites?: Resolver<Maybe<ResolversTypes['FavoritesResponse']>, ParentType, ContextType, RequireFields<UserFavoritesArgs, 'orderBy' | 'limit' | 'page'>>;
@@ -575,6 +600,7 @@ export type Resolvers<ContextType = Context> = {
   Favorite?: FavoriteResolvers<ContextType>;
   FavoriteResponse?: FavoriteResponseResolvers<ContextType>;
   FavoritesResponse?: FavoritesResponseResolvers<ContextType>;
+  Image?: ImageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   PostResponse?: PostResponseResolvers<ContextType>;

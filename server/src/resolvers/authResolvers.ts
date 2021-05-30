@@ -7,7 +7,7 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     register: async (_parent, args, ctx) => {
-      const { username, password } = args;
+      const { username, password, avatar } = args;
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await ctx.prisma.user.findUnique({
@@ -16,31 +16,42 @@ export const resolvers: Resolvers = {
       if (user) throw new Error('Username already taken');
 
       await ctx.prisma.user.create({
-        data: { username, password: hashedPassword },
+        data: {
+          username,
+          password: hashedPassword,
+          avatar: { connect: { publicId: avatar.publicId } },
+        },
       });
 
       return true;
     },
     login: async (_parent, args, ctx) => {
-      const { username, password, avatarUrl } = args;
+      const { username, password, avatar } = args;
 
-      let user = await ctx.prisma.user.findUnique({ where: { username } });
+      let user = await ctx.prisma.user.findUnique({
+        where: { username },
+        include: { avatar: true },
+      });
       if (!user) throw new Error('Invalid credentials');
 
       const match = await bcrypt.compare(password, user.password);
       if (!match) throw new Error('Invalid credentials');
 
-      if (avatarUrl !== undefined) {
+      if (avatar && avatar.publicId) {
         user = await ctx.prisma.user.update({
           where: { id: user.id },
-          data: { avatarUrl, confirmed: true },
+          data: {
+            confirmed: true,
+            avatar: { connect: { publicId: avatar.publicId } },
+          },
+          include: { avatar: true },
         });
       }
 
       const authUser = {
         id: user.id,
         username: user.username,
-        avatarUrl: user.avatarUrl || undefined,
+        avatar: user.avatar,
         confirmed: user.confirmed,
       };
 

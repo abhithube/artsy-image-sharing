@@ -6,8 +6,8 @@ type Post {
   title: String!
   # The description of a post
   body: String
-  # The URL of the uploaded image
-  imageUrl: String!
+  # The uploaded image
+  image: Image!
   # The user who created the post
   user: User!
   # The list of favorites added to a post

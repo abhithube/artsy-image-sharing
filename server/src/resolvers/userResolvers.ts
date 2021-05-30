@@ -37,7 +37,7 @@ export const resolvers: Resolvers = {
       const posts = await ctx.prisma.user
         .findUnique({ where: { id: parent.id } })
         .posts({
-          include: { user: true },
+          include: { image: true, user: { include: { avatar: true } } },
           orderBy,
           take: limit,
           skip: limit * page,
@@ -78,7 +78,12 @@ export const resolvers: Resolvers = {
           where: { id: parent.id },
         })
         .favorites({
-          include: { post: { include: { user: true } }, user: true },
+          include: {
+            post: {
+              include: { image: true, user: { include: { avatar: true } } },
+            },
+            user: { include: { avatar: true } },
+          },
           orderBy,
           take: limit,
           skip: limit * page,
@@ -121,7 +126,12 @@ export const resolvers: Resolvers = {
           where: { id: parent.id },
         })
         .comments({
-          include: { post: { include: { user: true } }, user: true },
+          include: {
+            post: {
+              include: { image: true, user: { include: { avatar: true } } },
+            },
+            user: { include: { avatar: true } },
+          },
           orderBy,
           take: limit,
           skip: limit * page,
@@ -141,7 +151,10 @@ export const resolvers: Resolvers = {
   },
   Query: {
     user: async (_parent, args, ctx) => {
-      const user = await ctx.prisma.user.findUnique({ where: { id: args.id } });
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: args.id },
+        include: { avatar: true },
+      });
       if (!user) throw new Error('User not found');
 
       return user;
@@ -156,6 +169,7 @@ export const resolvers: Resolvers = {
 
       let user = await ctx.prisma.user.findUnique({
         where: { id: authUser.id },
+        include: { avatar: true },
       });
       if (!user) throw new Error('User not found');
 
@@ -172,9 +186,13 @@ export const resolvers: Resolvers = {
       if (password) data.password = password;
       if (avatarUrl) data.avatarUrl = avatarUrl;
 
-      user = await ctx.prisma.user.update({ where: { id: authUser.id }, data });
+      user = await ctx.prisma.user.update({
+        where: { id: authUser.id },
+        data,
+        include: { avatar: true },
+      });
       authUser.username = user.username;
-      authUser.avatarUrl = user.avatarUrl || undefined;
+      authUser.avatar = user.avatar || undefined;
 
       return user;
     },
@@ -182,7 +200,10 @@ export const resolvers: Resolvers = {
       const { user: authUser } = ctx.req.session;
       if (!authUser) throw new Error('User not authenticated');
 
-      const user = await ctx.prisma.user.delete({ where: { id: authUser.id } });
+      const user = await ctx.prisma.user.delete({
+        where: { id: authUser.id },
+        include: { avatar: true },
+      });
       const sessionDestroyPromise = () => {
         return new Promise<boolean>((resolve, reject) => {
           ctx.req.session.destroy((err) => (err ? reject(err) : resolve(true)));
