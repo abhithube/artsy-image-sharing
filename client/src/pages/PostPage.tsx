@@ -64,10 +64,7 @@ const PostPage = () => {
                 plugins={[placeholder('blur')]}
               />
             </Center>
-            <PostDetails
-              id={Number(id)}
-              publicId={data.post.result.image.publicId}
-            />
+            <PostDetails id={Number(id)} />
           </Box>
           <Box
             flexBasis={['0%', '0%', '0%', '25%', '25%']}

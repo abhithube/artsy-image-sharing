@@ -439,7 +439,7 @@ export type AuthFragment = (
   & Pick<Auth, 'id' | 'username' | 'confirmed'>
   & { avatar: (
     { __typename?: 'Image' }
-    & ImageFragment
+    & Pick<Image, 'publicId'>
   ) }
 );
 
@@ -463,7 +463,7 @@ export type FavoritesFragment = (
       & Pick<Post, 'id' | 'title'>
       & { image: (
         { __typename?: 'Image' }
-        & ImageFragment
+        & Pick<Image, 'publicId'>
       ) }
     ) }
   )> }
@@ -477,7 +477,10 @@ export type ImageFragment = (
 export type PostDetailsFragment = (
   { __typename?: 'Post' }
   & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'favoriteCount' | 'commentCount'>
-  & { user: (
+  & { image: (
+    { __typename?: 'Image' }
+    & Pick<Image, 'publicId'>
+  ), user: (
     { __typename?: 'User' }
     & UserFragment
   ) }
@@ -488,7 +491,7 @@ export type PostSummaryFragment = (
   & Pick<Post, 'id' | 'title'>
   & { image: (
     { __typename?: 'Image' }
-    & ImageFragment
+    & Pick<Image, 'publicId'>
   ) }
 );
 
@@ -506,7 +509,7 @@ export type UserFragment = (
   & Pick<User, 'id' | 'username'>
   & { avatar: (
     { __typename?: 'Image' }
-    & ImageFragment
+    & Pick<Image, 'publicId'>
   ) }
 );
 
@@ -688,7 +691,7 @@ export type ImageQuery = (
       { __typename?: 'Post' }
       & { image: (
         { __typename?: 'Image' }
-        & ImageFragment
+        & Pick<Image, 'publicId'>
       ) }
     ) }
   )> }
@@ -762,30 +765,25 @@ export type UserQuery = (
   ) }
 );
 
-export const ImageFragmentDoc = `
-    fragment image on Image {
-  publicId
-}
-    `;
 export const AuthFragmentDoc = `
     fragment auth on Auth {
   id
   username
   avatar {
-    ...image
+    publicId
   }
   confirmed
 }
-    ${ImageFragmentDoc}`;
+    `;
 export const UserFragmentDoc = `
     fragment user on User {
   id
   username
   avatar {
-    ...image
+    publicId
   }
 }
-    ${ImageFragmentDoc}`;
+    `;
 export const CommentFragmentDoc = `
     fragment comment on Comment {
   id
@@ -804,7 +802,7 @@ export const FavoritesFragmentDoc = `
       id
       title
       image {
-        ...image
+        publicId
       }
     }
     createdAt
@@ -812,11 +810,19 @@ export const FavoritesFragmentDoc = `
   prevPage
   nextPage
 }
-    ${ImageFragmentDoc}`;
+    `;
+export const ImageFragmentDoc = `
+    fragment image on Image {
+  publicId
+}
+    `;
 export const PostDetailsFragmentDoc = `
     fragment postDetails on Post {
   id
   title
+  image {
+    publicId
+  }
   body
   createdAt
   user {
@@ -831,10 +837,10 @@ export const PostSummaryFragmentDoc = `
   id
   title
   image {
-    ...image
+    publicId
   }
 }
-    ${ImageFragmentDoc}`;
+    `;
 export const PostsFragmentDoc = `
     fragment posts on PostsResponse {
   results {
@@ -1089,12 +1095,12 @@ export const ImageDocument = `
   post(id: $id) {
     result {
       image {
-        ...image
+        publicId
       }
     }
   }
 }
-    ${ImageFragmentDoc}`;
+    `;
 export const useImageQuery = <
       TData = ImageQuery,
       TError = unknown

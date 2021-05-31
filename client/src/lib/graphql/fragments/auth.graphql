@@ -2,7 +2,7 @@ fragment auth on Auth {
   id
   username
   avatar {
-    ...image
+    publicId
   }
   confirmed
 }

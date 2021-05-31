@@ -1,6 +1,9 @@
 fragment postDetails on Post {
   id
   title
+  image {
+    publicId
+  }
   body
   createdAt
   user {

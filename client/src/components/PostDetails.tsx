@@ -29,10 +29,9 @@ import CommentsList from './CommentsList';
 
 type PostDetailsProps = {
   id: number;
-  publicId: string;
 };
 
-const PostDetails = ({ id, publicId }: PostDetailsProps) => {
+const PostDetails = ({ id }: PostDetailsProps) => {
   const { authenticatedUser } = useContext(AuthContext);
 
   const toast = useToast();
@@ -89,7 +88,7 @@ const PostDetails = ({ id, publicId }: PostDetailsProps) => {
   };
 
   const cldUrl = new Cloudinary({ cloud: { cloudName: 'hnisqhgvp' } })
-    .image(publicId)
+    .image(data?.post?.result.image.publicId)
     .addFlag('attachment')
     .toURL();
 

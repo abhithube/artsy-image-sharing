@@ -2,7 +2,7 @@ query image($id: Int!) {
   post(id: $id) {
     result {
       image {
-        ...image
+        publicId
       }
     }
   }

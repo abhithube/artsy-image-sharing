@@ -5,7 +5,7 @@ fragment favorites on FavoritesResponse {
       id
       title
       image {
-        ...image
+        publicId
       }
     }
     createdAt
