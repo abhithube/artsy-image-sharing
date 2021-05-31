@@ -8,6 +8,8 @@ RUN yarn
 
 COPY . .
 
+RUN npx prisma generate
+
 RUN yarn build
 
-CMD [ "yarn", "start" ]
+CMD [ "/bin/sh", "./entrypoint-prod.sh" ]

@@ -182,7 +182,7 @@ export const resolvers: Resolvers = {
         take: 10,
       });
 
-      const ids = [postId, ...posts.map(({ id }) => id)];
+      const ids = [postId, ...posts.map(({ id }: { id: number }) => id)];
 
       if (posts.length < 10) {
         const more = await ctx.prisma.post.findMany({
