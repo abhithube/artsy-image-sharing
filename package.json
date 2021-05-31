@@ -7,7 +7,7 @@
     "start": "yarn --cwd server start",
     "dev:up": "docker compose up -d --build",
     "dev:down": "docker compose down",
-    "postinstall": "yarn --cwd server && yarn --cwd client",
+    "postinstall": "yarn --cwd server --prod=false && yarn --cwd client --prod=false",
     "build": "yarn --cwd server build && yarn --cwd client build",
     "prepare": "husky install"
   },

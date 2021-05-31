@@ -8,6 +8,4 @@ RUN yarn
 
 COPY . .
 
-RUN yarn build
-
-CMD [ "yarn", "start" ]
+CMD [ "/bin/sh", "./entrypoint.sh" ]
