@@ -12,7 +12,6 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "concurrently": "^6.1.0",
     "husky": "^6.0.0"
   },
   "author": "",

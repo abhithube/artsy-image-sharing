@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts --ext ts,graphql",
+    "postinstall": "prisma generate",
     "build": "tsc && yarn copy",
     "generate": "graphql-codegen",
     "copy": "cpx \"src/**/*.graphql\" dist"
@@ -58,8 +59,10 @@
     "typescript": "^4.2.4"
   },
   "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json}": [
+      "eslint --fix"
+    ],
     "src/**/*": [
-      "eslint --fix",
       "prettier --write"
     ]
   },
