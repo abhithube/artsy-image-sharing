@@ -2,9 +2,6 @@ fragment postSummary on Post {
   id
   title
   image {
-    publicId
-    url
-    width
-    height
+    ...image
   }
 }

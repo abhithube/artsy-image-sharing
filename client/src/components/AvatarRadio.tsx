@@ -1,9 +1,9 @@
 import { Box, Input, useRadio, UseRadioProps } from '@chakra-ui/react';
-import { AvatarFragment } from '../lib/generated/graphql';
+import { ImageFragment } from '../lib/generated/graphql';
 import Avatar from './Avatar';
 
 type RadioProps = UseRadioProps & {
-  avatar: AvatarFragment;
+  avatar: ImageFragment;
 };
 
 const AvatarRadio = (props: RadioProps) => {

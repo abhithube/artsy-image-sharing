@@ -2,11 +2,7 @@ fragment comment on Comment {
   id
   body
   user {
-    id
-    username
-    avatar {
-      ...avatar
-    }
+    ...user
   }
   createdAt
 }

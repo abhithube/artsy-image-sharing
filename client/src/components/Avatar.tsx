@@ -4,11 +4,11 @@ import { scale } from '@cloudinary/base/actions/resize';
 import max from '@cloudinary/base/actions/roundCorners/max';
 import { autoLow } from '@cloudinary/base/qualifiers/quality';
 import { cld } from '../config/cloudinary';
-import { AvatarFragment } from '../lib/generated/graphql';
+import { ImageFragment } from '../lib/generated/graphql';
 import CloudinaryImage from './CloudinaryImage';
 
 type AvatarProps = BoxProps & {
-  avatar: AvatarFragment;
+  avatar: ImageFragment;
 };
 
 const Avatar = (props: AvatarProps) => {

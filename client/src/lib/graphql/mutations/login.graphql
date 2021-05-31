@@ -1,10 +1,5 @@
 mutation login($username: String!, $password: String!, $avatar: AvatarInput) {
   auth: login(username: $username, password: $password, avatar: $avatar) {
-    id
-    username
-    avatar {
-      ...avatar
-    }
-    confirmed
+    ...auth
   }
 }

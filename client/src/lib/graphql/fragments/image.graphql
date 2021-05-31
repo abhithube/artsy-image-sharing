@@ -1,0 +1,3 @@
+fragment image on Image {
+  publicId
+}

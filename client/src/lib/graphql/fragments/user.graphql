@@ -1,8 +1,7 @@
-fragment auth on Auth {
+fragment user on User {
   id
   username
   avatar {
     ...image
   }
-  confirmed
 }

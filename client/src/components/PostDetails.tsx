@@ -6,6 +6,7 @@ import {
   Icon,
   IconButton,
   Link,
+  Spinner,
   Text,
   useToast,
 } from '@chakra-ui/react';
@@ -17,7 +18,6 @@ import { useQueryClient } from 'react-query';
 import { Link as RouterLink } from 'react-router-dom';
 import { AuthContext } from '../lib/context/AuthContext';
 import {
-  PostDetailsFragment,
   PostQuery,
   useCreateFavoriteMutation,
   useDeleteFavoriteMutation,
@@ -28,34 +28,38 @@ import Avatar from './Avatar';
 import CommentsList from './CommentsList';
 
 type PostDetailsProps = {
-  post: PostDetailsFragment;
-  isFavorite: boolean;
+  id: number;
+  publicId: string;
 };
 
-const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
+const PostDetails = ({ id, publicId }: PostDetailsProps) => {
   const { authenticatedUser } = useContext(AuthContext);
 
   const toast = useToast();
 
   const queryClient = useQueryClient();
-  const queryKey = usePostQuery.getKey({ id: post.id });
+  const queryKey = usePostQuery.getKey({ id });
+
+  const { data, isLoading } = usePostQuery(graphQLClient, { id: Number(id) });
 
   const handleSuccess = async () => {
     await queryClient.fetchQuery(queryKey);
 
     toast({
       status: 'success',
-      title: `${isFavorite ? 'Removed from' : 'Added to'} favorites`,
+      title: `${
+        data?.post?.isFavorite ? 'Removed from' : 'Added to'
+      } favorites`,
       isClosable: true,
     });
   };
 
   const updateFavorited = (favorited: boolean) => {
-    const data = queryClient.getQueryData<PostQuery>(queryKey);
+    const data2 = queryClient.getQueryData<PostQuery>(queryKey);
 
-    if (data?.post) {
+    if (data2?.post) {
       queryClient.setQueryData<PostQuery>(queryKey, {
-        post: { ...data.post, isFavorite: favorited },
+        post: { ...data2.post, isFavorite: favorited },
       });
     }
   };
@@ -80,69 +84,78 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
         title: 'You must be signed in to add a favorite',
         isClosable: true,
       });
-    } else if (isFavorite) deleteMutation.mutate({ postId: post.id });
-    else createMutation.mutate({ postId: post.id });
+    } else if (data?.post?.isFavorite) deleteMutation.mutate({ postId: id });
+    else createMutation.mutate({ postId: id });
   };
 
   const cldUrl = new Cloudinary({ cloud: { cloudName: 'hnisqhgvp' } })
-    .image(post.image.publicId)
+    .image(publicId)
     .addFlag('attachment')
     .toURL();
 
+  if (isLoading) return <Spinner speed="1s" />;
+
   return (
     <>
-      <HStack mb={4} align="center">
-        <Avatar avatar={post.user.avatar} mr={2} w={16} />
-        <Box flexGrow={1} pr={4}>
-          <Heading as="h1">{post.title}</Heading>
-          <Text>
-            {`by `}
-            <Link
-              as={RouterLink}
-              to={`/users/${post.user?.id}`}
-              textDecoration="underline"
-              _hover={{ color: 'purple.200' }}
-            >
-              {post.user.username}
-            </Link>
-          </Text>
-        </Box>
-        <ButtonGroup spacing={4} h="100%">
-          <IconButton
-            aria-label="toggle favorite"
-            onClick={handleFavorite}
-            icon={<Icon as={FaRegHeart} />}
-            colorScheme={isFavorite ? 'purple' : 'gray'}
-            w={16}
+      {data?.post && (
+        <>
+          <HStack mb={4} align="center">
+            <Avatar avatar={data.post.result.user.avatar} mr={2} w={16} />
+            <Box flexGrow={1} pr={4}>
+              <Heading as="h1">{data.post.result.title}</Heading>
+              <Text>
+                {`by `}
+                <Link
+                  as={RouterLink}
+                  to={`/users/${data.post.result.user?.id}`}
+                  textDecoration="underline"
+                  _hover={{ color: 'purple.200' }}
+                >
+                  {data.post.result.user.username}
+                </Link>
+              </Text>
+            </Box>
+            <ButtonGroup spacing={4} h="100%">
+              <IconButton
+                aria-label="toggle favorite"
+                onClick={handleFavorite}
+                icon={<Icon as={FaRegHeart} />}
+                colorScheme={data.post.isFavorite ? 'purple' : 'gray'}
+                w={16}
+              />
+              <Link href={cldUrl}>
+                <IconButton
+                  aria-label="download image"
+                  icon={<Icon as={FaDownload} />}
+                  w={16}
+                />
+              </Link>
+            </ButtonGroup>
+          </HStack>
+          <HStack mb={4}>
+            <Icon as={FaHeart} />
+            <Text pr={2}>
+              {`${data.post.result.favoriteCount} `}
+              {data.post.result.favoriteCount === 1 ? 'favorite' : 'favorites'}
+            </Text>
+            <Icon as={FaCommentAlt} />
+            <Text>
+              {`${data.post.result.commentCount} `}
+              {data.post.result.commentCount === 1 ? 'comment' : 'comments'}
+            </Text>
+          </HStack>
+          <Box mb={8}>
+            <Text color="gray.500">{data.post.result.body}</Text>
+            <Text color="gray.500">
+              Published on {new Date(data.post.result.createdAt).toDateString()}
+            </Text>
+          </Box>
+          <CommentsList
+            commentCount={data.post.result.commentCount || 0}
+            postId={id}
           />
-          <Link href={cldUrl}>
-            <IconButton
-              aria-label="download image"
-              icon={<Icon as={FaDownload} />}
-              w={16}
-            />
-          </Link>
-        </ButtonGroup>
-      </HStack>
-      <HStack mb={4}>
-        <Icon as={FaHeart} />
-        <Text pr={2}>
-          {`${post.favoriteCount} `}
-          {post.favoriteCount === 1 ? 'favorite' : 'favorites'}
-        </Text>
-        <Icon as={FaCommentAlt} />
-        <Text>
-          {`${post.commentCount} `}
-          {post.commentCount === 1 ? 'comment' : 'comments'}
-        </Text>
-      </HStack>
-      <Box mb={8}>
-        <Text color="gray.500">{post.body}</Text>
-        <Text color="gray.500">
-          Published on {new Date(post.createdAt).toDateString()}
-        </Text>
-      </Box>
-      <CommentsList commentCount={post.commentCount || 0} postId={post.id} />
+        </>
+      )}
     </>
   );
 };

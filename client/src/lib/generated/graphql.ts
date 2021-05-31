@@ -439,13 +439,8 @@ export type AuthFragment = (
   & Pick<Auth, 'id' | 'username' | 'confirmed'>
   & { avatar: (
     { __typename?: 'Image' }
-    & AvatarFragment
+    & ImageFragment
   ) }
-);
-
-export type AvatarFragment = (
-  { __typename?: 'Image' }
-  & Pick<Image, 'publicId'>
 );
 
 export type CommentFragment = (
@@ -453,11 +448,7 @@ export type CommentFragment = (
   & Pick<Comment, 'id' | 'body' | 'createdAt'>
   & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username'>
-    & { avatar: (
-      { __typename?: 'Image' }
-      & AvatarFragment
-    ) }
+    & UserFragment
   ) }
 );
 
@@ -472,25 +463,23 @@ export type FavoritesFragment = (
       & Pick<Post, 'id' | 'title'>
       & { image: (
         { __typename?: 'Image' }
-        & Pick<Image, 'publicId' | 'url' | 'width' | 'height'>
+        & ImageFragment
       ) }
     ) }
   )> }
 );
 
+export type ImageFragment = (
+  { __typename?: 'Image' }
+  & Pick<Image, 'publicId'>
+);
+
 export type PostDetailsFragment = (
   { __typename?: 'Post' }
   & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'favoriteCount' | 'commentCount'>
-  & { image: (
-    { __typename?: 'Image' }
-    & Pick<Image, 'publicId' | 'url' | 'width' | 'height'>
-  ), user: (
+  & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username'>
-    & { avatar: (
-      { __typename?: 'Image' }
-      & AvatarFragment
-    ) }
+    & UserFragment
   ) }
 );
 
@@ -499,7 +488,7 @@ export type PostSummaryFragment = (
   & Pick<Post, 'id' | 'title'>
   & { image: (
     { __typename?: 'Image' }
-    & Pick<Image, 'publicId' | 'url' | 'width' | 'height'>
+    & ImageFragment
   ) }
 );
 
@@ -510,6 +499,15 @@ export type PostsFragment = (
     { __typename?: 'Post' }
     & PostSummaryFragment
   )> }
+);
+
+export type UserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'username'>
+  & { avatar: (
+    { __typename?: 'Image' }
+    & ImageFragment
+  ) }
 );
 
 export type CreateCommentMutationVariables = Exact<{
@@ -586,11 +584,7 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { auth: (
     { __typename?: 'Auth' }
-    & Pick<Auth, 'id' | 'username' | 'confirmed'>
-    & { avatar: (
-      { __typename?: 'Image' }
-      & AvatarFragment
-    ) }
+    & AuthFragment
   ) }
 );
 
@@ -681,6 +675,25 @@ export type FeaturedQuery = (
   ) }
 );
 
+export type ImageQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type ImageQuery = (
+  { __typename?: 'Query' }
+  & { post?: Maybe<(
+    { __typename?: 'PostResponse' }
+    & { result: (
+      { __typename?: 'Post' }
+      & { image: (
+        { __typename?: 'Image' }
+        & ImageFragment
+      ) }
+    ) }
+  )> }
+);
+
 export type PostQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -737,22 +750,20 @@ export type UserQuery = (
   { __typename?: 'Query' }
   & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'postCount' | 'favoriteCount' | 'createdAt'>
-    & { avatar: (
-      { __typename?: 'Image' }
-      & AvatarFragment
-    ), posts?: Maybe<(
+    & Pick<User, 'postCount' | 'favoriteCount' | 'createdAt'>
+    & { posts?: Maybe<(
       { __typename?: 'PostsResponse' }
       & PostsFragment
     )>, favorites?: Maybe<(
       { __typename?: 'FavoritesResponse' }
       & FavoritesFragment
     )> }
+    & UserFragment
   ) }
 );
 
-export const AvatarFragmentDoc = `
-    fragment avatar on Image {
+export const ImageFragmentDoc = `
+    fragment image on Image {
   publicId
 }
     `;
@@ -761,25 +772,30 @@ export const AuthFragmentDoc = `
   id
   username
   avatar {
-    ...avatar
+    ...image
   }
   confirmed
 }
-    ${AvatarFragmentDoc}`;
+    ${ImageFragmentDoc}`;
+export const UserFragmentDoc = `
+    fragment user on User {
+  id
+  username
+  avatar {
+    ...image
+  }
+}
+    ${ImageFragmentDoc}`;
 export const CommentFragmentDoc = `
     fragment comment on Comment {
   id
   body
   user {
-    id
-    username
-    avatar {
-      ...avatar
-    }
+    ...user
   }
   createdAt
 }
-    ${AvatarFragmentDoc}`;
+    ${UserFragmentDoc}`;
 export const FavoritesFragmentDoc = `
     fragment favorites on FavoritesResponse {
   results {
@@ -788,10 +804,7 @@ export const FavoritesFragmentDoc = `
       id
       title
       image {
-        publicId
-        url
-        width
-        height
+        ...image
       }
     }
     createdAt
@@ -799,42 +812,29 @@ export const FavoritesFragmentDoc = `
   prevPage
   nextPage
 }
-    `;
+    ${ImageFragmentDoc}`;
 export const PostDetailsFragmentDoc = `
     fragment postDetails on Post {
   id
   title
   body
-  image {
-    publicId
-    url
-    width
-    height
-  }
   createdAt
   user {
-    id
-    username
-    avatar {
-      ...avatar
-    }
+    ...user
   }
   favoriteCount
   commentCount
 }
-    ${AvatarFragmentDoc}`;
+    ${UserFragmentDoc}`;
 export const PostSummaryFragmentDoc = `
     fragment postSummary on Post {
   id
   title
   image {
-    publicId
-    url
-    width
-    height
+    ...image
   }
 }
-    `;
+    ${ImageFragmentDoc}`;
 export const PostsFragmentDoc = `
     fragment posts on PostsResponse {
   results {
@@ -925,15 +925,10 @@ export const useDeleteFavoriteMutation = <
 export const LoginDocument = `
     mutation login($username: String!, $password: String!, $avatar: AvatarInput) {
   auth: login(username: $username, password: $password, avatar: $avatar) {
-    id
-    username
-    avatar {
-      ...avatar
-    }
-    confirmed
+    ...auth
   }
 }
-    ${AvatarFragmentDoc}`;
+    ${AuthFragmentDoc}`;
 export const useLoginMutation = <
       TError = unknown,
       TContext = unknown
@@ -1089,6 +1084,34 @@ useFeaturedQuery.document = FeaturedDocument;
 
 useFeaturedQuery.getKey = (variables: FeaturedQueryVariables) => ['featured', variables];
 
+export const ImageDocument = `
+    query image($id: Int!) {
+  post(id: $id) {
+    result {
+      image {
+        ...image
+      }
+    }
+  }
+}
+    ${ImageFragmentDoc}`;
+export const useImageQuery = <
+      TData = ImageQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient, 
+      variables: ImageQueryVariables, 
+      options?: UseQueryOptions<ImageQuery, TError, TData>
+    ) => 
+    useQuery<ImageQuery, TError, TData>(
+      ['image', variables],
+      fetcher<ImageQuery, ImageQueryVariables>(client, ImageDocument, variables),
+      options
+    );
+useImageQuery.document = ImageDocument;
+
+useImageQuery.getKey = (variables: ImageQueryVariables) => ['image', variables];
+
 export const PostDocument = `
     query post($id: Int!) {
   post(id: $id) {
@@ -1172,11 +1195,7 @@ useRelatedPostsQuery.getKey = (variables: RelatedPostsQueryVariables) => ['relat
 export const UserDocument = `
     query user($id: Int!) {
   user(id: $id) {
-    id
-    username
-    avatar {
-      ...avatar
-    }
+    ...user
     posts(limit: 5) {
       ...posts
     }
@@ -1188,7 +1207,7 @@ export const UserDocument = `
     createdAt
   }
 }
-    ${AvatarFragmentDoc}
+    ${UserFragmentDoc}
 ${PostsFragmentDoc}
 ${FavoritesFragmentDoc}`;
 export const useUserQuery = <

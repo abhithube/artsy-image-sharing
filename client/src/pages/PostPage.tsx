@@ -8,7 +8,7 @@ import CloudinaryImage from '../components/CloudinaryImage';
 import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
 import { cld } from '../config/cloudinary';
-import { usePostQuery } from '../lib/generated/graphql';
+import { useImageQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
 type Params = {
@@ -23,7 +23,7 @@ const PostPage = () => {
   const { id } = useParams<Params>();
   const location = useLocation<Uploaded>();
 
-  const { data, isLoading } = usePostQuery(graphQLClient, { id: Number(id) });
+  const { data, isLoading } = useImageQuery(graphQLClient, { id: Number(id) });
 
   const cldImg = cld
     .image(data?.post?.result.image.publicId)
@@ -65,8 +65,8 @@ const PostPage = () => {
               />
             </Center>
             <PostDetails
-              post={data.post.result}
-              isFavorite={data.post.isFavorite}
+              id={Number(id)}
+              publicId={data.post.result.image.publicId}
             />
           </Box>
           <Box
