@@ -3,7 +3,6 @@ import 'dotenv/config';
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import playground from 'graphql-playground-middleware-express';
-import path from 'path';
 import {
   configureCORS,
   configureCSP,
@@ -13,6 +12,10 @@ import {
 import { schema } from './schema';
 
 export const app = express();
+
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 app.use(configureCSP());
 app.use(configureCORS());
@@ -30,11 +33,3 @@ app.use(
 );
 
 app.get('/playground', playground({ endpoint: '/graphql' }));
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../../client/dist')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
-  });
-}
