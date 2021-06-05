@@ -1,17 +1,7 @@
-import {
-  Box,
-  Heading,
-  HStack,
-  Icon,
-  IconButton,
-  SimpleGrid,
-  Spinner,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
-import { Fragment, useMemo, useState } from 'react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
+import { useMemo, useState } from 'react';
 import { useQueryClient } from 'react-query';
+import Button from '../lib/components/Button';
 import {
   PostsDocument,
   PostsFragment,
@@ -43,7 +33,7 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
     page: variables.page + 1,
   });
 
-  const { data, isFetching } = usePostsQuery(graphQLClient, variables, {
+  const { data } = usePostsQuery(graphQLClient, variables, {
     initialData: { posts: initPosts },
     keepPreviousData: true,
     onSuccess: ({ posts }) => {
@@ -58,46 +48,37 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
     },
   });
 
-  const bgColor = useColorModeValue('gray.100', 'gray.900');
-
-  if (isFetching && !data) return <Spinner speed="1s" />;
-
   return (
-    <Box mt={8}>
-      <Heading fontSize="2xl" mb={4}>
-        Posts
-      </Heading>
+    <div className="mt-8 h-[33vh]">
+      <h2 className="mb-4 text-xl font-medium">Posts</h2>
       {data && data.posts.results.length > 0 && (
-        <HStack spacing={4} bgColor={bgColor} p="4" rounded="md">
-          <IconButton
-            icon={<Icon as={FaChevronLeft} />}
+        <div className="flex items-center space-x-4 p-4 bg-gray-800 rounded-md">
+          <Button
             onClick={() => setPage(data.posts.prevPage || 0)}
             disabled={data.posts.prevPage === null}
-            aria-label="previous page"
-            colorScheme="purple"
-          />
-          <SimpleGrid columns={5} gap={4} w="100%">
+            color="indigo"
+          >
+            <ChevronLeftIcon className="w-8" aria-label="previous page" />
+          </Button>
+          <div className="grid grid-cols-5 gap-4">
             {data.posts.results.map((post) => (
-              <Fragment key={post.id}>
-                <PreviewImage post={post} />
-              </Fragment>
+              <PreviewImage key={post.id} post={post} />
             ))}
-          </SimpleGrid>
-          <IconButton
-            icon={<Icon as={FaChevronRight} />}
-            onClick={() => {
-              if (data.posts.nextPage) setPage(data.posts.nextPage);
-            }}
-            disabled={data?.posts.nextPage === null}
-            aria-label="next page"
-            colorScheme="purple"
-          />
-        </HStack>
+          </div>
+          <Button
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            onClick={() => setPage(data.posts.nextPage!)}
+            disabled={!data.posts.nextPage}
+            color="indigo"
+          >
+            <ChevronRightIcon className="w-8" aria-label="previous page" />
+          </Button>
+        </div>
       )}
       {data?.posts.results.length === 0 && (
-        <Text color="gray.500">No posts to show.</Text>
+        <p color="gray.500">No favorites to show.</p>
       )}
-    </Box>
+    </div>
   );
 };
 

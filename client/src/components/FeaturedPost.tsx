@@ -1,53 +1,36 @@
-import {
-  Heading,
-  HStack,
-  Icon,
-  Link,
-  Text,
-  useColorModeValue,
-  VStack,
-} from '@chakra-ui/react';
-import { FaCommentAlt, FaHeart } from 'react-icons/fa';
-import { Link as RouterLink } from 'react-router-dom';
+import { ChatAltIcon, HeartIcon } from '@heroicons/react/solid';
+import { Link } from 'react-router-dom';
+import Avatar from '../lib/components/Avatar';
 import { PostDetailsFragment } from '../lib/generated/graphql';
-import Avatar from './Avatar';
 import PreviewImage from './PreviewImage';
 
 type FeaturedPostProps = {
   post: PostDetailsFragment;
 };
 
-const FeaturedPost = ({ post }: FeaturedPostProps) => {
-  const bgColor = useColorModeValue('gray.100', 'gray.900');
-
-  return (
-    <VStack
-      alignItems="flex-start"
-      spacing={4}
-      p={4}
-      bgColor={bgColor}
-      rounded="lg"
-    >
-      <PreviewImage post={post} />
-      <HStack>
-        <Avatar avatar={post.user.avatar} w={12} mr={2} />
-        <VStack alignItems="flex-start">
-          <Heading as="h3" fontSize="lg" noOfLines={1}>
-            <Link as={RouterLink} to={`posts/${post.id}`} _hover={{}}>
-              {post.title}
-            </Link>
-          </Heading>
-          <Text color="gray.500">{`by ${post.user.username}`}</Text>
-        </VStack>
-      </HStack>
-      <HStack mb={4}>
-        <Icon as={FaHeart} />
-        <Text pr={2}>{post.favoriteCount}</Text>
-        <Icon as={FaCommentAlt} />
-        <Text>{post.commentCount}</Text>
-      </HStack>
-    </VStack>
-  );
-};
+const FeaturedPost = ({ post }: FeaturedPostProps) => (
+  <div className="space-y-4 p-4 bg-gray-800 rounded-lg">
+    <PreviewImage post={post} />
+    <div className="flex justify-start items-center">
+      <Avatar avatar={post.user.avatar} margin="md" />
+      <div>
+        <h3 className="text-lg line-clamp-1">
+          <Link to={`posts/${post.id}`}>{post.title}</Link>
+        </h3>
+        <p className="text-gray-500 line-clamp-1">{`by ${post.user.username}`}</p>
+      </div>
+    </div>
+    <div className="flex space-x-4">
+      <div className="flex items-center">
+        <HeartIcon className="inline mr-2 w-5" />
+        <span>{`${post.favoriteCount} `}</span>
+      </div>
+      <div className="flex items-center">
+        <ChatAltIcon className="inline mr-2 w-5" />
+        <span>{`${post.commentCount} `}</span>
+      </div>
+    </div>
+  </div>
+);
 
 export default FeaturedPost;

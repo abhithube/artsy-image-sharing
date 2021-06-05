@@ -1,21 +1,11 @@
 import {
-  Button,
-  Flex,
-  Heading,
-  Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  Spinner,
-  Text,
-  useColorModeValue,
-  useToast,
-  VStack,
-} from '@chakra-ui/react';
-import { FormEvent, useState } from 'react';
-import { FaLock, FaUserCircle } from 'react-icons/fa';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+  ExclamationCircleIcon,
+  LockClosedIcon,
+  UserCircleIcon,
+} from '@heroicons/react/solid';
+import { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import Button from '../lib/components/Button';
 import { useRegisterMutation } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
@@ -23,147 +13,97 @@ const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const history = useHistory();
-
-  const toast = useToast();
 
   const mutation = useRegisterMutation(graphQLClient, {
     onSuccess: (data) => {
       if (data.registered) history.push('/login', { registered: true });
     },
-    onError: () => {
-      setLoading(false);
-      toast({
-        status: 'error',
-        title: 'Username already taken',
-        isClosable: true,
-      });
-    },
+    onError: () => setError('Username already taken'),
   });
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== passwordConfirm) {
-      toast({
-        status: 'error',
-        title: 'Passwords do not match',
-        isClosable: true,
-      });
-    } else {
-      setLoading(true);
-      mutation.mutate({ username, password });
-    }
+    if (password !== passwordConfirm) setError('Passwords do not match');
+    else mutation.mutate({ username, password });
   };
 
   return (
-    <Flex direction="column" align="center" h="100%">
-      <Heading as="h1" mb={4}>
-        Register
-      </Heading>
-      <Flex
-        as="form"
+    <div className="flex flex-col items-center">
+      <h1 className="text-2xl font-semibold mb-4">Register</h1>
+      <form
+        className="flex flex-col p-8 w-[400px] bg-gray-800 rounded-lg shadow-md"
         onSubmit={handleSubmit}
-        direction="column"
-        align="center"
-        w={400}
-        p={8}
-        bg={useColorModeValue('gray.100', 'gray.900')}
-        rounded="lg"
-        boxShadow="md"
       >
-        <VStack spacing={4} w="100%">
-          <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              color="gray.300"
-              fontSize={20}
-              // eslint-disable-next-line react/no-children-prop
-              children={<Icon as={FaUserCircle} />}
-            />
-            <Input
+        {error && (
+          <div className="flex justify-center items-center space-x-2 mb-4 p-1 bg-red-200 rounded-sm">
+            <ExclamationCircleIcon className="w-5 h-5 text-red-500" />
+            <span className="text-red-500">{error}</span>
+          </div>
+        )}
+        <div className="space-y-4 mb-4 w-full">
+          <div className="relative">
+            <UserCircleIcon className="absolute top-[9px] left-2 h-6 w-6 pointer-events-none" />
+            <input
+              className="py-2 pl-10 pr-4 w-full bg-gray-800 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              type="text"
-              placeholder="Enter a username..."
-              isRequired
-              minLength={2}
+              onChange={(e) => {
+                if (e.target.value.length <= 50) setUsername(e.target.value);
+              }}
+              placeholder="Enter your username..."
+              required
               maxLength={255}
-              bgColor={useColorModeValue('gray.50', 'gray.800')}
-              borderColor="gray.500"
-              focusBorderColor="purple.500"
-              _hover={{ borderColor: 'gray.500' }}
             />
-          </InputGroup>
-          <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              color="gray.300"
-              fontSize={20}
-              // eslint-disable-next-line react/no-children-prop
-              children={<Icon as={FaLock} />}
-            />
-            <Input
+          </div>
+          <div className="relative">
+            <LockClosedIcon className="absolute top-[9px] left-2 h-6 w-6 pointer-events-none" />
+
+            <input
+              className="py-2 pl-10 pr-4 w-full bg-gray-800 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
               value={password}
               onChange={(e) => {
                 if (e.target.value.length <= 50) setPassword(e.target.value);
               }}
-              placeholder="Enter a password..."
+              placeholder="Enter your password..."
               type="password"
-              isRequired
-              minLength={6}
+              required
               maxLength={255}
-              bgColor={useColorModeValue('gray.50', 'gray.800')}
-              borderColor="gray.500"
-              focusBorderColor="purple.500"
-              _hover={{ borderColor: 'gray.500' }}
             />
-          </InputGroup>
-          <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              color="gray.300"
-              fontSize={20}
-              // eslint-disable-next-line react/no-children-prop
-              children={<Icon as={FaLock} />}
-            />
-            <Input
+          </div>
+          <div className="relative">
+            <LockClosedIcon className="absolute top-[9px] left-2 h-6 w-6 pointer-events-none" />
+
+            <input
+              className="py-2 pl-10 pr-4 w-full bg-gray-800 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
               value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 50)
+                  setPasswordConfirm(e.target.value);
+              }}
               placeholder="Confirm your password..."
               type="password"
-              isRequired
-              minLength={6}
+              required
               maxLength={255}
-              bgColor={useColorModeValue('gray.50', 'gray.800')}
-              borderColor="gray.500"
-              focusBorderColor="purple.500"
-              _hover={{ borderColor: 'gray.500' }}
             />
-          </InputGroup>
-          <Button
-            type="submit"
-            isLoading={loading}
-            isDisabled={!username || !password || !passwordConfirm}
-            loadingText="Loading"
-            spinner={<Spinner speed="1s" />}
-            mt={4}
-            w="100%"
-            colorScheme="purple"
-          >
-            Register
-          </Button>
-          <Text mt={8} fontSize="sm">
-            Already registered?{' '}
-            <Link as={RouterLink} to="/login" textDecoration="underline">
-              Click here to login.
-            </Link>
-          </Text>
-        </VStack>
-      </Flex>
-    </Flex>
+          </div>
+        </div>
+        <Button
+          type="submit"
+          disabled={!username || !password || !passwordConfirm}
+          color="indigo"
+        >
+          Register
+        </Button>
+        <span className="mt-4 text-sm text-center">
+          Already registered?{' '}
+          <Link className="underline" to="/login">
+            Click here to login.
+          </Link>
+        </span>
+      </form>
+    </div>
   );
 };
 

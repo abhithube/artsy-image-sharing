@@ -1,4 +1,3 @@
-import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import FavoritesGallery from '../components/FavoritesGallery';
 import PostsGallery from '../components/PostsGallery';
@@ -12,15 +11,15 @@ type Params = {
 const ProfilePage = () => {
   const { id } = useParams<Params>();
 
-  const { data, isLoading } = useUserQuery(graphQLClient, { id: Number(id) });
-
-  if (isLoading) return <Spinner speed="1s" />;
+  const { data } = useUserQuery(graphQLClient, { id: Number(id) });
 
   return (
-    <Box h="100%">
+    <div>
       {data && (
         <>
-          <Heading as="h1">{data.user.username}&apos;s Gallery</Heading>
+          <h1 className="text-2xl font-semibold">
+            {data.user.username}&apos;s Gallery
+          </h1>
           <PostsGallery
             userId={data.user.id}
             initPosts={data.user.posts || { results: [] }}
@@ -31,8 +30,8 @@ const ProfilePage = () => {
           />
         </>
       )}
-      {!data && <Text>User not found</Text>}
-    </Box>
+      {!data && <p>This user does not exist.</p>}
+    </div>
   );
 };
 

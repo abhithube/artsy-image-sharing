@@ -1,28 +1,13 @@
-import {
-  Box,
-  Container,
-  Flex,
-  HStack,
-  Icon,
-  IconButton,
-  Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-  useColorMode,
-  useColorModeValue,
-} from '@chakra-ui/react';
-import { useContext } from 'react';
-import { FaChevronDown, FaMoon, FaSun } from 'react-icons/fa';
-import { IoMdImages } from 'react-icons/io';
+import { CameraIcon } from '@heroicons/react/solid';
+import classnames from 'classnames';
+import { useContext, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import Avatar from '../lib/components/Avatar';
+import Button from '../lib/components/Button';
 import { AuthContext } from '../lib/context/AuthContext';
 import { useAuthQuery, useLogoutMutation } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
-import Avatar from './Avatar';
 
 type From = Location & {
   from: string;
@@ -31,6 +16,8 @@ type From = Location & {
 const Navbar = () => {
   const { isLoading, authenticatedUser, setAuthenticatedUser } =
     useContext(AuthContext);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const queryClient = useQueryClient();
   const queryKey = useAuthQuery.getKey();
@@ -46,104 +33,78 @@ const Navbar = () => {
 
   const location = useLocation<From>();
 
-  const { toggleColorMode } = useColorMode();
-
   return (
-    <Box
-      as="nav"
-      w="100vw"
-      bg={useColorModeValue('gray.50', 'gray.900')}
-      boxShadow="sm"
-      pos="fixed"
-      top={0}
-      zIndex="sticky"
-    >
-      <Container maxW="80%">
-        <Flex align="center" h={16}>
-          <HStack flex="1" spacing={4}>
-            <Link
-              as={RouterLink}
-              to="/"
-              mr={8}
-              _focus={{ outline: 'none' }}
-              _hover={{ textDecoration: 'none' }}
-            >
-              <HStack>
-                <Icon as={IoMdImages} fontSize="4xl" color="purple.500" />
-                <Text fontSize="2xl">Artsy</Text>
-              </HStack>
-            </Link>
-            <Link
-              as={RouterLink}
-              to="/posts"
-              mr={4}
-              _hover={{ color: 'purple.400' }}
-              _focus={{ outline: 'none' }}
-            >
-              <Text>Browse</Text>
-            </Link>
-            <Link
-              as={RouterLink}
-              to="/about"
-              _hover={{ color: 'purple.400' }}
-              _focus={{ outline: 'none' }}
-            >
-              About
-            </Link>
-          </HStack>
-          {!isLoading && authenticatedUser && (
-            <Menu>
-              <MenuButton>
-                <HStack spacing={4}>
-                  <Avatar avatar={authenticatedUser.avatar} w={12} />
-                  <Icon as={FaChevronDown} />
-                </HStack>
-              </MenuButton>
-              <MenuList>
-                <Link as={RouterLink} to="/upload" _hover={{}}>
-                  <MenuItem>
-                    <Text>Upload</Text>
-                  </MenuItem>
+    <nav className="fixed top-0 z-10 w-full bg-gray-800 shadow-sm">
+      <div className="max-w-[80%] mx-auto flex items-center h-16">
+        <div className="flex items-center flex-grow">
+          <Link className="mr-8" to="/">
+            <div className="flex items-center space-x-2">
+              <CameraIcon className="w-8 h-8 text-indigo-400" />
+              <span className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-br from-indigo-400 to-indigo-200">
+                Artsy
+              </span>
+            </div>
+          </Link>
+          <Link className="mr-4" to="/posts">
+            Browse
+          </Link>
+          <Link to="/about">About</Link>
+        </div>
+        {!isLoading && authenticatedUser && (
+          <div>
+            <div className="relative">
+              <Button
+                onClick={() => setIsOpen((prev) => !prev)}
+                onBlur={() => setIsOpen((prev) => !prev)}
+              >
+                <Avatar avatar={authenticatedUser.avatar} />
+              </Button>
+              <div
+                className={classnames(
+                  'absolute flex flex-col right-0 w-48 border border-gray-600 divide-y divide-gray-600 rounded-md overflow-hidden transition duration-200 ease-in-out transform',
+                  { 'opacity-100': isOpen, 'opacity-0': !isOpen },
+                  { 'scale-100': isOpen, 'scale-95': !isOpen }
+                )}
+              >
+                <Link
+                  className="bg-gray-700 px-4 py-2 hover:bg-gray-600"
+                  to="/upload"
+                >
+                  Upload
                 </Link>
                 <Link
-                  as={RouterLink}
+                  className="bg-gray-700 px-4 py-2 hover:bg-gray-600"
                   to={`/users/${authenticatedUser.id}`}
-                  _hover={{}}
                 >
-                  <MenuItem>
-                    <Text>Profile</Text>
-                  </MenuItem>
+                  Profile
                 </Link>
-                <MenuItem onClick={() => mutation.mutate({})}>Logout</MenuItem>
-              </MenuList>
-            </Menu>
-          )}
-          {!isLoading && !authenticatedUser && (
-            <Link
-              as={RouterLink}
-              to="/login"
-              onClick={() => {
-                if (
-                  location.pathname !== '/login' &&
-                  location.pathname !== '/register'
-                )
-                  localStorage.setItem('redirect', location.pathname);
-              }}
-              _hover={{ color: 'purple.400' }}
-              _focus={{ outline: 'none' }}
-            >
-              <Text>Login</Text>
-            </Link>
-          )}
-          <IconButton
-            aria-label="toggle dark mode"
-            onClick={toggleColorMode}
-            icon={useColorModeValue(<Icon as={FaMoon} />, <Icon as={FaSun} />)}
-            ml={6}
-          />
-        </Flex>
-      </Container>
-    </Box>
+                <button
+                  className="bg-gray-700 px-4 py-2 text-left hover:bg-gray-600"
+                  type="button"
+                  onClick={() => mutation.mutate({})}
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {!isLoading && !authenticatedUser && (
+          <Link
+            to="/login"
+            onClick={() => {
+              if (
+                location.pathname !== '/login' &&
+                location.pathname !== '/register'
+              )
+                localStorage.setItem('redirect', location.pathname);
+            }}
+          >
+            Login
+          </Link>
+        )}
+      </div>
+    </nav>
   );
 };
 

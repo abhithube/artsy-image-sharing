@@ -1,63 +1,39 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  SimpleGrid,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
-import { Fragment } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import PreviewImage from '../components/PreviewImage';
+import Button from '../lib/components/Button';
 import { PostsQuery, usePostsQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
 const PostsPage = () => {
-  const { data, fetchNextPage, hasNextPage, isLoading } =
-    useInfiniteQuery<PostsQuery>(
-      'posts',
-      (ctx) =>
-        graphQLClient.request(usePostsQuery.document, {
-          limit: 20,
-          page: ctx.pageParam,
-        }),
-      {
-        getNextPageParam: (lastPage) => lastPage.posts.nextPage,
-      }
-    );
-
-  if (isLoading) return <Spinner speed="1s" />;
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<PostsQuery>(
+    'posts',
+    (ctx) =>
+      graphQLClient.request(usePostsQuery.document, {
+        limit: 20,
+        page: ctx.pageParam,
+      }),
+    {
+      getNextPageParam: (lastPage) => lastPage.posts.nextPage,
+    }
+  );
 
   return (
-    <Flex direction="column">
-      <Heading as="h1" mb={4}>
-        Browse All Posts
-      </Heading>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 4, xl: 5 }} gap={4}>
+    <div className="flex flex-col space-y-4">
+      <h1 className="text-2xl font-semibold">Browse All Posts</h1>
+      <div className="grid grid-cols-5 gap-4">
         {data?.pages.map((page) =>
           page.posts.results.map((post) => (
-            <Fragment key={post.id}>
-              <PreviewImage post={post} />
-            </Fragment>
+            <PreviewImage key={post.id} post={post} />
           ))
         )}
-      </SimpleGrid>
-      {data?.pages.length === 0 && (
-        <Text>Posts are not available at this time.</Text>
-      )}
+      </div>
+      {data?.pages.length === 0 && <p>Posts are not available at this time.</p>}
       {hasNextPage && (
-        <Button
-          onClick={() => fetchNextPage()}
-          isLoading={isLoading}
-          loadingText="Loading..."
-          spinner={<Spinner speed="1s" />}
-          mt={4}
-          colorScheme="purple"
-        >
+        <Button onClick={() => fetchNextPage()} color="indigo">
           Load More Posts
         </Button>
       )}
-    </Flex>
+    </div>
   );
 };
 

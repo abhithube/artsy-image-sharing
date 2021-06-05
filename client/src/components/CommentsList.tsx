@@ -1,6 +1,6 @@
-import { Box, Button, Heading, Spinner, Text, VStack } from '@chakra-ui/react';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
+import Button from '../lib/components/Button';
 import { CommentsQuery, useCommentsQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 import AddComment from './AddComment';
@@ -14,50 +14,48 @@ type CommentsListProp = {
 const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
   const [shouldFetch, setShouldFetch] = useState(false);
 
-  const { data, fetchNextPage, hasNextPage, isLoading } =
-    useInfiniteQuery<CommentsQuery>(
-      ['comments', { postId }],
-      (ctx) =>
-        graphQLClient.request(useCommentsQuery.document, {
-          postId,
-          page: ctx.pageParam,
-        }),
-      {
-        getNextPageParam: (lastPage) => lastPage.comments.nextPage,
-        enabled: shouldFetch,
-      }
-    );
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<CommentsQuery>(
+    ['comments', { postId }],
+    (ctx) =>
+      graphQLClient.request(useCommentsQuery.document, {
+        postId,
+        page: ctx.pageParam,
+      }),
+    {
+      getNextPageParam: (lastPage) => lastPage.comments.nextPage,
+      enabled: shouldFetch,
+    }
+  );
 
   return (
-    <Box>
+    <div>
       <AddComment postId={postId} />
-      <Heading mb={4}>Comments</Heading>
-      <VStack align="stretch" spacing={4} mt={4}>
+      <h2 className="mb-4 text-xl font-semibold">Comments</h2>
+      <div className="flex flex-col items-stretch space-y-4 mt-4">
         {(commentCount > 0 || data?.pages) && (
           <>
             {data?.pages.map((page) =>
               page.comments.results.map((comment) => (
-                <Fragment key={comment.id}>
-                  <CommentItem comment={comment} />
-                </Fragment>
+                <CommentItem key={comment.id} comment={comment} />
               ))
             )}
             {!data?.pages && (
-              <Button onClick={() => setShouldFetch(true)} colorScheme="purple">
+              <Button onClick={() => setShouldFetch(true)} color="indigo">
                 Load Comments
               </Button>
             )}
             {hasNextPage && (
-              <Button onClick={() => fetchNextPage()} colorScheme="purple">
+              <Button onClick={() => fetchNextPage()} color="indigo">
                 Load More Comments
               </Button>
             )}
           </>
         )}
-        {commentCount === 0 && <Text>No comments on this post.</Text>}
-        {isLoading && <Spinner speed="1s" />}
-      </VStack>
-    </Box>
+        {commentCount === 0 && (
+          <p className="text-gray-500">No comments on this post.</p>
+        )}
+      </div>
+    </div>
   );
 };
 

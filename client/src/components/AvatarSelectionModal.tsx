@@ -1,83 +1,71 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  SimpleGrid,
-  Text,
-  useRadioGroup,
-} from '@chakra-ui/react';
+import { XIcon } from '@heroicons/react/solid';
 import { useState } from 'react';
+import Avatar from '../lib/components/Avatar';
+import Button from '../lib/components/Button';
 import { AVATAR_OPTIONS } from '../lib/constants';
-import AvatarRadio from './AvatarRadio';
 
 type AvatarSelectionModalProps = {
   isOpen: boolean;
-  onClose: () => void;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleAvatarSelection: (avatar: string | null) => void;
 };
 
 const AvatarSelectionModal = ({
   isOpen,
-  onClose,
+  setIsOpen,
   handleAvatarSelection,
 }: AvatarSelectionModalProps) => {
   const [avatar, setAvatar] = useState<string>(AVATAR_OPTIONS[0]);
 
-  const { getRootProps, getRadioProps } = useRadioGroup({
-    name: 'avatar',
-    defaultValue: AVATAR_OPTIONS[0],
-    onChange: (value) => setAvatar(value),
-  });
+  if (!isOpen) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      closeOnEsc={false}
-      closeOnOverlayClick={false}
-      allowPinchZoom
-    >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Welcome to Artsy!</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Text mb={4}>Choose an avatar for your profile.</Text>
-          <SimpleGrid columns={4} {...getRootProps()}>
-            {AVATAR_OPTIONS.map((option) => {
-              const radio = getRadioProps({ value: option });
-              return (
-                <AvatarRadio
-                  key={option}
-                  {...radio}
-                  avatar={{ publicId: option }}
-                />
-              );
-            })}
-          </SimpleGrid>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            onClick={() => handleAvatarSelection(null)}
-            mr={4}
-            colorScheme="red"
-          >
-            Continue without an avatar
+    <>
+      <div className="fixed z-10 top-0 right-0 bottom-0 left-0 bg-black opacity-70" />
+      <div className="fixed z-10 top-1/3 left-1/2 bg-gray-800 rounded-md transform -translate-x-1/2 -translate-y-1/2">
+        <div className="flex justify-between items-center p-4 border-b border-gray-600">
+          <h1 className="text-2xl font-semibold">Welcome to Artsy!</h1>
+          <Button onClick={() => setIsOpen(false)}>
+            <XIcon className="w-5 h-5" />
           </Button>
-          <Button
-            onClick={() => handleAvatarSelection(avatar)}
-            colorScheme="purple"
+        </div>
+        <div className="p-4">
+          <p className="mb-4">Choose an avatar for your profile.</p>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAvatarSelection(avatar);
+            }}
           >
-            Select
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+            <div className="grid grid-cols-4 gap-4 justify-items-center mb-4">
+              {AVATAR_OPTIONS.map((option) => (
+                <label key={option} htmlFor={option}>
+                  <input
+                    className="absolute opacity-0"
+                    type="radio"
+                    id={option}
+                    value={option}
+                    checked={option === avatar}
+                    onChange={(e) => setAvatar(e.target.value)}
+                  />
+                  <div className="border-[5px] border-gray-500 rounded-full hover:cursor-pointer filter brightness-75 sibling-checked:border-indigo-400 sibling-checked:brightness-105">
+                    <Avatar avatar={{ publicId: option }} size="xl" />
+                  </div>
+                </label>
+              ))}
+            </div>
+            <div className="flex justify-end space-x-4">
+              <Button onClick={() => handleAvatarSelection(null)} color="red">
+                Continue without an avatar
+              </Button>
+              <Button type="submit" color="indigo">
+                Select
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
   );
 };
 

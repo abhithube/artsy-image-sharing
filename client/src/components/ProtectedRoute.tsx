@@ -1,4 +1,3 @@
-import { Spinner } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { AuthContext } from '../lib/context/AuthContext';
@@ -14,9 +13,7 @@ const ProtectedRoute = ({
   component,
   inverted = false,
 }: ProtectedRouteProps) => {
-  const { authenticatedUser, isLoading } = useContext(AuthContext);
-
-  if (isLoading) return <Spinner />;
+  const { authenticatedUser } = useContext(AuthContext);
 
   return (
     <>

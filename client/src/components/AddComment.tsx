@@ -1,13 +1,7 @@
-import {
-  Button,
-  ButtonGroup,
-  Flex,
-  Textarea,
-  useColorModeValue,
-  useToast,
-} from '@chakra-ui/react';
-import { FormEvent, useContext, useEffect, useState } from 'react';
+import { FormEvent, useContext, useState } from 'react';
 import { InfiniteData, useQueryClient } from 'react-query';
+import { useHistory } from 'react-router-dom';
+import Button from '../lib/components/Button';
 import { AuthContext } from '../lib/context/AuthContext';
 import {
   CommentsQuery,
@@ -26,7 +20,7 @@ const AddComment = ({ postId }: AddCommentProps) => {
 
   const [comment, setComment] = useState('');
 
-  const toast = useToast();
+  const history = useHistory();
 
   const queryClient = useQueryClient();
   const commentsQueryKey = useCommentsQuery.getKey({ postId });
@@ -72,63 +66,42 @@ const AddComment = ({ postId }: AddCommentProps) => {
 
       queryClient.fetchInfiniteQuery(commentsQueryKey);
       queryClient.fetchQuery(postQueryKey);
-
-      toast({
-        status: 'success',
-        title: 'Added comment',
-        isClosable: true,
-      });
     },
   });
-
-  useEffect(() => () => toast.closeAll(), [toast]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     if (!authenticatedUser) {
-      toast({
-        status: 'error',
-        title: 'You must be signed in to add a comment',
-        isClosable: true,
-      });
+      localStorage.setItem('redirect', `/posts/${postId}`);
+      history.push('/login', { unauthenticated: true });
     } else mutation.mutate({ body: comment, postId });
   };
 
   return (
-    <Flex as="form" onSubmit={handleSubmit} direction="column" align="flex-end">
-      <Textarea
+    <form className="flex flex-col items-end" onSubmit={handleSubmit}>
+      <textarea
+        className="mb-2 p-4 rounded-md w-full bg-gray-800 border border-gray-500 resize-none"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        isRequired
+        required
+        rows={2}
         maxLength={500}
         placeholder="Leave a comment..."
-        resize="none"
-        bgColor={useColorModeValue('gray.100', 'gray.700')}
-        borderColor="gray.500"
-        focusBorderColor="purple.500"
-        _hover={{ borderColor: 'gray.500' }}
-        mb={2}
       />
-      <ButtonGroup spacing={4}>
-        <Button
-          type="submit"
-          isDisabled={comment.length === 0}
-          colorScheme="purple"
-          mb={4}
-        >
+      <div className="space-x-4">
+        <Button type="submit" disabled={comment.length === 0} color="indigo">
           Submit
         </Button>
         <Button
           onClick={() => setComment('')}
-          isDisabled={comment.length === 0}
-          colorScheme="purple"
-          mb={4}
+          disabled={comment.length === 0}
+          color="red"
         >
           Cancel
         </Button>
-      </ButtonGroup>
-    </Flex>
+      </div>
+    </form>
   );
 };
 

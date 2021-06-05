@@ -1,30 +1,17 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  Spinner,
-  Text,
-  useColorModeValue,
-  useDisclosure,
-  useToast,
-  VStack,
-} from '@chakra-ui/react';
-import { FormEvent, useContext, useEffect, useState } from 'react';
-import { FaLock, FaUserCircle } from 'react-icons/fa';
+import { LockClosedIcon, UserCircleIcon } from '@heroicons/react/solid';
+import { useContext, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import AvatarSelectionModal from '../components/AvatarSelectionModal';
+import Alert from '../lib/components/Alert';
+import Button from '../lib/components/Button';
 import { AuthContext } from '../lib/context/AuthContext';
 import { useAuthQuery, useLoginMutation } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
 type Registered = Location & {
   registered?: boolean;
+  unauthenticated?: boolean;
 };
 
 const LoginPage = () => {
@@ -32,14 +19,12 @@ const LoginPage = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const history = useHistory();
   const location = useLocation<Registered>();
-  const toast = useToast();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
 
   const queryClient = useQueryClient();
   const queryKey = useAuthQuery.getKey();
@@ -53,135 +38,87 @@ const LoginPage = () => {
         history.push(redirect || '/posts');
         localStorage.removeItem('redirect');
       } else {
-        setLoading(false);
-        onOpen();
+        setIsOpen(true);
       }
     },
-    onError: () => {
-      setLoading(false);
-      toast({
-        status: 'error',
-        title: 'Invalid credentials',
-        isClosable: true,
-      });
-    },
+    onError: () => setError('Invalid credentials'),
   });
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    setLoading(true);
     mutation.mutate({ username, password });
   };
 
   const handleAvatarSelection = (avatar: string | null) => {
-    setLoading(true);
     mutation.mutate({ username, password, avatar: { publicId: avatar } });
   };
-
-  useEffect(() => {
-    if (location.state?.registered) {
-      toast({
-        status: 'success',
-        title: 'Registered successfully',
-        isClosable: true,
-      });
-
-      location.state.registered = false;
-    }
-  }, [location.state, toast]);
 
   return (
     <>
       <AvatarSelectionModal
         isOpen={isOpen}
-        onClose={onClose}
+        setIsOpen={setIsOpen}
         handleAvatarSelection={handleAvatarSelection}
       />
-      <Flex direction="column" align="center" h="100%">
-        <Heading as="h1" mb={4}>
-          Login
-        </Heading>
-        <Flex
-          as="form"
+      <div className="flex flex-col items-center">
+        <h1 className="text-2xl font-semibold mb-4">Login</h1>
+        <form
+          className="flex flex-col p-8 w-[400px] bg-gray-800 rounded-lg shadow-md"
           onSubmit={handleSubmit}
-          direction="column"
-          align="center"
-          w={400}
-          p={8}
-          bg={useColorModeValue('gray.100', 'gray.900')}
-          rounded="lg"
-          boxShadow="md"
         >
-          <VStack spacing={4} align="stretch" w="100%">
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                color="gray.300"
-                fontSize={20}
-                // eslint-disable-next-line react/no-children-prop
-                children={<Icon as={FaUserCircle} />}
-              />
-              <Input
+          {location.state?.registered && (
+            <Alert type="success" message="Created account successfully" />
+          )}
+          {location.state?.unauthenticated && (
+            <Alert type="error" message="You must be signed in to proceed" />
+          )}
+          {error && <Alert type="error" message={error} />}
+          <div className="space-y-4 mb-4 w-full">
+            <div className="relative">
+              <UserCircleIcon className="absolute top-[9px] left-2 h-6 w-6 pointer-events-none" />
+
+              <input
+                className="py-2 pl-10 pr-4 w-full bg-gray-800 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 value={username}
                 onChange={(e) => {
                   if (e.target.value.length <= 50) setUsername(e.target.value);
                 }}
                 placeholder="Enter your username..."
-                isRequired
-                minLength={2}
+                required
                 maxLength={255}
-                bgColor={useColorModeValue('gray.50', 'gray.800')}
-                borderColor="gray.500"
-                focusBorderColor="purple.500"
-                _hover={{ borderColor: 'gray.500' }}
               />
-            </InputGroup>
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                color="gray.300"
-                fontSize={20}
-                // eslint-disable-next-line react/no-children-prop
-                children={<Icon as={FaLock} />}
-              />
-              <Input
+            </div>
+            <div className="relative">
+              <LockClosedIcon className="absolute top-[9px] left-2 h-6 w-6 pointer-events-none" />
+              <input
+                className="py-2 pl-10 pr-4 w-full bg-gray-800 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 value={password}
                 onChange={(e) => {
                   if (e.target.value.length <= 50) setPassword(e.target.value);
                 }}
                 placeholder="Enter your password..."
                 type="password"
-                isRequired
-                minLength={6}
+                required
                 maxLength={255}
-                bgColor={useColorModeValue('gray.50', 'gray.800')}
-                borderColor="gray.500"
-                focusBorderColor="purple.500"
-                _hover={{ borderColor: 'gray.500' }}
               />
-            </InputGroup>
-          </VStack>
+            </div>
+          </div>
           <Button
             type="submit"
-            isLoading={loading}
-            isDisabled={!username || !password}
-            loadingText="Loading"
-            spinner={<Spinner speed="1s" />}
-            mt={4}
-            w="100%"
-            colorScheme="purple"
+            disabled={!username || !password}
+            color="indigo"
           >
             Login
           </Button>
-          <Text mt={8} fontSize="sm">
+          <span className="mt-4 text-sm text-center">
             Need an account?{' '}
-            <Link as={RouterLink} to="/register" textDecoration="underline">
+            <Link className="underline" to="/register">
               Click here to register.
             </Link>
-          </Text>
-        </Flex>
-      </Flex>
+          </span>
+        </form>
+      </div>
     </>
   );
 };

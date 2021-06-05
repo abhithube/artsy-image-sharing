@@ -1,11 +1,13 @@
-import { createContext, SetStateAction, useState } from 'react';
+import { createContext, useState } from 'react';
 import { AuthFragment, useAuthQuery } from '../generated/graphql';
 import { graphQLClient } from '../graphql/client';
 
 type AuthContextType = {
   isLoading: boolean;
   authenticatedUser: AuthFragment | null;
-  setAuthenticatedUser: React.Dispatch<SetStateAction<AuthFragment | null>>;
+  setAuthenticatedUser: React.Dispatch<
+    React.SetStateAction<AuthFragment | null>
+  >;
 };
 
 type AuthContextProviderProps = {

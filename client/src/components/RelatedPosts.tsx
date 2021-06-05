@@ -1,11 +1,3 @@
-import {
-  Heading,
-  Spinner,
-  Text,
-  useColorModeValue,
-  VStack,
-} from '@chakra-ui/react';
-import { Fragment } from 'react';
 import { useRelatedPostsQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 import PreviewImage from './PreviewImage';
@@ -15,26 +7,18 @@ type RelatedPostsProps = {
 };
 
 const RelatedPosts = ({ postId }: RelatedPostsProps) => {
-  const { data, isLoading } = useRelatedPostsQuery(graphQLClient, { postId });
-
-  const bgColor = useColorModeValue('gray.100', 'gray.700');
-
-  if (isLoading) return <Spinner speed="1s" />;
+  const { data } = useRelatedPostsQuery(graphQLClient, { postId });
 
   return (
-    <VStack spacing={8} p={8} bgColor={bgColor} rounded="lg">
-      <Heading fontSize="3xl" textAlign="center">
-        More Posts
-      </Heading>
-      <VStack spacing={4} w="100%">
+    <div className="p-8 bg-gray-800 rounded-lg">
+      <h2 className="mb-4 text-2xl font-semibold text-center">More Posts</h2>
+      <div className="flex flex-col space-y-4">
         {data?.relatedPosts?.slice(0, 5).map((post) => (
-          <Fragment key={post.id}>
-            <PreviewImage post={post} />
-          </Fragment>
+          <PreviewImage key={post.id} post={post} />
         ))}
-      </VStack>
-      {!data && <Text>Posts are not available at this time.</Text>}
-    </VStack>
+      </div>
+      {!data && <p>Posts are not available at this time.</p>}
+    </div>
   );
 };
 

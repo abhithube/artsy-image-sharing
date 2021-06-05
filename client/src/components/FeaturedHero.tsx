@@ -1,114 +1,63 @@
-import {
-  Box,
-  Button,
-  Heading,
-  HStack,
-  Icon,
-  Stack,
-  StackDivider,
-  Text,
-  useColorModeValue,
-  VStack,
-} from '@chakra-ui/react';
-import { FaCommentAlt, FaHeart } from 'react-icons/fa';
-import { Link as RouterLink } from 'react-router-dom';
+// TODO
+import { ChatAltIcon, HeartIcon } from '@heroicons/react/solid';
+import { Link } from 'react-router-dom';
+import Avatar from '../lib/components/Avatar';
+import Button from '../lib/components/Button';
 import { PostDetailsFragment } from '../lib/generated/graphql';
-import Avatar from './Avatar';
 import PreviewImage from './PreviewImage';
 
 type FeaturedHeroProps = {
   featuredPost: PostDetailsFragment;
 };
 
-const FeaturedHero = ({ featuredPost }: FeaturedHeroProps) => {
-  return (
-    <Stack
-      direction={{ base: 'column', md: 'column', lg: 'row', xl: 'row' }}
-      spacing={12}
-      justifyContent="center"
-      alignItems="center"
-      divider={<StackDivider />}
-      mb={8}
-      p={8}
-      bgColor={useColorModeValue('gray.100', 'gray.900')}
-    >
-      <VStack spacing={4} flexBasis="33%">
-        <Heading fontSize="4xl">Featured Post</Heading>
-        <Text textAlign="center">
-          Upload an image for a chance to be featured here on the home page!
-          Create an account or log in to get started!
-        </Text>
-      </VStack>
-      <Stack
-        direction={{
-          base: 'column',
-          md: 'column',
-          lg: 'row',
-          xl: 'row',
-        }}
-        flexBasis="66%"
-        py={4}
-        alignItems="center"
-      >
-        <Box minW="360px" maxW="480px" mr={4}>
-          <PreviewImage post={featuredPost} />
-        </Box>
-        <VStack spacing={8} w="100%">
-          <VStack
-            spacing={4}
-            alignItems="flex-start"
-            w="100%"
-            p={4}
-            bgColor={useColorModeValue('gray.50', 'gray.800')}
-          >
-            <Text color="gray.500">Post</Text>
-            <Heading as="h3" fontSize="3xl">
-              {featuredPost.title}
-            </Heading>
-            <HStack>
-              <Icon as={FaHeart} />
-              <Text pr={2}>
+const FeaturedHero = ({ featuredPost }: FeaturedHeroProps) => (
+  <div className="flex justify-center items-center space-x-12 mb-8 p-8 h-[50vh] bg-gray-800">
+    <div className="flex flex-col items-center space-y-4 w-1/3">
+      <h2 className="text-4xl font-semibold">Featured Post</h2>
+      <p className="text-center">
+        Upload an image for a chance to be featured here on the home page!
+        Create an account or log in to get started!
+      </p>
+    </div>
+    <div className="flex justify-evenly items-center py-4 w-2/3">
+      <div className="h-96">
+        <PreviewImage post={featuredPost} />
+      </div>
+      <div className="space-y-8">
+        <div className="p-6 space-y-4 w-full bg-gray-900 rounded-lg">
+          <h3 className="text-3xl line-clamp-1">{featuredPost.title}</h3>
+          <div className="flex space-x-4">
+            <div className="flex items-center">
+              <HeartIcon className="mr-2 w-5" />
+              <span className="line-clamp-1">
                 {`${featuredPost.favoriteCount} `}
                 {featuredPost.favoriteCount === 1 ? 'favorite' : 'favorites'}
-              </Text>
-              <Icon as={FaCommentAlt} />
-              <Text>
+              </span>
+            </div>
+            <div className="flex items-center">
+              <ChatAltIcon className="mr-2 w-5" />
+              <span className="line-clamp-1">
                 {`${featuredPost.commentCount} `}
                 {featuredPost.commentCount === 1 ? 'comment' : 'comments'}
-              </Text>
-            </HStack>
-            <Button
-              as={RouterLink}
-              to={`posts/${featuredPost.id}`}
-              colorScheme="purple"
-            >
-              Go to Post
-            </Button>
-          </VStack>
-          <VStack
-            spacing={4}
-            alignItems="flex-start"
-            w="100%"
-            p={4}
-            bgColor={useColorModeValue('gray.50', 'gray.800')}
-          >
-            <Text color="gray.500">User</Text>
-            <HStack>
-              <Avatar avatar={featuredPost.user.avatar} w={12} mr={2} />
-              <Text>{featuredPost.user.username}</Text>
-            </HStack>
-            <Button
-              as={RouterLink}
-              to={`/users/${featuredPost.user?.id}`}
-              colorScheme="purple"
-            >
-              Go to Profile
-            </Button>
-          </VStack>
-        </VStack>
-      </Stack>
-    </Stack>
-  );
-};
+              </span>
+            </div>
+          </div>
+          <Button color="indigo">
+            <Link to={`posts/${featuredPost.id}`}>Go to Post</Link>
+          </Button>
+        </div>
+        <div className="p-6 space-y-4 w-full bg-gray-900 rounded-lg">
+          <div className="flex items-center">
+            <Avatar avatar={featuredPost.user.avatar} margin="md" />
+            <span>{featuredPost.user.username}</span>
+          </div>
+          <Button color="indigo">
+            <Link to={`/users/${featuredPost.user?.id}`}>Go to Profile</Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default FeaturedHero;
