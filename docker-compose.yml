@@ -4,7 +4,6 @@ services:
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile.dev
     image: artsy-graphql
     ports:
       - 4000:4000
@@ -46,4 +45,6 @@ services:
       - '6379:6379'
 
 volumes:
+  server:
+  client:
   db:

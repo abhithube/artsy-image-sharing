@@ -2,6 +2,6 @@
 . "$(dirname "$0")/_/husky.sh"
 
 cd ./client
-npx lint-staged
+yarn lint-staged
 cd ../server
-npx lint-staged
+yarn lint-staged

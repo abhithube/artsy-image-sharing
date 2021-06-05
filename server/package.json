@@ -9,7 +9,6 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts --ext ts,graphql",
-    "postinstall": "prisma generate",
     "build": "tsc && yarn copy",
     "generate": "graphql-codegen",
     "copy": "cpx \"src/**/*.graphql\" dist"
