@@ -98,8 +98,8 @@ const PostDetails = ({ id }: PostDetailsProps) => {
                 className={classnames(
                   'inline-block px-5 py-3 rounded-md shadow-md transition duration-300',
                   {
-                    'bg-indigo-400': data.post.isFavorite,
-                    'bg-gray-700': !data.post.isFavorite,
+                    'bg-indigo-400': data.post.isFavorite && authenticatedUser,
+                    'bg-gray-700': !data.post.isFavorite || !authenticatedUser,
                   }
                 )}
                 type="button"
