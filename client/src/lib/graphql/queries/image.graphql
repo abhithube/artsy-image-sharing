@@ -1,9 +1,0 @@
-query image($id: Int!) {
-  post(id: $id) {
-    result {
-      image {
-        publicId
-      }
-    }
-  }
-}

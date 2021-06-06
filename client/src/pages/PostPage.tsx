@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
 import { FULL_IMAGE_TRANSFORMATIONS } from '../lib/constants';
-import { useImageQuery } from '../lib/generated/graphql';
+import { usePostQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
 const { format, quality } = FULL_IMAGE_TRANSFORMATIONS;
@@ -15,7 +15,7 @@ type Params = {
 const PostPage = () => {
   const { id } = useParams<Params>();
 
-  const { data } = useImageQuery(graphQLClient, { id: Number(id) });
+  const { data } = usePostQuery(graphQLClient, { id: Number(id) });
 
   useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [id]);
 
@@ -31,7 +31,10 @@ const PostPage = () => {
                 alt={data.post.result.image.publicId}
               />
             </div>
-            <PostDetails id={Number(id)} />
+            <PostDetails
+              post={data.post.result}
+              isFavorite={data.post.isFavorite}
+            />
           </div>
           <div className="w-1/4">
             <RelatedPosts postId={Number(id)} />

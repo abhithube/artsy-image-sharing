@@ -678,25 +678,6 @@ export type FeaturedQuery = (
   ) }
 );
 
-export type ImageQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type ImageQuery = (
-  { __typename?: 'Query' }
-  & { post?: Maybe<(
-    { __typename?: 'PostResponse' }
-    & { result: (
-      { __typename?: 'Post' }
-      & { image: (
-        { __typename?: 'Image' }
-        & Pick<Image, 'publicId'>
-      ) }
-    ) }
-  )> }
-);
-
 export type PostQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -1089,34 +1070,6 @@ export const useFeaturedQuery = <
 useFeaturedQuery.document = FeaturedDocument;
 
 useFeaturedQuery.getKey = (variables: FeaturedQueryVariables) => ['featured', variables];
-
-export const ImageDocument = `
-    query image($id: Int!) {
-  post(id: $id) {
-    result {
-      image {
-        publicId
-      }
-    }
-  }
-}
-    `;
-export const useImageQuery = <
-      TData = ImageQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient, 
-      variables: ImageQueryVariables, 
-      options?: UseQueryOptions<ImageQuery, TError, TData>
-    ) => 
-    useQuery<ImageQuery, TError, TData>(
-      ['image', variables],
-      fetcher<ImageQuery, ImageQueryVariables>(client, ImageDocument, variables),
-      options
-    );
-useImageQuery.document = ImageDocument;
-
-useImageQuery.getKey = (variables: ImageQueryVariables) => ['image', variables];
 
 export const PostDocument = `
     query post($id: Int!) {
