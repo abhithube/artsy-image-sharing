@@ -14,18 +14,19 @@ type CommentsListProp = {
 const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
   const [shouldFetch, setShouldFetch] = useState(false);
 
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<CommentsQuery>(
-    ['comments', { postId }],
-    (ctx) =>
-      graphQLClient.request(useCommentsQuery.document, {
-        postId,
-        page: ctx.pageParam,
-      }),
-    {
-      getNextPageParam: (lastPage) => lastPage.comments.nextPage,
-      enabled: shouldFetch,
-    }
-  );
+  const { data, fetchNextPage, hasNextPage, isFetching } =
+    useInfiniteQuery<CommentsQuery>(
+      ['comments', { postId }],
+      (ctx) =>
+        graphQLClient.request(useCommentsQuery.document, {
+          postId,
+          page: ctx.pageParam,
+        }),
+      {
+        getNextPageParam: (lastPage) => lastPage.comments.nextPage,
+        enabled: shouldFetch,
+      }
+    );
 
   return (
     <div>
@@ -40,12 +41,22 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
               ))
             )}
             {!data?.pages && (
-              <Button onClick={() => setShouldFetch(true)} color="indigo">
+              <Button
+                onClick={() => setShouldFetch(true)}
+                isDisabled={isFetching}
+                isLoading={isFetching}
+                color="indigo"
+              >
                 Load Comments
               </Button>
             )}
             {hasNextPage && (
-              <Button onClick={() => fetchNextPage()} color="indigo">
+              <Button
+                onClick={() => fetchNextPage()}
+                isDisabled={isFetching}
+                isLoading={isFetching}
+                color="indigo"
+              >
                 Load More Comments
               </Button>
             )}

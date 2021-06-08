@@ -13,6 +13,7 @@ const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const history = useHistory();
@@ -21,13 +22,20 @@ const RegisterPage = () => {
     onSuccess: (data) => {
       if (data.registered) history.push('/login', { registered: true });
     },
-    onError: () => setError('Username already taken'),
+    onError: () => {
+      setLoading(false);
+      setError('Username already taken');
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (password !== passwordConfirm) setError('Passwords do not match');
-    else mutation.mutate({ username, password });
+    else {
+      setLoading(true);
+      mutation.mutate({ username, password });
+    }
   };
 
   return (
@@ -91,7 +99,8 @@ const RegisterPage = () => {
         </div>
         <Button
           type="submit"
-          disabled={!username || !password || !passwordConfirm}
+          isDisabled={!username || !password || !passwordConfirm || loading}
+          isLoading={loading}
           color="indigo"
         >
           Register

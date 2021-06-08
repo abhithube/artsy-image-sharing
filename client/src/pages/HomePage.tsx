@@ -8,11 +8,13 @@ import {
 import { graphQLClient } from '../lib/graphql/client';
 
 const HomePage = () => {
-  const { data } = useFeaturedQuery(graphQLClient, {
+  const { data, isLoading } = useFeaturedQuery(graphQLClient, {
     field: PostSortField.FavoriteCount,
     direction: SortDirection.Desc,
     limit: 5,
   });
+
+  if (isLoading) return null;
 
   return (
     <div>

@@ -19,6 +19,7 @@ const AddComment = ({ postId }: AddCommentProps) => {
   const { authenticatedUser } = useContext(AuthContext);
 
   const [comment, setComment] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const history = useHistory();
 
@@ -63,6 +64,7 @@ const AddComment = ({ postId }: AddCommentProps) => {
     },
     onSuccess: () => {
       setComment('');
+      setLoading(false);
 
       queryClient.fetchInfiniteQuery(commentsQueryKey);
       queryClient.fetchQuery(postQueryKey);
@@ -75,7 +77,10 @@ const AddComment = ({ postId }: AddCommentProps) => {
     if (!authenticatedUser) {
       localStorage.setItem('redirect', `/posts/${postId}`);
       history.push('/login', { unauthenticated: true });
-    } else mutation.mutate({ body: comment, postId });
+    } else {
+      setLoading(true);
+      mutation.mutate({ body: comment, postId });
+    }
   };
 
   return (
@@ -90,12 +95,17 @@ const AddComment = ({ postId }: AddCommentProps) => {
         placeholder="Leave a comment..."
       />
       <div className="space-x-4">
-        <Button type="submit" disabled={comment.length === 0} color="indigo">
+        <Button
+          type="submit"
+          isDisabled={comment.length === 0 || loading}
+          isLoading={loading}
+          color="indigo"
+        >
           Submit
         </Button>
         <Button
           onClick={() => setComment('')}
-          disabled={comment.length === 0}
+          isDisabled={comment.length === 0}
           color="red"
         >
           Cancel

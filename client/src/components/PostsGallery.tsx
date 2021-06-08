@@ -33,7 +33,7 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
     page: variables.page + 1,
   });
 
-  const { data } = usePostsQuery(graphQLClient, variables, {
+  const { data, isLoading } = usePostsQuery(graphQLClient, variables, {
     initialData: { posts: initPosts },
     keepPreviousData: true,
     onSuccess: ({ posts }) => {
@@ -48,19 +48,21 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
     },
   });
 
+  if (isLoading) return null;
+
   return (
-    <div className="mt-8 h-[33vh]">
+    <div className="mt-8">
       <h2 className="mb-4 text-xl font-medium">Posts</h2>
       {data && data.posts.results.length > 0 && (
         <div className="flex items-center space-x-4 p-4 bg-gray-800 rounded-md">
           <Button
             onClick={() => setPage(data.posts.prevPage || 0)}
-            disabled={data.posts.prevPage === null}
+            isDisabled={data.posts.prevPage === null}
             color="indigo"
           >
             <ChevronLeftIcon className="w-8" aria-label="previous page" />
           </Button>
-          <div className="grid grid-cols-5 gap-4">
+          <div className="grid grid-cols-5 gap-4 w-full">
             {data.posts.results.map((post) => (
               <PreviewImage key={post.id} post={post} />
             ))}
@@ -68,7 +70,7 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
           <Button
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             onClick={() => setPage(data.posts.nextPage!)}
-            disabled={!data.posts.nextPage}
+            isDisabled={!data.posts.nextPage}
             color="indigo"
           >
             <ChevronRightIcon className="w-8" aria-label="previous page" />

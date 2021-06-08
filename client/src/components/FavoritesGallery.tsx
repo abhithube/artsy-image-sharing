@@ -33,7 +33,7 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
     page: variables.page + 1,
   });
 
-  const { data } = useFavoritesQuery(graphQLClient, variables, {
+  const { data, isLoading } = useFavoritesQuery(graphQLClient, variables, {
     initialData: { favorites: initFavorites },
     keepPreviousData: true,
     onSuccess: ({ favorites }) => {
@@ -48,19 +48,21 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
     },
   });
 
+  if (isLoading) return null;
+
   return (
-    <div className="mt-8 h-[33vh]">
+    <div className="mt-8">
       <h2 className="mb-4 text-xl font-medium">Favorites</h2>
       {data && data.favorites.results.length > 0 && (
         <div className="flex items-center space-x-4 p-4 bg-gray-800 rounded-md">
           <Button
             onClick={() => setPage(data.favorites.prevPage || 0)}
-            disabled={data.favorites.prevPage === null}
+            isDisabled={data.favorites.prevPage === null}
             color="indigo"
           >
             <ChevronLeftIcon className="w-8" aria-label="previous page" />
           </Button>
-          <div className="grid grid-cols-5 gap-4">
+          <div className="grid grid-cols-5 gap-4 w-full">
             {data.favorites.results.map((favorite) => (
               <PreviewImage key={favorite.id} post={favorite.post} />
             ))}
@@ -68,7 +70,7 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
           <Button
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             onClick={() => setPage(data.favorites.nextPage!)}
-            disabled={data.favorites.nextPage === null}
+            isDisabled={data.favorites.nextPage === null}
             color="indigo"
           >
             <ChevronRightIcon className="w-8" aria-label="previous page" />

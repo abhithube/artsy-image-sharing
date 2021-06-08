@@ -12,6 +12,7 @@ const UploadPage = () => {
   const [file, setFile] = useState<string | ArrayBuffer | null>(null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const history = useHistory();
 
@@ -28,7 +29,10 @@ const UploadPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (file) mutation.mutate({ title, body, file: file.toString() });
+    if (file) {
+      setLoading(true);
+      mutation.mutate({ title, body, file: file.toString() });
+    }
   };
 
   return (
@@ -58,7 +62,12 @@ const UploadPage = () => {
             maxLength={500}
           />
         </div>
-        <Button type="submit" disabled={!file || !title} color="indigo">
+        <Button
+          type="submit"
+          isDisabled={!file || !title || loading}
+          isLoading={loading}
+          color="indigo"
+        >
           Upload
         </Button>
       </form>

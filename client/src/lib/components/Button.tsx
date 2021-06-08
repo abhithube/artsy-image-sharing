@@ -5,7 +5,8 @@ type ButtonProps = {
   type?: 'button' | 'submit' | 'reset';
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   onBlur?: React.FocusEventHandler<HTMLButtonElement>;
-  disabled?: boolean;
+  isDisabled?: boolean;
+  isLoading?: boolean;
   color?: 'gray' | 'indigo' | 'red';
 };
 
@@ -14,7 +15,8 @@ const Button = ({
   type = 'button',
   onClick,
   onBlur,
-  disabled = false,
+  isDisabled = false,
+  isLoading = false,
   color,
 }: ButtonProps) => (
   <button
@@ -30,9 +32,9 @@ const Button = ({
     type={type}
     onClick={onClick}
     onBlur={onBlur}
-    disabled={disabled}
+    disabled={isDisabled}
   >
-    {children}
+    {isLoading ? 'Loading...' : children}
   </button>
 );
 

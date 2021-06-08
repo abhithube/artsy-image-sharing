@@ -5,17 +5,18 @@ import { PostsQuery, usePostsQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
 const PostsPage = () => {
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<PostsQuery>(
-    'posts',
-    (ctx) =>
-      graphQLClient.request(usePostsQuery.document, {
-        limit: 20,
-        page: ctx.pageParam,
-      }),
-    {
-      getNextPageParam: (lastPage) => lastPage.posts.nextPage,
-    }
-  );
+  const { data, fetchNextPage, hasNextPage, isFetching } =
+    useInfiniteQuery<PostsQuery>(
+      'posts',
+      (ctx) =>
+        graphQLClient.request(usePostsQuery.document, {
+          limit: 20,
+          page: ctx.pageParam,
+        }),
+      {
+        getNextPageParam: (lastPage) => lastPage.posts.nextPage,
+      }
+    );
 
   return (
     <div className="flex flex-col space-y-4">
@@ -29,7 +30,12 @@ const PostsPage = () => {
       </div>
       {data?.pages.length === 0 && <p>Posts are not available at this time.</p>}
       {hasNextPage && (
-        <Button onClick={() => fetchNextPage()} color="indigo">
+        <Button
+          onClick={() => fetchNextPage()}
+          isDisabled={isFetching}
+          isLoading={isFetching}
+          color="indigo"
+        >
           Load More Posts
         </Button>
       )}

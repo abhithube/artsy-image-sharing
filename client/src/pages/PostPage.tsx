@@ -15,9 +15,11 @@ type Params = {
 const PostPage = () => {
   const { id } = useParams<Params>();
 
-  const { data } = usePostQuery(graphQLClient, { id: Number(id) });
+  const { data, isLoading } = usePostQuery(graphQLClient, { id: Number(id) });
 
   useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [id]);
+
+  if (isLoading) return null;
 
   return (
     <div className="flex items-start space-x-16">

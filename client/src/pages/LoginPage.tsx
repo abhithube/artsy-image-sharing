@@ -19,6 +19,7 @@ const LoginPage = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const history = useHistory();
@@ -38,19 +39,25 @@ const LoginPage = () => {
         history.push(redirect || '/posts');
         localStorage.removeItem('redirect');
       } else {
+        setLoading(false);
         setIsOpen(true);
       }
     },
-    onError: () => setError('Invalid credentials'),
+    onError: () => {
+      setLoading(false);
+      setError('Invalid credentials');
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
     mutation.mutate({ username, password });
   };
 
   const handleAvatarSelection = (avatar: string | null) => {
+    setLoading(true);
     mutation.mutate({ username, password, avatar: { publicId: avatar } });
   };
 
@@ -106,7 +113,8 @@ const LoginPage = () => {
           </div>
           <Button
             type="submit"
-            disabled={!username || !password}
+            isDisabled={!username || !password || loading}
+            isLoading={loading}
             color="indigo"
           >
             Login

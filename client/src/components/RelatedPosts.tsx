@@ -7,7 +7,9 @@ type RelatedPostsProps = {
 };
 
 const RelatedPosts = ({ postId }: RelatedPostsProps) => {
-  const { data } = useRelatedPostsQuery(graphQLClient, { postId });
+  const { data, isLoading } = useRelatedPostsQuery(graphQLClient, { postId });
+
+  if (isLoading) return null;
 
   return (
     <div className="p-8 bg-gray-800 rounded-lg">

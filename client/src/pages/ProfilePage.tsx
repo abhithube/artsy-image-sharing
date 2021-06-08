@@ -11,7 +11,9 @@ type Params = {
 const ProfilePage = () => {
   const { id } = useParams<Params>();
 
-  const { data } = useUserQuery(graphQLClient, { id: Number(id) });
+  const { data, isLoading } = useUserQuery(graphQLClient, { id: Number(id) });
+
+  if (isLoading) return null;
 
   return (
     <div>
