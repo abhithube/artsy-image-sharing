@@ -22,22 +22,21 @@ The app, hosted on Heroku, can be found at https://artsy.abhithube.com. The Grap
 - Add comments to posts
 - Add posts to your favorites
 - View other users' artist profiles
-- Dark mode support :)
 
 ## Todo
 
 - Add React functionality to edit/delete profile, posts, comments
-- Improve responsive design
+- Work on responsive design
 
 ## How It Works - Frontend
 
-The frontend is built in React and TypeScript. Data fetching, caching, and prefetching is handled by the `react-query` library. GraphQL queries and mutations are written in `.graphql` files, and the `graphql-codegen` library parses them and generates the necessary typings to be used in React components. The `react-query` plugin for the codegen library also creates custom React hooks for executing each query and mutation.
+The frontend is built in React and TypeScript, using a custom build process. `Babel` compiles the Typescript and ES6+ code into the backwards-compatible version of JS that common web browsers can understand. `webpack` is used to bunde the compiled JS. In development, all of the code and dependencies are bundled into a single file, which is served by `webpack-dev-server`. Hot module replacement is also configured in development, which allows updates to React components to be reflected immediately. In production, the application and dependencies are minified and bundled separately. Uncompressed, the app code is 40.1 kB and the deps are 245 kB. Compressed, 10.4 kB and 74.9 kB respectively.
 
-Images are hosted on Cloudinary and cached on their CDN. Cloudinary's URL-based transformation API is used to resize and manipulate the requested images in order to optimize performance.
+Data fetching, caching, and prefetching is handled by the `react-query` library. GraphQL queries and mutations are written in `.graphql` files, and the `graphql-codegen` library parses them and generates the necessary typings to be used in React components. The `react-query` plugin for the codegen library also creates custom React hooks for executing each query and mutation.
 
 ## How It Works - Backend
 
-The backend is built in Node.js, TypeScript, and Express. The API is designed using the GraphQL specification, as opposed to REST. Type definitions are written in `.graphql` files, which are parsed by the `graphql-codegen` library to generate TypeScript definitions to be used in the resolver implementations. This library allows for types and resolvers to be separated, while still having a single source of truth. The `graphql-tools` library creates the schema, and `express-graphql` creates the GraphQL server.
+The backend is built in Node.js, TypeScript, and Express. The API is designed using the GraphQL specification, as opposed to REST. Type definitions are written in `.graphql` files, which are parsed by the `graphql-codegen` library to generate TypeScript definitions to be used in the resolver implementations. The `graphql-tools` library creates the schema, and `express-graphql` fires up a GraphQL server.
 
 Data is stored in a PostgreSQL database. The Prisma ORM is used to programatically interact with the database. A `schema.prisma` file contains the schemas for each entity, which is used by the Prisma CLI to generate the necessary typings as well as the Prisma client for executing queries. Creating and applying migrations are also handled by the Prisma CLI.
 
@@ -45,8 +44,8 @@ Session-based authentication with username/password login is the authentication 
 
 ## Development Setup
 
-Local development consists of Dockerized PostgreSQL and Redis instances. A `docker-compose.yml` file configures both databases, and sets up a volume to persist PostgreSQL data after container shutdown. The GraphQL Playground provides a clean and simple GUI for designing queries and mutations.
+Local development consists of Dockerized PostgreSQL and Redis instances. A `docker-compose.yml` file configures both databases, and sets up a volume to persist PostgreSQL data after container shutdown.
 
 ## Production Setup
 
-The full-stack application is deployed to Heroku, either by CLI or pushing to the main branch on GitHub. Heroku-managed instances of PostgreSQL and Redis were provisioned to mininize self-management/maintenance. The React web application is served by the Express server as a bunch of static files and assets.
+The full-stack application is deployed to Heroku, either by CLI or pushing to the main branch on GitHub. Heroku-managed instances of PostgreSQL and Redis were provisioned to mininize self-management/maintenance.
