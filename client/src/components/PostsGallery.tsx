@@ -78,7 +78,7 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
         </div>
       )}
       {data?.posts.results.length === 0 && (
-        <p color="gray.500">No favorites to show.</p>
+        <p color="gray.500">No posts to show.</p>
       )}
     </div>
   );
