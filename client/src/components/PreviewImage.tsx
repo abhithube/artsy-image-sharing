@@ -11,11 +11,10 @@ type PreviewImageProps = {
 
 const PreviewImage = ({ post }: PreviewImageProps) => (
   <Link
-    className="bg-gray-700 rounded-md overflow-hidden"
+    className="bg-gray-800 rounded-md overflow-hidden"
     to={`/posts/${post.id}`}
   >
     <img
-      className="max-w-full max-h-full"
       src={`https://res.cloudinary.com/hnisqhgvp/image/upload/c_${crop},g_${gravity},h_${height},w_${width},q_${quality},f_${format}/${post.image.publicId}`}
       alt={post.title}
     />
