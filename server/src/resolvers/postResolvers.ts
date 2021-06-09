@@ -1,6 +1,6 @@
 import { uploader } from '../config';
-import { SortOrder } from '../lib/constants';
 import { Resolvers } from '../lib/generated/graphql';
+import { parseOrderBy } from '../lib/parser';
 
 export const resolvers: Resolvers = {
   Post: {
@@ -8,19 +8,7 @@ export const resolvers: Resolvers = {
       const { orderBy: orderByInput } = args;
       let { limit, page } = args;
 
-      const direction =
-        orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
-      let orderBy;
-      switch (orderByInput.field) {
-        case 'CREATED_AT':
-          orderBy = { createdAt: direction };
-          break;
-        case 'UPDATED_AT':
-          orderBy = { updatedAt: direction };
-          break;
-        default:
-          orderBy = { createdAt: direction };
-      }
+      const orderBy = parseOrderBy(orderByInput);
 
       if (limit < 1) limit = 20;
       if (page < 0) page = 0;
@@ -56,19 +44,7 @@ export const resolvers: Resolvers = {
       const { orderBy: orderByInput } = args;
       let { limit, page } = args;
 
-      const direction =
-        orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
-      let orderBy;
-      switch (orderByInput.field) {
-        case 'CREATED_AT':
-          orderBy = { createdAt: direction };
-          break;
-        case 'UPDATED_AT':
-          orderBy = { updatedAt: direction };
-          break;
-        default:
-          orderBy = { createdAt: direction };
-      }
+      const orderBy = parseOrderBy(orderByInput);
 
       if (limit < 1) limit = 20;
       if (page < 0) page = 0;
@@ -107,29 +83,7 @@ export const resolvers: Resolvers = {
       let { limit, page } = args;
 
       const where = userId ? { userId } : {};
-
-      const direction =
-        orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
-      let orderBy;
-      switch (orderByInput.field) {
-        case 'TITLE':
-          orderBy = { title: direction };
-          break;
-        case 'FAVORITE_COUNT':
-          orderBy = { favorites: { count: direction } };
-          break;
-        case 'COMMENT_COUNT':
-          orderBy = { favorites: { count: direction } };
-          break;
-        case 'CREATED_AT':
-          orderBy = { createdAt: direction };
-          break;
-        case 'UPDATED_AT':
-          orderBy = { updatedAt: direction };
-          break;
-        default:
-          orderBy = { createdAt: direction };
-      }
+      const orderBy = parseOrderBy(orderByInput);
 
       if (limit < 1) limit = 20;
       if (page < 0) page = 0;

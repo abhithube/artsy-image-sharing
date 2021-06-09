@@ -1,5 +1,5 @@
-import { SortOrder } from '../lib/constants';
 import { Resolvers } from '../lib/generated/graphql';
+import { parseOrderBy } from '../lib/parser';
 
 export const resolvers: Resolvers = {
   Query: {
@@ -7,19 +7,7 @@ export const resolvers: Resolvers = {
       const { postId, userId, orderBy: orderByInput } = args;
       let { limit, page } = args;
 
-      const direction =
-        orderByInput.direction === 'ASC' ? SortOrder.ASC : SortOrder.DESC;
-      let orderBy;
-      switch (orderByInput.field) {
-        case 'CREATED_AT':
-          orderBy = { createdAt: direction };
-          break;
-        case 'UPDATED_AT':
-          orderBy = { updatedAt: direction };
-          break;
-        default:
-          orderBy = { createdAt: direction };
-      }
+      const orderBy = parseOrderBy(orderByInput);
 
       if (limit < 1) limit = 20;
       if (page < 0) page = 0;
