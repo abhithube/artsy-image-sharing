@@ -36,6 +36,8 @@ extend type Mutation {
   logout: Boolean!
 }
 
+# The inputs needed to choose an avatar
 input AvatarInput {
+  # The public ID of the avatar image
   publicId: String
 }

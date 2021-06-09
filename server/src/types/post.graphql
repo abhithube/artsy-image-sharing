@@ -124,3 +124,15 @@ enum PostSortField {
   CREATED_AT
   UPDATED_AT
 }
+
+# The details of the hosted image
+type Image {
+  # The identifier of the image
+  publicId: String!
+  # The URL of the image
+  url: String!
+  # The intrinsic width of the image
+  width: Int!
+  # The intrinsic height of the image
+  height: Int!
+}
