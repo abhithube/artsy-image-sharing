@@ -20,7 +20,7 @@ const FeaturedHero = ({ featuredPost }: FeaturedHeroProps) => (
       </p>
     </div>
     <div className="flex justify-evenly items-center py-4 w-2/3">
-      <div className="h-96">
+      <div>
         <PreviewImage post={featuredPost} />
       </div>
       <div className="space-y-8">
