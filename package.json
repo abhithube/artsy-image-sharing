@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts --ext ts,graphql",
+    "postinstall": "npm install --prefix client",
     "build": "tsc && npm run copy && npm run build --prefix client",
     "generate": "graphql-codegen",
     "copy": "cpx \"src/**/*.graphql\" dist",
