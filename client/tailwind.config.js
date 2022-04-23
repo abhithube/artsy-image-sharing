@@ -1,19 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 const plugin = require('tailwindcss/plugin');
-const { gray } = require('tailwindcss/colors');
 
 module.exports = {
-  mode: 'jit',
-  purge: ['./src/**/*.{html,tsx}'],
-  darkMode: false,
-  theme: {
-    extend: {
-      colors: {
-        gray,
-      },
-    },
-  },
+  content: ['./src/**/*.{html,tsx}'],
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/line-clamp'),

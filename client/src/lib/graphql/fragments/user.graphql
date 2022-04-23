@@ -1,7 +1,5 @@
 fragment user on User {
   id
   username
-  avatar {
-    publicId
-  }
+  avatarUrl
 }

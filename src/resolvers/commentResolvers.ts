@@ -12,17 +12,30 @@ export const resolvers: Resolvers = {
       if (limit < 1) limit = 20;
       if (page < 0) page = 0;
 
-      let where: { postId?: number; userId?: number } = {};
-      if (postId) where = { ...where, postId };
-      if (userId) where = { ...where, userId };
+      let where: {
+        postId?: number;
+        userId?: number;
+      } = {};
+      if (postId)
+        where = {
+          ...where,
+          postId,
+        };
+      if (userId)
+        where = {
+          ...where,
+          userId,
+        };
 
       const results = await ctx.prisma.comment.findMany({
         where,
         include: {
           post: {
-            include: { image: true, user: { include: { avatar: true } } },
+            include: {
+              user: true,
+            },
           },
-          user: { include: { avatar: true } },
+          user: true,
         },
         orderBy,
         take: limit,
@@ -34,7 +47,12 @@ export const resolvers: Resolvers = {
       const prevPage = page === 0 ? null : page - 1;
       const nextPage = page === totalPages - 1 ? null : page + 1;
 
-      return { results, prevPage, nextPage, totalPages };
+      return {
+        results,
+        prevPage,
+        nextPage,
+        totalPages,
+      };
     },
   },
   Mutation: {
@@ -48,12 +66,18 @@ export const resolvers: Resolvers = {
       if (!post) throw new Error('Post not found');
 
       return ctx.prisma.comment.create({
-        data: { body, postId, userId: user.id },
+        data: {
+          body,
+          postId,
+          userId: user.id,
+        },
         include: {
           post: {
-            include: { image: true, user: { include: { avatar: true } } },
+            include: {
+              user: true,
+            },
           },
-          user: { include: { avatar: true } },
+          user: true,
         },
       });
     },
@@ -68,13 +92,19 @@ export const resolvers: Resolvers = {
       if (comment.userId !== user.id) throw new Error('User not authorized');
 
       return ctx.prisma.comment.update({
-        where: { id },
-        data: { body },
+        where: {
+          id,
+        },
+        data: {
+          body,
+        },
         include: {
           post: {
-            include: { image: true, user: { include: { avatar: true } } },
+            include: {
+              user: true,
+            },
           },
-          user: { include: { avatar: true } },
+          user: true,
         },
       });
     },
@@ -89,12 +119,16 @@ export const resolvers: Resolvers = {
       if (comment.userId !== user.id) throw new Error('User not authorized');
 
       return ctx.prisma.comment.delete({
-        where: { id },
+        where: {
+          id,
+        },
         include: {
           post: {
-            include: { image: true, user: { include: { avatar: true } } },
+            include: {
+              user: true,
+            },
           },
-          user: { include: { avatar: true } },
+          user: true,
         },
       });
     },

@@ -1,6 +1,6 @@
 import { FormEvent, useContext, useState } from 'react';
 import { InfiniteData, useQueryClient } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '../lib/components/Button';
 import { AuthContext } from '../lib/context/AuthContext';
 import {
@@ -15,13 +15,13 @@ type AddCommentProps = {
   postId: number;
 };
 
-const AddComment = ({ postId }: AddCommentProps) => {
+function AddComment({ postId }: AddCommentProps) {
   const { authenticatedUser } = useContext(AuthContext);
 
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
   const commentsQueryKey = useCommentsQuery.getKey({ postId });
@@ -41,7 +41,7 @@ const AddComment = ({ postId }: AddCommentProps) => {
         user: {
           id: authenticatedUser.id,
           username: authenticatedUser.username,
-          avatar: authenticatedUser.avatar,
+          avatarUrl: authenticatedUser.avatarUrl,
         },
       };
 
@@ -76,7 +76,7 @@ const AddComment = ({ postId }: AddCommentProps) => {
 
     if (!authenticatedUser) {
       localStorage.setItem('redirect', `/posts/${postId}`);
-      history.push('/login', { unauthenticated: true });
+      navigate('/login', { state: { unauthenticated: true } });
     } else {
       setLoading(true);
       mutation.mutate({ body: comment, postId });
@@ -113,6 +113,6 @@ const AddComment = ({ postId }: AddCommentProps) => {
       </div>
     </form>
   );
-};
+}
 
 export default AddComment;

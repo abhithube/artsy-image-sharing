@@ -12,24 +12,40 @@ export const resolvers: Resolvers = {
       if (limit < 1) limit = 20;
       if (page < 0) page = 0;
 
-      let where: { postId?: number; userId?: number } = {};
-      if (postId) where = { ...where, postId };
-      if (userId) where = { ...where, userId };
+      let where: {
+        postId?: number;
+        userId?: number;
+      } = {};
+
+      if (postId)
+        where = {
+          ...where,
+          postId,
+        };
+      if (userId)
+        where = {
+          ...where,
+          userId,
+        };
 
       const results = await ctx.prisma.favorite.findMany({
         where,
         include: {
           post: {
-            include: { image: true, user: { include: { avatar: true } } },
+            include: {
+              user: true,
+            },
           },
-          user: { include: { avatar: true } },
+          user: true,
         },
         orderBy,
         take: limit,
         skip: limit * page,
       });
 
-      const count = await ctx.prisma.favorite.count({ where });
+      const count = await ctx.prisma.favorite.count({
+        where,
+      });
       const totalPages = Math.ceil(count / limit);
       const prevPage = page === 0 ? null : page - 1;
       const nextPage = page === totalPages - 1 ? null : page + 1;
@@ -44,21 +60,32 @@ export const resolvers: Resolvers = {
 
       const { postId } = args;
 
-      const post = await ctx.prisma.post.findUnique({ where: { id: postId } });
+      const post = await ctx.prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
       if (!post) throw new Error('Post not found');
 
       const result = await ctx.prisma.favorite.create({
-        data: { postId, userId: user.id },
+        data: {
+          postId,
+          userId: user.id,
+        },
         include: {
           post: {
-            include: { image: true, user: { include: { avatar: true } } },
+            include: {
+              user: true,
+            },
           },
-          user: { include: { avatar: true } },
+          user: true,
         },
       });
 
       const count = await ctx.prisma.favorite.count({
-        where: { postId: args.postId },
+        where: {
+          postId: args.postId,
+        },
       });
 
       return { result, count };
@@ -70,26 +97,40 @@ export const resolvers: Resolvers = {
       const { postId } = args;
 
       const favorite = await ctx.prisma.favorite.findUnique({
-        where: { postId_userId: { postId, userId: user.id } },
+        where: {
+          postId_userId: {
+            postId,
+            userId: user.id,
+          },
+        },
       });
       if (!favorite) throw new Error('Favorite not found');
       if (favorite.userId !== user.id) throw new Error('User not authorized');
 
       const result = await ctx.prisma.favorite.delete({
-        where: { id: favorite.id },
+        where: {
+          id: favorite.id,
+        },
         include: {
           post: {
-            include: { image: true, user: { include: { avatar: true } } },
+            include: {
+              user: true,
+            },
           },
-          user: { include: { avatar: true } },
+          user: true,
         },
       });
 
       const count = await ctx.prisma.favorite.count({
-        where: { postId: args.postId },
+        where: {
+          postId: args.postId,
+        },
       });
 
-      return { result, count };
+      return {
+        result,
+        count,
+      };
     },
   },
 };

@@ -2,7 +2,6 @@ import compression from 'compression';
 import 'dotenv/config';
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
-import playground from 'graphql-playground-middleware-express';
 import path from 'path';
 import {
   configureCORS,
@@ -18,21 +17,31 @@ app.use(configureCSP());
 app.use(configureCORS());
 
 app.use(compression());
-app.use(express.json({ limit: '10mb' }));
+app.use(
+  express.json({
+    limit: '10mb',
+  })
+);
 
 app.use(configureSession());
 
 app.use(
   '/graphql',
   graphqlHTTP((req, res) => {
-    return { schema, context: { prisma, req, res } };
+    return {
+      schema,
+      context: {
+        prisma,
+        req,
+        res,
+      },
+      graphiql: true,
+    };
   })
 );
 
-app.get('/playground', playground({ endpoint: '/graphql' }));
-
 app.use(express.static(path.join(__dirname, '..', 'client/dist')));
 
-app.get('*', (req, res) => {
+app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, '..', 'client/dist/index.html'));
 });

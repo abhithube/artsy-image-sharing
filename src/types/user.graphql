@@ -4,8 +4,8 @@ type User {
   id: Int!
   # The username of a user
   username: String!
-  # The avatar image of a user
-  avatar: Image!
+  # The avatar image URL of a user
+  avatarUrl: String!
   # The list of posts created by a user
   posts(
     # The way in which to order the list of posts

@@ -13,31 +13,53 @@ export const resolvers: Resolvers = {
       let orderBy;
       switch (orderByInput.field) {
         case 'TITLE':
-          orderBy = { title: direction };
+          orderBy = {
+            title: direction,
+          };
           break;
         case 'FAVORITE_COUNT':
-          orderBy = { favorites: { count: direction } };
+          orderBy = {
+            favorites: {
+              _count: direction,
+            },
+          };
           break;
         case 'COMMENT_COUNT':
-          orderBy = { favorites: { count: direction } };
+          orderBy = {
+            favorites: {
+              _count: direction,
+            },
+          };
           break;
         case 'CREATED_AT':
-          orderBy = { createdAt: direction };
+          orderBy = {
+            createdAt: direction,
+          };
           break;
         case 'UPDATED_AT':
-          orderBy = { updatedAt: direction };
+          orderBy = {
+            updatedAt: direction,
+          };
           break;
         default:
-          orderBy = { createdAt: direction };
+          orderBy = {
+            createdAt: direction,
+          };
       }
 
       if (limit < 1) limit = 20;
       if (page < 0) page = 0;
 
       const posts = await ctx.prisma.user
-        .findUnique({ where: { id: parent.id } })
+        .findUnique({
+          where: {
+            id: parent.id,
+          },
+        })
         .posts({
-          include: { image: true, user: { include: { avatar: true } } },
+          include: {
+            user: true,
+          },
           orderBy,
           take: limit,
           skip: limit * page,
@@ -48,10 +70,19 @@ export const resolvers: Resolvers = {
       const prevPage = page === 0 ? null : page - 1;
       const nextPage = page === totalPages - 1 ? null : page + 1;
 
-      return { results: posts, prevPage, nextPage, totalPages };
+      return {
+        results: posts,
+        prevPage,
+        nextPage,
+        totalPages,
+      };
     },
     postCount: (parent, _args, ctx) =>
-      ctx.prisma.favorite.count({ where: { userId: parent.id } }),
+      ctx.prisma.favorite.count({
+        where: {
+          userId: parent.id,
+        },
+      }),
     favorites: async (parent, args, ctx) => {
       const { orderBy: orderByInput } = args;
       let { limit, page } = args;
@@ -61,13 +92,19 @@ export const resolvers: Resolvers = {
       let orderBy;
       switch (orderByInput.field) {
         case 'CREATED_AT':
-          orderBy = { createdAt: direction };
+          orderBy = {
+            createdAt: direction,
+          };
           break;
         case 'UPDATED_AT':
-          orderBy = { updatedAt: direction };
+          orderBy = {
+            updatedAt: direction,
+          };
           break;
         default:
-          orderBy = { createdAt: direction };
+          orderBy = {
+            createdAt: direction,
+          };
       }
 
       if (limit < 1) limit = 20;
@@ -75,14 +112,18 @@ export const resolvers: Resolvers = {
 
       const results = await ctx.prisma.user
         .findUnique({
-          where: { id: parent.id },
+          where: {
+            id: parent.id,
+          },
         })
         .favorites({
           include: {
             post: {
-              include: { image: true, user: { include: { avatar: true } } },
+              include: {
+                user: true,
+              },
             },
-            user: { include: { avatar: true } },
+            user: true,
           },
           orderBy,
           take: limit,
@@ -90,16 +131,27 @@ export const resolvers: Resolvers = {
         });
 
       const count = await ctx.prisma.favorite.count({
-        where: { userId: parent.id },
+        where: {
+          userId: parent.id,
+        },
       });
       const totalPages = Math.ceil(count / limit);
       const prevPage = page === 0 ? null : page - 1;
       const nextPage = page === totalPages - 1 ? null : page + 1;
 
-      return { results, prevPage, nextPage, totalPages };
+      return {
+        results,
+        prevPage,
+        nextPage,
+        totalPages,
+      };
     },
     favoriteCount: (parent, _args, ctx) =>
-      ctx.prisma.favorite.count({ where: { userId: parent.id } }),
+      ctx.prisma.favorite.count({
+        where: {
+          userId: parent.id,
+        },
+      }),
     comments: async (parent, args, ctx) => {
       const { orderBy: orderByInput } = args;
       let { limit, page } = args;
@@ -109,13 +161,19 @@ export const resolvers: Resolvers = {
       let orderBy;
       switch (orderByInput.field) {
         case 'CREATED_AT':
-          orderBy = { createdAt: direction };
+          orderBy = {
+            createdAt: direction,
+          };
           break;
         case 'UPDATED_AT':
-          orderBy = { updatedAt: direction };
+          orderBy = {
+            updatedAt: direction,
+          };
           break;
         default:
-          orderBy = { createdAt: direction };
+          orderBy = {
+            createdAt: direction,
+          };
       }
 
       if (limit < 1) limit = 20;
@@ -123,14 +181,18 @@ export const resolvers: Resolvers = {
 
       const results = await ctx.prisma.user
         .findUnique({
-          where: { id: parent.id },
+          where: {
+            id: parent.id,
+          },
         })
         .comments({
           include: {
             post: {
-              include: { image: true, user: { include: { avatar: true } } },
+              include: {
+                user: true,
+              },
             },
-            user: { include: { avatar: true } },
+            user: true,
           },
           orderBy,
           take: limit,
@@ -138,22 +200,34 @@ export const resolvers: Resolvers = {
         });
 
       const count = await ctx.prisma.comment.count({
-        where: { userId: parent.id },
+        where: {
+          userId: parent.id,
+        },
       });
       const totalPages = Math.ceil(count / limit);
       const prevPage = page === 0 ? null : page - 1;
       const nextPage = page === totalPages - 1 ? null : page + 1;
 
-      return { results, prevPage, nextPage, totalPages };
+      return {
+        results,
+        prevPage,
+        nextPage,
+        totalPages,
+      };
     },
     commentCount: (parent, _args, ctx) =>
-      ctx.prisma.comment.count({ where: { userId: parent.id } }),
+      ctx.prisma.comment.count({
+        where: {
+          userId: parent.id,
+        },
+      }),
   },
   Query: {
     user: async (_parent, args, ctx) => {
       const user = await ctx.prisma.user.findUnique({
-        where: { id: args.id },
-        include: { avatar: true },
+        where: {
+          id: args.id,
+        },
       });
       if (!user) throw new Error('User not found');
 
@@ -168,8 +242,9 @@ export const resolvers: Resolvers = {
       const { currentPassword, username, password, avatarUrl } = args;
 
       let user = await ctx.prisma.user.findUnique({
-        where: { id: authUser.id },
-        include: { avatar: true },
+        where: {
+          id: authUser.id,
+        },
       });
       if (!user) throw new Error('User not found');
 
@@ -187,12 +262,13 @@ export const resolvers: Resolvers = {
       if (avatarUrl) data.avatarUrl = avatarUrl;
 
       user = await ctx.prisma.user.update({
-        where: { id: authUser.id },
+        where: {
+          id: authUser.id,
+        },
         data,
-        include: { avatar: true },
       });
       authUser.username = user.username;
-      authUser.avatar = user.avatar || undefined;
+      authUser.avatarUrl = user.avatarUrl;
 
       return user;
     },
@@ -201,8 +277,9 @@ export const resolvers: Resolvers = {
       if (!authUser) throw new Error('User not authenticated');
 
       const user = await ctx.prisma.user.delete({
-        where: { id: authUser.id },
-        include: { avatar: true },
+        where: {
+          id: authUser.id,
+        },
       });
       const sessionDestroyPromise = () => {
         return new Promise<boolean>((resolve, reject) => {

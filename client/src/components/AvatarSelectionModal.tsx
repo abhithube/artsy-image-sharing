@@ -7,14 +7,14 @@ import { AVATAR_OPTIONS } from '../lib/constants';
 type AvatarSelectionModalProps = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleAvatarSelection: (avatar: string | null) => void;
+  handleAvatarSelection: (avatarUrl: string) => void;
 };
 
-const AvatarSelectionModal = ({
+function AvatarSelectionModal({
   isOpen,
   setIsOpen,
   handleAvatarSelection,
-}: AvatarSelectionModalProps) => {
+}: AvatarSelectionModalProps) {
   const [avatar, setAvatar] = useState<string>(AVATAR_OPTIONS[0]);
 
   if (!isOpen) return null;
@@ -49,13 +49,19 @@ const AvatarSelectionModal = ({
                     onChange={(e) => setAvatar(e.target.value)}
                   />
                   <div className="border-[5px] border-gray-500 rounded-full hover:cursor-pointer filter brightness-75 sibling-checked:border-indigo-400 sibling-checked:brightness-105">
-                    <Avatar avatar={{ publicId: option }} size="xl" />
+                    <Avatar
+                      url={`${process.env.S3_BUCKET_ENDPOINT}/${option}.webp`}
+                      size="xl"
+                    />
                   </div>
                 </label>
               ))}
             </div>
             <div className="flex justify-end space-x-4">
-              <Button onClick={() => handleAvatarSelection(null)} color="red">
+              <Button
+                onClick={() => handleAvatarSelection('avatar_default')}
+                color="red"
+              >
                 Continue without an avatar
               </Button>
               <Button type="submit" color="indigo">
@@ -67,6 +73,6 @@ const AvatarSelectionModal = ({
       </div>
     </>
   );
-};
+}
 
 export default AvatarSelectionModal;

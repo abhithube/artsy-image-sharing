@@ -6,8 +6,8 @@ type Post {
   title: String!
   # The description of a post
   body: String
-  # The uploaded image
-  image: Image!
+  # The URL of the uploaded image
+  imageUrl: String!
   # The user who created the post
   user: User!
   # The list of favorites added to a post
@@ -123,16 +123,4 @@ enum PostSortField {
   COMMENT_COUNT
   CREATED_AT
   UPDATED_AT
-}
-
-# The details of the hosted image
-type Image {
-  # The identifier of the image
-  publicId: String!
-  # The URL of the image
-  url: String!
-  # The intrinsic width of the image
-  width: Int!
-  # The intrinsic height of the image
-  height: Int!
 }

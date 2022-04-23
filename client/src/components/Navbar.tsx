@@ -9,11 +9,7 @@ import { AuthContext } from '../lib/context/AuthContext';
 import { useAuthQuery, useLogoutMutation } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
-type From = Location & {
-  from: string;
-};
-
-const Navbar = () => {
+function Navbar() {
   const { isLoading, authenticatedUser, setAuthenticatedUser } =
     useContext(AuthContext);
 
@@ -31,7 +27,7 @@ const Navbar = () => {
     },
   });
 
-  const location = useLocation<From>();
+  const location = useLocation();
 
   return (
     <nav className="fixed top-0 z-10 w-full bg-gray-800 shadow-sm">
@@ -57,7 +53,7 @@ const Navbar = () => {
                 onClick={() => setIsOpen((prev) => !prev)}
                 onBlur={() => setIsOpen((prev) => !prev)}
               >
-                <Avatar avatar={authenticatedUser.avatar} />
+                <Avatar url={authenticatedUser.avatarUrl} />
               </Button>
               <div
                 className={classnames(
@@ -106,6 +102,6 @@ const Navbar = () => {
       </div>
     </nav>
   );
-};
+}
 
 export default Navbar;

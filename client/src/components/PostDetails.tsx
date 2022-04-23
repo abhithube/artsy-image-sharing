@@ -9,9 +9,8 @@ import {
 import classnames from 'classnames';
 import { useContext } from 'react';
 import { useQueryClient } from 'react-query';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Avatar from '../lib/components/Avatar';
-import { FULL_IMAGE_TRANSFORMATIONS } from '../lib/constants';
 import { AuthContext } from '../lib/context/AuthContext';
 import {
   PostDetailsFragment,
@@ -23,17 +22,15 @@ import {
 import { graphQLClient } from '../lib/graphql/client';
 import CommentsList from './CommentsList';
 
-const { flag } = FULL_IMAGE_TRANSFORMATIONS;
-
 type PostDetailsProps = {
   post: PostDetailsFragment;
   isFavorite: boolean;
 };
 
-const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
+function PostDetails({ post, isFavorite }: PostDetailsProps) {
   const { authenticatedUser } = useContext(AuthContext);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
   const queryKey = usePostQuery.getKey({ id: post.id });
@@ -64,7 +61,7 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
   const handleFavorite = async () => {
     if (!authenticatedUser) {
       localStorage.setItem('redirect', `/posts/${post.id}`);
-      history.push('/login', { unauthenticated: true });
+      navigate('/login', { state: { unauthenticated: true } });
     } else if (isFavorite) deleteMutation.mutate({ postId: post.id });
     else createMutation.mutate({ postId: post.id });
   };
@@ -72,7 +69,7 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
   return (
     <>
       <div className="flex mb-4">
-        <Avatar avatar={post.user.avatar} size="lg" margin="md" />
+        <Avatar url={post.user.avatarUrl} size="lg" margin="md" />
         <div className="flex-1 pr-4">
           <h1 className="text-4xl font-semibold">{post.title}</h1>
           <span>
@@ -98,7 +95,7 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
           </button>
           <a
             className="inline-block px-5 py-3 bg-gray-700 rounded-md shadow-md transition duration-300"
-            href={`https://res.cloudinary.com/hnisqhgvp/image/upload/fl_${flag}/${post.image.publicId}`}
+            href={post.imageUrl}
           >
             <DownloadIcon className="w-5 h-5" />
           </a>
@@ -125,6 +122,6 @@ const PostDetails = ({ post, isFavorite }: PostDetailsProps) => {
       <CommentsList commentCount={post.commentCount || 0} postId={post.id} />
     </>
   );
-};
+}
 
 export default PostDetails;

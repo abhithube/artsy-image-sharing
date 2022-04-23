@@ -1,12 +1,14 @@
 import { GraphQLClient } from 'graphql-request';
+import { RequestInit } from 'graphql-request/dist/types.dom';
 import { useMutation, UseMutationOptions, useQuery, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 
-function fetcher<TData, TVariables>(client: GraphQLClient, query: string, variables?: TVariables) {
-  return async (): Promise<TData> => client.request<TData, TVariables>(query, variables);
+function fetcher<TData, TVariables>(client: GraphQLClient, query: string, variables?: TVariables, headers?: RequestInit['headers']) {
+  return async (): Promise<TData> => client.request<TData, TVariables>(query, variables, headers);
 }
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -18,168 +20,90 @@ export type Scalars = {
   DateTime: any;
 };
 
-/** The authenticated user */
 export type Auth = {
   __typename?: 'Auth';
-  /** The ID of the authenticated user */
-  id: Scalars['Int'];
-  /** The username of the authenticated user */
-  username: Scalars['String'];
-  /** The avatar image of the authenticated user */
-  avatar: Image;
-  /** The account status of the authenticated user */
+  avatarUrl: Scalars['String'];
   confirmed: Scalars['Boolean'];
+  id: Scalars['Int'];
+  username: Scalars['String'];
 };
 
-export type AvatarInput = {
-  publicId?: Maybe<Scalars['String']>;
-};
-
-/** A piece of written feedback submitted by a user on a post */
 export type Comment = {
   __typename?: 'Comment';
-  /** The ID of a comment */
-  id: Scalars['Int'];
-  /** The contents of a comment */
   body: Scalars['String'];
-  /** The user that added a comment */
-  user: User;
-  /** The post a comment was addded to */
-  post: Post;
-  /** The time a comment was created */
   createdAt: Scalars['DateTime'];
-  /** The time a comment was most recently updated */
+  id: Scalars['Int'];
+  post: Post;
   updatedAt: Scalars['DateTime'];
+  user: User;
 };
 
-/** The inputs needed to sort a list of comments */
 export type CommentOrderByInput = {
-  /** The field to sort comments by */
-  field: CommentSortField;
-  /** The direction to sort comments in */
   direction: SortDirection;
+  field: CommentSortField;
 };
 
-/** The possible fields that comments can be sorted by */
 export enum CommentSortField {
   CreatedAt = 'CREATED_AT',
   UpdatedAt = 'UPDATED_AT'
 }
 
-/** The response from a paginated comments query */
 export type CommentsResponse = {
   __typename?: 'CommentsResponse';
-  /** The current page of comments */
-  results: Array<Comment>;
-  /** The previous page number */
-  prevPage?: Maybe<Scalars['Int']>;
-  /** The next page number */
   nextPage?: Maybe<Scalars['Int']>;
-  /** The total number of pages */
+  prevPage?: Maybe<Scalars['Int']>;
+  results: Array<Comment>;
   totalPages: Scalars['Int'];
 };
 
-
-/** A piece of feedback indicating a user likes a post */
 export type Favorite = {
   __typename?: 'Favorite';
-  /** The ID of a favorite */
-  id: Scalars['Int'];
-  /** The user that added a favorite */
-  user: User;
-  /** The post a favorite was added to */
-  post: Post;
-  /** The time a favorite was created */
   createdAt: Scalars['DateTime'];
-  /** The time a favorite was most recently updated */
+  id: Scalars['Int'];
+  post: Post;
   updatedAt: Scalars['DateTime'];
+  user: User;
 };
 
-/** The inputs needed to sort a list of favorites */
 export type FavoriteOrderByInput = {
-  /** The field to sort favorites by */
-  field: FavoriteSortField;
-  /** The direction to sort favorites in */
   direction: SortDirection;
+  field: FavoriteSortField;
 };
 
-/** The response from creating or deleting a favorite */
 export type FavoriteResponse = {
   __typename?: 'FavoriteResponse';
-  /** The favorite created or deleted */
-  result: Favorite;
-  /** The new favorite count on a post */
   count: Scalars['Int'];
+  result: Favorite;
 };
 
-/** The possible fields that favorites can be sorted by */
 export enum FavoriteSortField {
   CreatedAt = 'CREATED_AT',
   UpdatedAt = 'UPDATED_AT'
 }
 
-/** The response from a paginated favorites query */
 export type FavoritesResponse = {
   __typename?: 'FavoritesResponse';
-  /** The current page of favorites */
-  results: Array<Favorite>;
-  /** The previous page number */
-  prevPage?: Maybe<Scalars['Int']>;
-  /** The next page number */
   nextPage?: Maybe<Scalars['Int']>;
-  /** The total number of pages */
+  prevPage?: Maybe<Scalars['Int']>;
+  results: Array<Favorite>;
   totalPages: Scalars['Int'];
-};
-
-export type Image = {
-  __typename?: 'Image';
-  publicId: Scalars['String'];
-  url: Scalars['String'];
-  width: Scalars['Int'];
-  height: Scalars['Int'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Register a user account */
-  register: Scalars['Boolean'];
-  /** Log in to a user account */
-  login: Auth;
-  /** Log out of a user account */
-  logout: Scalars['Boolean'];
-  /** Create a new comment */
   createComment: Comment;
-  /** Update an existing comment */
-  updateComment: Comment;
-  /** Delete an existing comment */
-  deleteComment: Comment;
-  /** Create a new favorite */
   createFavorite?: Maybe<FavoriteResponse>;
-  /** Delete an existing favorite */
-  deleteFavorite?: Maybe<FavoriteResponse>;
-  /** Create a new post */
   createPost: Post;
-  /** Update an existing post */
-  updatePost: Post;
-  /** Deleting an existing post */
+  deleteComment: Comment;
+  deleteFavorite?: Maybe<FavoriteResponse>;
   deletePost: Post;
-  /** Update an existing user's details */
-  updateUser: User;
-  /** Delete an existing user */
   deleteUser: User;
-};
-
-
-export type MutationRegisterArgs = {
-  username: Scalars['String'];
-  password: Scalars['String'];
-};
-
-
-export type MutationLoginArgs = {
-  username: Scalars['String'];
-  password: Scalars['String'];
-  avatar?: Maybe<AvatarInput>;
+  login: Auth;
+  logout: Scalars['Boolean'];
+  register: Scalars['Boolean'];
+  updateComment: Comment;
+  updatePost: Post;
+  updateUser: User;
 };
 
 
@@ -189,9 +113,15 @@ export type MutationCreateCommentArgs = {
 };
 
 
-export type MutationUpdateCommentArgs = {
-  id: Scalars['Int'];
-  body: Scalars['String'];
+export type MutationCreateFavoriteArgs = {
+  postId: Scalars['Int'];
+};
+
+
+export type MutationCreatePostArgs = {
+  body?: InputMaybe<Scalars['String']>;
+  file: Scalars['String'];
+  title: Scalars['String'];
 };
 
 
@@ -200,27 +130,8 @@ export type MutationDeleteCommentArgs = {
 };
 
 
-export type MutationCreateFavoriteArgs = {
-  postId: Scalars['Int'];
-};
-
-
 export type MutationDeleteFavoriteArgs = {
   postId: Scalars['Int'];
-};
-
-
-export type MutationCreatePostArgs = {
-  title: Scalars['String'];
-  body?: Maybe<Scalars['String']>;
-  file: Scalars['String'];
-};
-
-
-export type MutationUpdatePostArgs = {
-  id: Scalars['Int'];
-  title?: Maybe<Scalars['String']>;
-  body?: Maybe<Scalars['String']>;
 };
 
 
@@ -229,142 +140,135 @@ export type MutationDeletePostArgs = {
 };
 
 
-export type MutationUpdateUserArgs = {
-  currentPassword: Scalars['String'];
-  username?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
-  avatarUrl?: Maybe<Scalars['String']>;
+export type MutationLoginArgs = {
+  avatar?: InputMaybe<Scalars['String']>;
+  password: Scalars['String'];
+  username: Scalars['String'];
 };
 
-/** An upload containing an image and related details */
+
+export type MutationRegisterArgs = {
+  password: Scalars['String'];
+  username: Scalars['String'];
+};
+
+
+export type MutationUpdateCommentArgs = {
+  body: Scalars['String'];
+  id: Scalars['Int'];
+};
+
+
+export type MutationUpdatePostArgs = {
+  body?: InputMaybe<Scalars['String']>;
+  id: Scalars['Int'];
+  title?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationUpdateUserArgs = {
+  avatarUrl?: InputMaybe<Scalars['String']>;
+  currentPassword: Scalars['String'];
+  password?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type Post = {
   __typename?: 'Post';
-  /** The ID of a post */
-  id: Scalars['Int'];
-  /** The title of a post */
-  title: Scalars['String'];
-  /** The description of a post */
   body?: Maybe<Scalars['String']>;
-  /** The uploaded image */
-  image: Image;
-  /** The user who created the post */
-  user: User;
-  /** The list of favorites added to a post */
-  favorites?: Maybe<FavoritesResponse>;
-  /** The number of favorites added to a post */
-  favoriteCount?: Maybe<Scalars['Int']>;
-  /** The list of comments added to a post */
-  comments?: Maybe<CommentsResponse>;
-  /** The number of comments added to a post */
   commentCount?: Maybe<Scalars['Int']>;
-  /** The time a post was created */
+  comments?: Maybe<CommentsResponse>;
   createdAt: Scalars['DateTime'];
-  /** The time a post was most recently updated */
+  favoriteCount?: Maybe<Scalars['Int']>;
+  favorites?: Maybe<FavoritesResponse>;
+  id: Scalars['Int'];
+  imageUrl: Scalars['String'];
+  title: Scalars['String'];
   updatedAt: Scalars['DateTime'];
+  user: User;
 };
 
 
-/** An upload containing an image and related details */
-export type PostFavoritesArgs = {
-  orderBy?: Maybe<FavoriteOrderByInput>;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-};
-
-
-/** An upload containing an image and related details */
 export type PostCommentsArgs = {
-  orderBy?: Maybe<CommentOrderByInput>;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<CommentOrderByInput>;
+  page?: InputMaybe<Scalars['Int']>;
 };
 
-/** The inputs needed to sort a list of posts */
+
+export type PostFavoritesArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FavoriteOrderByInput>;
+  page?: InputMaybe<Scalars['Int']>;
+};
+
 export type PostOrderByInput = {
-  /** The field to sort posts by */
-  field: PostSortField;
-  /** The direction to sort posts in */
   direction: SortDirection;
+  field: PostSortField;
 };
 
-/** The response from a single post query */
 export type PostResponse = {
   __typename?: 'PostResponse';
-  /** The post that has been queried */
-  result: Post;
-  /** The boolean indicating if the authenticated user has favorited the post */
   isFavorite: Scalars['Boolean'];
+  result: Post;
 };
 
-/** The possible fields that posts can be sorted by */
 export enum PostSortField {
-  Title = 'TITLE',
-  FavoriteCount = 'FAVORITE_COUNT',
   CommentCount = 'COMMENT_COUNT',
   CreatedAt = 'CREATED_AT',
+  FavoriteCount = 'FAVORITE_COUNT',
+  Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT'
 }
 
-/** The response from a paginated posts query */
 export type PostsResponse = {
   __typename?: 'PostsResponse';
-  /** The current page of posts */
-  results: Array<Post>;
-  /** The previous page number */
-  prevPage?: Maybe<Scalars['Int']>;
-  /** The next page number */
   nextPage?: Maybe<Scalars['Int']>;
-  /** The total number of pages */
+  prevPage?: Maybe<Scalars['Int']>;
+  results: Array<Post>;
   totalPages: Scalars['Int'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  /** Get the currently authenticated user */
   auth?: Maybe<Auth>;
-  /** Get a paginated list of comments */
   comments: CommentsResponse;
-  /** Get a list of paginated favorites */
   favorites: FavoritesResponse;
-  /** Get a list of paginated posts */
-  posts: PostsResponse;
-  /** Get a post by ID */
   post?: Maybe<PostResponse>;
-  /** Get posts related to a given post */
+  posts: PostsResponse;
   relatedPosts?: Maybe<Array<Post>>;
-  /** Get a user by ID */
   user: User;
 };
 
 
 export type QueryCommentsArgs = {
-  postId?: Maybe<Scalars['Int']>;
-  userId?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<CommentOrderByInput>;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<CommentOrderByInput>;
+  page?: InputMaybe<Scalars['Int']>;
+  postId?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['Int']>;
 };
 
 
 export type QueryFavoritesArgs = {
-  postId?: Maybe<Scalars['Int']>;
-  userId?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FavoriteOrderByInput>;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryPostsArgs = {
-  userId?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<PostOrderByInput>;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FavoriteOrderByInput>;
+  page?: InputMaybe<Scalars['Int']>;
+  postId?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['Int']>;
 };
 
 
 export type QueryPostArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryPostsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrderByInput>;
+  page?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -377,141 +281,60 @@ export type QueryUserArgs = {
   id: Scalars['Int'];
 };
 
-/** The possible directions that posts can be sorted in */
 export enum SortDirection {
   Asc = 'ASC',
   Desc = 'DESC'
 }
 
-/** A user account containing profile info */
 export type User = {
   __typename?: 'User';
-  /** The ID of a user */
-  id: Scalars['Int'];
-  /** The username of a user */
-  username: Scalars['String'];
-  /** The avatar image of a user */
-  avatar: Image;
-  /** The list of posts created by a user */
-  posts?: Maybe<PostsResponse>;
-  /** The number of posts created by a user */
-  postCount?: Maybe<Scalars['Int']>;
-  /** The list of favorites created by a user */
-  favorites?: Maybe<FavoritesResponse>;
-  /** The number of favorites created by a user */
-  favoriteCount?: Maybe<Scalars['Int']>;
-  /** The list of comments created by a user */
-  comments?: Maybe<CommentsResponse>;
-  /** The number of comments created by a user */
+  avatarUrl: Scalars['String'];
   commentCount?: Maybe<Scalars['Int']>;
-  /** The time a user was created */
+  comments?: Maybe<CommentsResponse>;
   createdAt: Scalars['DateTime'];
-  /** The time a user was most recently updated */
+  favoriteCount?: Maybe<Scalars['Int']>;
+  favorites?: Maybe<FavoritesResponse>;
+  id: Scalars['Int'];
+  postCount?: Maybe<Scalars['Int']>;
+  posts?: Maybe<PostsResponse>;
   updatedAt: Scalars['DateTime'];
+  username: Scalars['String'];
 };
 
 
-/** A user account containing profile info */
-export type UserPostsArgs = {
-  orderBy?: Maybe<PostOrderByInput>;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-};
-
-
-/** A user account containing profile info */
-export type UserFavoritesArgs = {
-  orderBy?: Maybe<FavoriteOrderByInput>;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-};
-
-
-/** A user account containing profile info */
 export type UserCommentsArgs = {
-  orderBy?: Maybe<CommentOrderByInput>;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<CommentOrderByInput>;
+  page?: InputMaybe<Scalars['Int']>;
 };
 
-export type AuthFragment = (
-  { __typename?: 'Auth' }
-  & Pick<Auth, 'id' | 'username' | 'confirmed'>
-  & { avatar: (
-    { __typename?: 'Image' }
-    & Pick<Image, 'publicId'>
-  ) }
-);
 
-export type CommentFragment = (
-  { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'body' | 'createdAt'>
-  & { user: (
-    { __typename?: 'User' }
-    & UserFragment
-  ) }
-);
+export type UserFavoritesArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FavoriteOrderByInput>;
+  page?: InputMaybe<Scalars['Int']>;
+};
 
-export type FavoritesFragment = (
-  { __typename?: 'FavoritesResponse' }
-  & Pick<FavoritesResponse, 'prevPage' | 'nextPage'>
-  & { results: Array<(
-    { __typename?: 'Favorite' }
-    & Pick<Favorite, 'id' | 'createdAt'>
-    & { post: (
-      { __typename?: 'Post' }
-      & Pick<Post, 'id' | 'title'>
-      & { image: (
-        { __typename?: 'Image' }
-        & Pick<Image, 'publicId'>
-      ) }
-    ) }
-  )> }
-);
 
-export type ImageFragment = (
-  { __typename?: 'Image' }
-  & Pick<Image, 'publicId'>
-);
+export type UserPostsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrderByInput>;
+  page?: InputMaybe<Scalars['Int']>;
+};
 
-export type PostDetailsFragment = (
-  { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'favoriteCount' | 'commentCount'>
-  & { image: (
-    { __typename?: 'Image' }
-    & Pick<Image, 'publicId'>
-  ), user: (
-    { __typename?: 'User' }
-    & UserFragment
-  ) }
-);
+export type AuthFragment = { __typename?: 'Auth', id: number, username: string, avatarUrl: string, confirmed: boolean };
 
-export type PostSummaryFragment = (
-  { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title'>
-  & { image: (
-    { __typename?: 'Image' }
-    & Pick<Image, 'publicId'>
-  ) }
-);
+export type CommentFragment = { __typename?: 'Comment', id: number, body: string, createdAt: any, user: { __typename?: 'User', id: number, username: string, avatarUrl: string } };
 
-export type PostsFragment = (
-  { __typename?: 'PostsResponse' }
-  & Pick<PostsResponse, 'prevPage' | 'nextPage'>
-  & { results: Array<(
-    { __typename?: 'Post' }
-    & PostSummaryFragment
-  )> }
-);
+export type FavoritesFragment = { __typename?: 'FavoritesResponse', prevPage?: number | null | undefined, nextPage?: number | null | undefined, results: Array<{ __typename?: 'Favorite', id: number, createdAt: any, post: { __typename?: 'Post', id: number, title: string, imageUrl: string } }> };
 
-export type UserFragment = (
-  { __typename?: 'User' }
-  & Pick<User, 'id' | 'username'>
-  & { avatar: (
-    { __typename?: 'Image' }
-    & Pick<Image, 'publicId'>
-  ) }
-);
+export type PostDetailsFragment = { __typename?: 'Post', id: number, title: string, imageUrl: string, body?: string | null | undefined, createdAt: any, favoriteCount?: number | null | undefined, commentCount?: number | null | undefined, user: { __typename?: 'User', id: number, username: string, avatarUrl: string } };
+
+export type PostSummaryFragment = { __typename?: 'Post', id: number, title: string, imageUrl: string };
+
+export type PostsFragment = { __typename?: 'PostsResponse', prevPage?: number | null | undefined, nextPage?: number | null | undefined, results: Array<{ __typename?: 'Post', id: number, title: string, imageUrl: string }> };
+
+export type UserFragment = { __typename?: 'User', id: number, username: string, avatarUrl: string };
 
 export type CreateCommentMutationVariables = Exact<{
   body: Scalars['String'];
@@ -519,85 +342,44 @@ export type CreateCommentMutationVariables = Exact<{
 }>;
 
 
-export type CreateCommentMutation = (
-  { __typename?: 'Mutation' }
-  & { comment: (
-    { __typename?: 'Comment' }
-    & CommentFragment
-  ) }
-);
+export type CreateCommentMutation = { __typename?: 'Mutation', comment: { __typename?: 'Comment', id: number, body: string, createdAt: any, user: { __typename?: 'User', id: number, username: string, avatarUrl: string } } };
 
 export type CreateFavoriteMutationVariables = Exact<{
   postId: Scalars['Int'];
 }>;
 
 
-export type CreateFavoriteMutation = (
-  { __typename?: 'Mutation' }
-  & { favorite?: Maybe<(
-    { __typename?: 'FavoriteResponse' }
-    & Pick<FavoriteResponse, 'count'>
-    & { result: (
-      { __typename?: 'Favorite' }
-      & Pick<Favorite, 'id'>
-    ) }
-  )> }
-);
+export type CreateFavoriteMutation = { __typename?: 'Mutation', favorite?: { __typename?: 'FavoriteResponse', count: number, result: { __typename?: 'Favorite', id: number } } | null | undefined };
 
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
-  body?: Maybe<Scalars['String']>;
+  body?: InputMaybe<Scalars['String']>;
   file: Scalars['String'];
 }>;
 
 
-export type CreatePostMutation = (
-  { __typename?: 'Mutation' }
-  & { post: (
-    { __typename?: 'Post' }
-    & PostDetailsFragment
-  ) }
-);
+export type CreatePostMutation = { __typename?: 'Mutation', post: { __typename?: 'Post', id: number, title: string, imageUrl: string, body?: string | null | undefined, createdAt: any, favoriteCount?: number | null | undefined, commentCount?: number | null | undefined, user: { __typename?: 'User', id: number, username: string, avatarUrl: string } } };
 
 export type DeleteFavoriteMutationVariables = Exact<{
   postId: Scalars['Int'];
 }>;
 
 
-export type DeleteFavoriteMutation = (
-  { __typename?: 'Mutation' }
-  & { favorite?: Maybe<(
-    { __typename?: 'FavoriteResponse' }
-    & Pick<FavoriteResponse, 'count'>
-    & { result: (
-      { __typename?: 'Favorite' }
-      & Pick<Favorite, 'id'>
-    ) }
-  )> }
-);
+export type DeleteFavoriteMutation = { __typename?: 'Mutation', favorite?: { __typename?: 'FavoriteResponse', count: number, result: { __typename?: 'Favorite', id: number } } | null | undefined };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
-  avatar?: Maybe<AvatarInput>;
+  avatar?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type LoginMutation = (
-  { __typename?: 'Mutation' }
-  & { auth: (
-    { __typename?: 'Auth' }
-    & AuthFragment
-  ) }
-);
+export type LoginMutation = { __typename?: 'Mutation', auth: { __typename?: 'Auth', id: number, username: string, avatarUrl: string, confirmed: boolean } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LogoutMutation = (
-  { __typename?: 'Mutation' }
-  & { isLoggedOut: Mutation['logout'] }
-);
+export type LogoutMutation = { __typename?: 'Mutation', isLoggedOut: boolean };
 
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
@@ -605,154 +387,82 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = (
-  { __typename?: 'Mutation' }
-  & { registered: Mutation['register'] }
-);
+export type RegisterMutation = { __typename?: 'Mutation', registered: boolean };
 
 export type AuthQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AuthQuery = (
-  { __typename?: 'Query' }
-  & { auth?: Maybe<(
-    { __typename?: 'Auth' }
-    & AuthFragment
-  )> }
-);
+export type AuthQuery = { __typename?: 'Query', auth?: { __typename?: 'Auth', id: number, username: string, avatarUrl: string, confirmed: boolean } | null | undefined };
 
 export type CommentsQueryVariables = Exact<{
-  postId?: Maybe<Scalars['Int']>;
+  postId?: InputMaybe<Scalars['Int']>;
   field?: CommentSortField;
   direction?: SortDirection;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type CommentsQuery = (
-  { __typename?: 'Query' }
-  & { comments: (
-    { __typename?: 'CommentsResponse' }
-    & Pick<CommentsResponse, 'nextPage'>
-    & { results: Array<(
-      { __typename?: 'Comment' }
-      & CommentFragment
-    )> }
-  ) }
-);
+export type CommentsQuery = { __typename?: 'Query', comments: { __typename?: 'CommentsResponse', nextPage?: number | null | undefined, results: Array<{ __typename?: 'Comment', id: number, body: string, createdAt: any, user: { __typename?: 'User', id: number, username: string, avatarUrl: string } }> } };
 
 export type FavoritesQueryVariables = Exact<{
-  postId?: Maybe<Scalars['Int']>;
-  userId?: Maybe<Scalars['Int']>;
+  postId?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['Int']>;
   field?: FavoriteSortField;
   direction?: SortDirection;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type FavoritesQuery = (
-  { __typename?: 'Query' }
-  & { favorites: (
-    { __typename?: 'FavoritesResponse' }
-    & FavoritesFragment
-  ) }
-);
+export type FavoritesQuery = { __typename?: 'Query', favorites: { __typename?: 'FavoritesResponse', prevPage?: number | null | undefined, nextPage?: number | null | undefined, results: Array<{ __typename?: 'Favorite', id: number, createdAt: any, post: { __typename?: 'Post', id: number, title: string, imageUrl: string } }> } };
 
 export type FeaturedQueryVariables = Exact<{
   field: PostSortField;
   direction: SortDirection;
-  limit?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type FeaturedQuery = (
-  { __typename?: 'Query' }
-  & { posts: (
-    { __typename?: 'PostsResponse' }
-    & { results: Array<(
-      { __typename?: 'Post' }
-      & PostDetailsFragment
-    )> }
-  ) }
-);
+export type FeaturedQuery = { __typename?: 'Query', posts: { __typename?: 'PostsResponse', results: Array<{ __typename?: 'Post', id: number, title: string, imageUrl: string, body?: string | null | undefined, createdAt: any, favoriteCount?: number | null | undefined, commentCount?: number | null | undefined, user: { __typename?: 'User', id: number, username: string, avatarUrl: string } }> } };
 
 export type PostQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type PostQuery = (
-  { __typename?: 'Query' }
-  & { post?: Maybe<(
-    { __typename?: 'PostResponse' }
-    & Pick<PostResponse, 'isFavorite'>
-    & { result: (
-      { __typename?: 'Post' }
-      & PostDetailsFragment
-    ) }
-  )> }
-);
+export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'PostResponse', isFavorite: boolean, result: { __typename?: 'Post', id: number, title: string, imageUrl: string, body?: string | null | undefined, createdAt: any, favoriteCount?: number | null | undefined, commentCount?: number | null | undefined, user: { __typename?: 'User', id: number, username: string, avatarUrl: string } } } | null | undefined };
 
 export type PostsQueryVariables = Exact<{
-  userId?: Maybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['Int']>;
   field?: PostSortField;
   direction?: SortDirection;
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type PostsQuery = (
-  { __typename?: 'Query' }
-  & { posts: (
-    { __typename?: 'PostsResponse' }
-    & PostsFragment
-  ) }
-);
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostsResponse', prevPage?: number | null | undefined, nextPage?: number | null | undefined, results: Array<{ __typename?: 'Post', id: number, title: string, imageUrl: string }> } };
 
 export type RelatedPostsQueryVariables = Exact<{
   postId: Scalars['Int'];
 }>;
 
 
-export type RelatedPostsQuery = (
-  { __typename?: 'Query' }
-  & { relatedPosts?: Maybe<Array<(
-    { __typename?: 'Post' }
-    & PostSummaryFragment
-  )>> }
-);
+export type RelatedPostsQuery = { __typename?: 'Query', relatedPosts?: Array<{ __typename?: 'Post', id: number, title: string, imageUrl: string }> | null | undefined };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type UserQuery = (
-  { __typename?: 'Query' }
-  & { user: (
-    { __typename?: 'User' }
-    & Pick<User, 'postCount' | 'favoriteCount' | 'createdAt'>
-    & { posts?: Maybe<(
-      { __typename?: 'PostsResponse' }
-      & PostsFragment
-    )>, favorites?: Maybe<(
-      { __typename?: 'FavoritesResponse' }
-      & FavoritesFragment
-    )> }
-    & UserFragment
-  ) }
-);
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', postCount?: number | null | undefined, favoriteCount?: number | null | undefined, createdAt: any, id: number, username: string, avatarUrl: string, posts?: { __typename?: 'PostsResponse', prevPage?: number | null | undefined, nextPage?: number | null | undefined, results: Array<{ __typename?: 'Post', id: number, title: string, imageUrl: string }> } | null | undefined, favorites?: { __typename?: 'FavoritesResponse', prevPage?: number | null | undefined, nextPage?: number | null | undefined, results: Array<{ __typename?: 'Favorite', id: number, createdAt: any, post: { __typename?: 'Post', id: number, title: string, imageUrl: string } }> } | null | undefined } };
 
 export const AuthFragmentDoc = `
     fragment auth on Auth {
   id
   username
-  avatar {
-    publicId
-  }
+  avatarUrl
   confirmed
 }
     `;
@@ -760,9 +470,7 @@ export const UserFragmentDoc = `
     fragment user on User {
   id
   username
-  avatar {
-    publicId
-  }
+  avatarUrl
 }
     `;
 export const CommentFragmentDoc = `
@@ -775,35 +483,31 @@ export const CommentFragmentDoc = `
   createdAt
 }
     ${UserFragmentDoc}`;
+export const PostSummaryFragmentDoc = `
+    fragment postSummary on Post {
+  id
+  title
+  imageUrl
+}
+    `;
 export const FavoritesFragmentDoc = `
     fragment favorites on FavoritesResponse {
   results {
     id
     post {
-      id
-      title
-      image {
-        publicId
-      }
+      ...postSummary
     }
     createdAt
   }
   prevPage
   nextPage
 }
-    `;
-export const ImageFragmentDoc = `
-    fragment image on Image {
-  publicId
-}
-    `;
+    ${PostSummaryFragmentDoc}`;
 export const PostDetailsFragmentDoc = `
     fragment postDetails on Post {
   id
   title
-  image {
-    publicId
-  }
+  imageUrl
   body
   createdAt
   user {
@@ -813,15 +517,6 @@ export const PostDetailsFragmentDoc = `
   commentCount
 }
     ${UserFragmentDoc}`;
-export const PostSummaryFragmentDoc = `
-    fragment postSummary on Post {
-  id
-  title
-  image {
-    publicId
-  }
-}
-    `;
 export const PostsFragmentDoc = `
     fragment posts on PostsResponse {
   results {
@@ -842,11 +537,13 @@ export const useCreateCommentMutation = <
       TError = unknown,
       TContext = unknown
     >(
-      client: GraphQLClient, 
-      options?: UseMutationOptions<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>
-    ) => 
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
     useMutation<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>(
-      (variables?: CreateCommentMutationVariables) => fetcher<CreateCommentMutation, CreateCommentMutationVariables>(client, CreateCommentDocument, variables)(),
+      'createComment',
+      (variables?: CreateCommentMutationVariables) => fetcher<CreateCommentMutation, CreateCommentMutationVariables>(client, CreateCommentDocument, variables, headers)(),
       options
     );
 export const CreateFavoriteDocument = `
@@ -863,11 +560,13 @@ export const useCreateFavoriteMutation = <
       TError = unknown,
       TContext = unknown
     >(
-      client: GraphQLClient, 
-      options?: UseMutationOptions<CreateFavoriteMutation, TError, CreateFavoriteMutationVariables, TContext>
-    ) => 
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateFavoriteMutation, TError, CreateFavoriteMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
     useMutation<CreateFavoriteMutation, TError, CreateFavoriteMutationVariables, TContext>(
-      (variables?: CreateFavoriteMutationVariables) => fetcher<CreateFavoriteMutation, CreateFavoriteMutationVariables>(client, CreateFavoriteDocument, variables)(),
+      'createFavorite',
+      (variables?: CreateFavoriteMutationVariables) => fetcher<CreateFavoriteMutation, CreateFavoriteMutationVariables>(client, CreateFavoriteDocument, variables, headers)(),
       options
     );
 export const CreatePostDocument = `
@@ -881,11 +580,13 @@ export const useCreatePostMutation = <
       TError = unknown,
       TContext = unknown
     >(
-      client: GraphQLClient, 
-      options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>
-    ) => 
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
     useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
-      (variables?: CreatePostMutationVariables) => fetcher<CreatePostMutation, CreatePostMutationVariables>(client, CreatePostDocument, variables)(),
+      'createPost',
+      (variables?: CreatePostMutationVariables) => fetcher<CreatePostMutation, CreatePostMutationVariables>(client, CreatePostDocument, variables, headers)(),
       options
     );
 export const DeleteFavoriteDocument = `
@@ -902,15 +603,17 @@ export const useDeleteFavoriteMutation = <
       TError = unknown,
       TContext = unknown
     >(
-      client: GraphQLClient, 
-      options?: UseMutationOptions<DeleteFavoriteMutation, TError, DeleteFavoriteMutationVariables, TContext>
-    ) => 
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteFavoriteMutation, TError, DeleteFavoriteMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
     useMutation<DeleteFavoriteMutation, TError, DeleteFavoriteMutationVariables, TContext>(
-      (variables?: DeleteFavoriteMutationVariables) => fetcher<DeleteFavoriteMutation, DeleteFavoriteMutationVariables>(client, DeleteFavoriteDocument, variables)(),
+      'deleteFavorite',
+      (variables?: DeleteFavoriteMutationVariables) => fetcher<DeleteFavoriteMutation, DeleteFavoriteMutationVariables>(client, DeleteFavoriteDocument, variables, headers)(),
       options
     );
 export const LoginDocument = `
-    mutation login($username: String!, $password: String!, $avatar: AvatarInput) {
+    mutation login($username: String!, $password: String!, $avatar: String) {
   auth: login(username: $username, password: $password, avatar: $avatar) {
     ...auth
   }
@@ -920,11 +623,13 @@ export const useLoginMutation = <
       TError = unknown,
       TContext = unknown
     >(
-      client: GraphQLClient, 
-      options?: UseMutationOptions<LoginMutation, TError, LoginMutationVariables, TContext>
-    ) => 
+      client: GraphQLClient,
+      options?: UseMutationOptions<LoginMutation, TError, LoginMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
     useMutation<LoginMutation, TError, LoginMutationVariables, TContext>(
-      (variables?: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(client, LoginDocument, variables)(),
+      'login',
+      (variables?: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(client, LoginDocument, variables, headers)(),
       options
     );
 export const LogoutDocument = `
@@ -936,11 +641,13 @@ export const useLogoutMutation = <
       TError = unknown,
       TContext = unknown
     >(
-      client: GraphQLClient, 
-      options?: UseMutationOptions<LogoutMutation, TError, LogoutMutationVariables, TContext>
-    ) => 
+      client: GraphQLClient,
+      options?: UseMutationOptions<LogoutMutation, TError, LogoutMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
     useMutation<LogoutMutation, TError, LogoutMutationVariables, TContext>(
-      (variables?: LogoutMutationVariables) => fetcher<LogoutMutation, LogoutMutationVariables>(client, LogoutDocument, variables)(),
+      'logout',
+      (variables?: LogoutMutationVariables) => fetcher<LogoutMutation, LogoutMutationVariables>(client, LogoutDocument, variables, headers)(),
       options
     );
 export const RegisterDocument = `
@@ -952,11 +659,13 @@ export const useRegisterMutation = <
       TError = unknown,
       TContext = unknown
     >(
-      client: GraphQLClient, 
-      options?: UseMutationOptions<RegisterMutation, TError, RegisterMutationVariables, TContext>
-    ) => 
+      client: GraphQLClient,
+      options?: UseMutationOptions<RegisterMutation, TError, RegisterMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
     useMutation<RegisterMutation, TError, RegisterMutationVariables, TContext>(
-      (variables?: RegisterMutationVariables) => fetcher<RegisterMutation, RegisterMutationVariables>(client, RegisterDocument, variables)(),
+      'register',
+      (variables?: RegisterMutationVariables) => fetcher<RegisterMutation, RegisterMutationVariables>(client, RegisterDocument, variables, headers)(),
       options
     );
 export const AuthDocument = `
@@ -970,18 +679,21 @@ export const useAuthQuery = <
       TData = AuthQuery,
       TError = unknown
     >(
-      client: GraphQLClient, 
-      variables?: AuthQueryVariables, 
-      options?: UseQueryOptions<AuthQuery, TError, TData>
-    ) => 
+      client: GraphQLClient,
+      variables?: AuthQueryVariables,
+      options?: UseQueryOptions<AuthQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
     useQuery<AuthQuery, TError, TData>(
-      ['auth', variables],
-      fetcher<AuthQuery, AuthQueryVariables>(client, AuthDocument, variables),
+      variables === undefined ? ['auth'] : ['auth', variables],
+      fetcher<AuthQuery, AuthQueryVariables>(client, AuthDocument, variables, headers),
       options
     );
 useAuthQuery.document = AuthDocument;
 
-useAuthQuery.getKey = (variables?: AuthQueryVariables) => ['auth', variables];
+
+useAuthQuery.getKey = (variables?: AuthQueryVariables) => variables === undefined ? ['auth'] : ['auth', variables];
+;
 
 export const CommentsDocument = `
     query comments($postId: Int, $field: CommentSortField! = CREATED_AT, $direction: SortDirection! = DESC, $limit: Int, $page: Int) {
@@ -1002,18 +714,21 @@ export const useCommentsQuery = <
       TData = CommentsQuery,
       TError = unknown
     >(
-      client: GraphQLClient, 
-      variables?: CommentsQueryVariables, 
-      options?: UseQueryOptions<CommentsQuery, TError, TData>
-    ) => 
+      client: GraphQLClient,
+      variables?: CommentsQueryVariables,
+      options?: UseQueryOptions<CommentsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
     useQuery<CommentsQuery, TError, TData>(
-      ['comments', variables],
-      fetcher<CommentsQuery, CommentsQueryVariables>(client, CommentsDocument, variables),
+      variables === undefined ? ['comments'] : ['comments', variables],
+      fetcher<CommentsQuery, CommentsQueryVariables>(client, CommentsDocument, variables, headers),
       options
     );
 useCommentsQuery.document = CommentsDocument;
 
-useCommentsQuery.getKey = (variables?: CommentsQueryVariables) => ['comments', variables];
+
+useCommentsQuery.getKey = (variables?: CommentsQueryVariables) => variables === undefined ? ['comments'] : ['comments', variables];
+;
 
 export const FavoritesDocument = `
     query favorites($postId: Int, $userId: Int, $field: FavoriteSortField! = CREATED_AT, $direction: SortDirection! = DESC, $limit: Int, $page: Int) {
@@ -1032,18 +747,21 @@ export const useFavoritesQuery = <
       TData = FavoritesQuery,
       TError = unknown
     >(
-      client: GraphQLClient, 
-      variables?: FavoritesQueryVariables, 
-      options?: UseQueryOptions<FavoritesQuery, TError, TData>
-    ) => 
+      client: GraphQLClient,
+      variables?: FavoritesQueryVariables,
+      options?: UseQueryOptions<FavoritesQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
     useQuery<FavoritesQuery, TError, TData>(
-      ['favorites', variables],
-      fetcher<FavoritesQuery, FavoritesQueryVariables>(client, FavoritesDocument, variables),
+      variables === undefined ? ['favorites'] : ['favorites', variables],
+      fetcher<FavoritesQuery, FavoritesQueryVariables>(client, FavoritesDocument, variables, headers),
       options
     );
 useFavoritesQuery.document = FavoritesDocument;
 
-useFavoritesQuery.getKey = (variables?: FavoritesQueryVariables) => ['favorites', variables];
+
+useFavoritesQuery.getKey = (variables?: FavoritesQueryVariables) => variables === undefined ? ['favorites'] : ['favorites', variables];
+;
 
 export const FeaturedDocument = `
     query featured($field: PostSortField!, $direction: SortDirection!, $limit: Int) {
@@ -1058,18 +776,21 @@ export const useFeaturedQuery = <
       TData = FeaturedQuery,
       TError = unknown
     >(
-      client: GraphQLClient, 
-      variables: FeaturedQueryVariables, 
-      options?: UseQueryOptions<FeaturedQuery, TError, TData>
-    ) => 
+      client: GraphQLClient,
+      variables: FeaturedQueryVariables,
+      options?: UseQueryOptions<FeaturedQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
     useQuery<FeaturedQuery, TError, TData>(
       ['featured', variables],
-      fetcher<FeaturedQuery, FeaturedQueryVariables>(client, FeaturedDocument, variables),
+      fetcher<FeaturedQuery, FeaturedQueryVariables>(client, FeaturedDocument, variables, headers),
       options
     );
 useFeaturedQuery.document = FeaturedDocument;
 
+
 useFeaturedQuery.getKey = (variables: FeaturedQueryVariables) => ['featured', variables];
+;
 
 export const PostDocument = `
     query post($id: Int!) {
@@ -1085,18 +806,21 @@ export const usePostQuery = <
       TData = PostQuery,
       TError = unknown
     >(
-      client: GraphQLClient, 
-      variables: PostQueryVariables, 
-      options?: UseQueryOptions<PostQuery, TError, TData>
-    ) => 
+      client: GraphQLClient,
+      variables: PostQueryVariables,
+      options?: UseQueryOptions<PostQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
     useQuery<PostQuery, TError, TData>(
       ['post', variables],
-      fetcher<PostQuery, PostQueryVariables>(client, PostDocument, variables),
+      fetcher<PostQuery, PostQueryVariables>(client, PostDocument, variables, headers),
       options
     );
 usePostQuery.document = PostDocument;
 
+
 usePostQuery.getKey = (variables: PostQueryVariables) => ['post', variables];
+;
 
 export const PostsDocument = `
     query posts($userId: Int, $field: PostSortField! = CREATED_AT, $direction: SortDirection! = DESC, $limit: Int, $page: Int) {
@@ -1114,18 +838,21 @@ export const usePostsQuery = <
       TData = PostsQuery,
       TError = unknown
     >(
-      client: GraphQLClient, 
-      variables?: PostsQueryVariables, 
-      options?: UseQueryOptions<PostsQuery, TError, TData>
-    ) => 
+      client: GraphQLClient,
+      variables?: PostsQueryVariables,
+      options?: UseQueryOptions<PostsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
     useQuery<PostsQuery, TError, TData>(
-      ['posts', variables],
-      fetcher<PostsQuery, PostsQueryVariables>(client, PostsDocument, variables),
+      variables === undefined ? ['posts'] : ['posts', variables],
+      fetcher<PostsQuery, PostsQueryVariables>(client, PostsDocument, variables, headers),
       options
     );
 usePostsQuery.document = PostsDocument;
 
-usePostsQuery.getKey = (variables?: PostsQueryVariables) => ['posts', variables];
+
+usePostsQuery.getKey = (variables?: PostsQueryVariables) => variables === undefined ? ['posts'] : ['posts', variables];
+;
 
 export const RelatedPostsDocument = `
     query relatedPosts($postId: Int!) {
@@ -1138,18 +865,21 @@ export const useRelatedPostsQuery = <
       TData = RelatedPostsQuery,
       TError = unknown
     >(
-      client: GraphQLClient, 
-      variables: RelatedPostsQueryVariables, 
-      options?: UseQueryOptions<RelatedPostsQuery, TError, TData>
-    ) => 
+      client: GraphQLClient,
+      variables: RelatedPostsQueryVariables,
+      options?: UseQueryOptions<RelatedPostsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
     useQuery<RelatedPostsQuery, TError, TData>(
       ['relatedPosts', variables],
-      fetcher<RelatedPostsQuery, RelatedPostsQueryVariables>(client, RelatedPostsDocument, variables),
+      fetcher<RelatedPostsQuery, RelatedPostsQueryVariables>(client, RelatedPostsDocument, variables, headers),
       options
     );
 useRelatedPostsQuery.document = RelatedPostsDocument;
 
+
 useRelatedPostsQuery.getKey = (variables: RelatedPostsQueryVariables) => ['relatedPosts', variables];
+;
 
 export const UserDocument = `
     query user($id: Int!) {
@@ -1173,15 +903,18 @@ export const useUserQuery = <
       TData = UserQuery,
       TError = unknown
     >(
-      client: GraphQLClient, 
-      variables: UserQueryVariables, 
-      options?: UseQueryOptions<UserQuery, TError, TData>
-    ) => 
+      client: GraphQLClient,
+      variables: UserQueryVariables,
+      options?: UseQueryOptions<UserQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
     useQuery<UserQuery, TError, TData>(
       ['user', variables],
-      fetcher<UserQuery, UserQueryVariables>(client, UserDocument, variables),
+      fetcher<UserQuery, UserQueryVariables>(client, UserDocument, variables, headers),
       options
     );
 useUserQuery.document = UserDocument;
 
+
 useUserQuery.getKey = (variables: UserQueryVariables) => ['user', variables];
+;

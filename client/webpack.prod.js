@@ -17,12 +17,7 @@ module.exports = merge(common, {
       },
     ],
   },
-  plugins: [
-    new MiniCssExtractPlugin(),
-    new DotenvWebpackPlugin({
-      systemvars: true,
-    }),
-  ],
+  plugins: [new MiniCssExtractPlugin(), new DotenvWebpackPlugin()],
   optimization: {
     moduleIds: 'deterministic',
     runtimeChunk: 'single',

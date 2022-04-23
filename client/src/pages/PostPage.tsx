@@ -2,17 +2,14 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PostDetails from '../components/PostDetails';
 import RelatedPosts from '../components/RelatedPosts';
-import { FULL_IMAGE_TRANSFORMATIONS } from '../lib/constants';
 import { usePostQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
-
-const { format, quality } = FULL_IMAGE_TRANSFORMATIONS;
 
 type Params = {
   id: string;
 };
 
-const PostPage = () => {
+function PostPage() {
   const { id } = useParams<Params>();
 
   const { data, isLoading } = usePostQuery(graphQLClient, { id: Number(id) });
@@ -29,8 +26,13 @@ const PostPage = () => {
             <div className="flex justify-center items-center mb-4 h-[75vh] bg-black">
               <img
                 className="max-w-full max-h-full"
-                src={`https://res.cloudinary.com/hnisqhgvp/image/upload/f_${format},q_${quality}/${data.post.result.image.publicId}`}
-                alt={data.post.result.image.publicId}
+                src={data.post.result.imageUrl
+                  .replace('/images', '/images/original')
+                  .replace(
+                    '.webp',
+                    `.${data.post.result.title.split('.').pop()}`
+                  )}
+                alt={data.post.result.title}
               />
             </div>
             <PostDetails
@@ -46,6 +48,6 @@ const PostPage = () => {
       {!data?.post && <p>Post not found</p>}
     </div>
   );
-};
+}
 
 export default PostPage;

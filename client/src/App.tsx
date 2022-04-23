@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthContextProvider from './lib/context/AuthContext';
@@ -20,31 +20,46 @@ function App() {
 
   return (
     <div>
-      <Router>
-        <QueryClientProvider client={queryClient}>
-          <AuthContextProvider>
-            <Navbar />
-            <main className="max-w-[80%] mx-auto mt-16 pt-8 pb-16">
-              <Switch>
-                <Route exact path="/" component={HomePage} />
-                <Route exact path="/posts" component={PostsPage} />
-                <Route path="/posts/:id" component={PostPage} />
-                <Route path="/users/:id" component={ProfilePage} />
-                <Route path="/about" component={AboutPage} />
-                <ProtectedRoute
-                  path="/register"
-                  component={RegisterPage}
-                  inverted
-                />
-                <ProtectedRoute path="/login" component={LoginPage} inverted />
-                <ProtectedRoute path="/upload" component={UploadPage} />
-                <Route path="*" render={() => '404 Not Found'} />
-              </Switch>
-            </main>
-          </AuthContextProvider>
-          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-        </QueryClientProvider>
-      </Router>
+      <QueryClientProvider client={queryClient}>
+        <AuthContextProvider>
+          <Navbar />
+          <main className="max-w-[80%] mx-auto mt-16 pt-8 pb-16">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/posts" element={<PostsPage />} />
+              <Route path="/posts/:id" element={<PostPage />} />
+              <Route path="/users/:id" element={<ProfilePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route
+                path="/register"
+                element={
+                  <ProtectedRoute inverted>
+                    <RegisterPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <ProtectedRoute inverted>
+                    <LoginPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/upload"
+                element={
+                  <ProtectedRoute>
+                    <UploadPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={() => '404 Not Found'} />
+            </Routes>
+          </main>
+        </AuthContextProvider>
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+      </QueryClientProvider>
     </div>
   );
 }

@@ -1,8 +1,6 @@
 fragment auth on Auth {
   id
   username
-  avatar {
-    publicId
-  }
+  avatarUrl
   confirmed
 }

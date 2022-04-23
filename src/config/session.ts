@@ -1,7 +1,6 @@
 import connectRedis from 'connect-redis';
 import session, { SessionOptions } from 'express-session';
 import Redis from 'ioredis';
-import { Image } from '../lib/generated/graphql';
 
 const redis = new Redis(process.env.REDIS_URL);
 
@@ -19,7 +18,7 @@ declare module 'express-session' {
     user: {
       id: number;
       username: string;
-      avatar: Image;
+      avatarUrl: string;
       confirmed: boolean;
     };
   }

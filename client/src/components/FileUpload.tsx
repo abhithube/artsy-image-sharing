@@ -4,10 +4,10 @@ import { useState } from 'react';
 import Button from '../lib/components/Button';
 
 type FileUploadProps = {
-  setFile: React.Dispatch<React.SetStateAction<string | ArrayBuffer | null>>;
+  setFile: React.Dispatch<React.SetStateAction<File | null>>;
 };
 
-const FileUpload = ({ setFile }: FileUploadProps) => {
+function FileUpload({ setFile }: FileUploadProps) {
   const [thumbnail, setThumbnail] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -21,13 +21,9 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
       setError('File size cannot exceed 5MB');
     else {
       setError(null);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFile(reader.result);
-        setThumbnail(URL.createObjectURL(file));
-      };
 
-      reader.readAsDataURL(file);
+      setFile(file);
+      setThumbnail(URL.createObjectURL(file));
     }
   };
 
@@ -104,6 +100,6 @@ const FileUpload = ({ setFile }: FileUploadProps) => {
       )}
     </div>
   );
-};
+}
 
 export default FileUpload;

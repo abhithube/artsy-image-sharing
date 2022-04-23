@@ -1,38 +1,58 @@
 import { useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import FileUpload from '../components/FileUpload';
 import Button from '../lib/components/Button';
 import { useCreatePostMutation, usePostQuery } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
-const UploadPage = () => {
+function UploadPage() {
   const queryClient = useQueryClient();
 
-  const [file, setFile] = useState<string | ArrayBuffer | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const mutation = useCreatePostMutation(graphQLClient, {
     onSuccess: async ({ post }) => {
-      queryClient.setQueryData(usePostQuery.getKey({ id: post.id }), {
-        post: { result: post, isFavorite: false },
-      });
+      queryClient.setQueryData(
+        usePostQuery.getKey({
+          id: post.id,
+        }),
+        {
+          post: {
+            result: post,
+            isFavorite: false,
+          },
+        }
+      );
 
-      history.push(`/posts/${post.id}`);
+      navigate(`/posts/${post.id}`);
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (file) {
+    if (!file) return;
+
+    const extension = file.name.split('.').pop();
+
+    const reader = new FileReader();
+    reader.onload = () => {
       setLoading(true);
-      mutation.mutate({ title, body, file: file.toString() });
-    }
+
+      mutation.mutate({
+        title: `${title}.${extension}`,
+        body,
+        file: reader.result!.toString(),
+      });
+    };
+
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -73,6 +93,6 @@ const UploadPage = () => {
       </form>
     </div>
   );
-};
+}
 
 export default UploadPage;

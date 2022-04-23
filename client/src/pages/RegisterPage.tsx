@@ -4,23 +4,23 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/solid';
 import { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../lib/components/Button';
 import { useRegisterMutation } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
-const RegisterPage = () => {
+function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const mutation = useRegisterMutation(graphQLClient, {
     onSuccess: (data) => {
-      if (data.registered) history.push('/login', { registered: true });
+      if (data.registered) navigate('/login', { state: { registered: true } });
     },
     onError: () => {
       setLoading(false);
@@ -60,7 +60,7 @@ const RegisterPage = () => {
               onChange={(e) => {
                 if (e.target.value.length <= 50) setUsername(e.target.value);
               }}
-              placeholder="Enter your username..."
+              placeholder="Enter a username"
               required
               maxLength={255}
             />
@@ -74,7 +74,7 @@ const RegisterPage = () => {
               onChange={(e) => {
                 if (e.target.value.length <= 50) setPassword(e.target.value);
               }}
-              placeholder="Enter your password..."
+              placeholder="Enter a password"
               type="password"
               required
               maxLength={255}
@@ -90,7 +90,7 @@ const RegisterPage = () => {
                 if (e.target.value.length <= 50)
                   setPasswordConfirm(e.target.value);
               }}
-              placeholder="Confirm your password..."
+              placeholder="Confirm password"
               type="password"
               required
               maxLength={255}
@@ -114,6 +114,6 @@ const RegisterPage = () => {
       </form>
     </div>
   );
-};
+}
 
 export default RegisterPage;

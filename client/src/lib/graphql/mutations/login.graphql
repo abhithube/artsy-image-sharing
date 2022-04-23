@@ -1,4 +1,4 @@
-mutation login($username: String!, $password: String!, $avatar: AvatarInput) {
+mutation login($username: String!, $password: String!, $avatar: String) {
   auth: login(username: $username, password: $password, avatar: $avatar) {
     ...auth
   }

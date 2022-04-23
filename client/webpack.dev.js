@@ -30,7 +30,9 @@ module.exports = merge(common, {
     port: 3000,
     historyApiFallback: true,
     hot: true,
-    clientLogLevel: 'silent',
+    client: {
+      logging: 'warn',
+    },
   },
   devtool: 'eval-cheap-module-source-map',
 });

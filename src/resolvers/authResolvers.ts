@@ -11,7 +11,9 @@ export const resolvers: Resolvers = {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await ctx.prisma.user.findUnique({
-        where: { username },
+        where: {
+          username,
+        },
       });
       if (user) throw new Error('Username already taken');
 
@@ -19,9 +21,7 @@ export const resolvers: Resolvers = {
         data: {
           username,
           password: hashedPassword,
-          avatar: {
-            connect: { publicId: 'avatar_default' },
-          },
+          avatarUrl: '',
         },
       });
 
@@ -31,8 +31,9 @@ export const resolvers: Resolvers = {
       const { username, password, avatar } = args;
 
       let user = await ctx.prisma.user.findUnique({
-        where: { username },
-        include: { avatar: true },
+        where: {
+          username,
+        },
       });
       if (!user) throw new Error('Invalid credentials');
 
@@ -40,28 +41,21 @@ export const resolvers: Resolvers = {
       if (!match) throw new Error('Invalid credentials');
 
       if (avatar) {
-        if (avatar.publicId) {
-          user = await ctx.prisma.user.update({
-            where: { id: user.id },
-            data: {
-              confirmed: true,
-              avatar: { connect: { publicId: avatar.publicId } },
-            },
-            include: { avatar: true },
-          });
-        } else {
-          user = await ctx.prisma.user.update({
-            where: { id: user.id },
-            data: { confirmed: true },
-            include: { avatar: true },
-          });
-        }
+        user = await ctx.prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            confirmed: true,
+            avatarUrl: `${process.env.S3_BUCKET_ENDPOINT}/${avatar}.webp`,
+          },
+        });
       }
 
       const authUser = {
         id: user.id,
         username: user.username,
-        avatar: user.avatar,
+        avatarUrl: user.avatarUrl,
         confirmed: user.confirmed,
       };
 

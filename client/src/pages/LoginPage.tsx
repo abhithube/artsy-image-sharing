@@ -1,7 +1,7 @@
 import { LockClosedIcon, UserCircleIcon } from '@heroicons/react/solid';
 import { useContext, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AvatarSelectionModal from '../components/AvatarSelectionModal';
 import Alert from '../lib/components/Alert';
 import Button from '../lib/components/Button';
@@ -9,12 +9,7 @@ import { AuthContext } from '../lib/context/AuthContext';
 import { useAuthQuery, useLoginMutation } from '../lib/generated/graphql';
 import { graphQLClient } from '../lib/graphql/client';
 
-type Registered = Location & {
-  registered?: boolean;
-  unauthenticated?: boolean;
-};
-
-const LoginPage = () => {
+function LoginPage() {
   const { setAuthenticatedUser } = useContext(AuthContext);
 
   const [username, setUsername] = useState('');
@@ -22,8 +17,8 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const history = useHistory();
-  const location = useLocation<Registered>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -36,7 +31,7 @@ const LoginPage = () => {
         setAuthenticatedUser(data.auth);
         queryClient.setQueryData(queryKey, data);
         const redirect = localStorage.getItem('redirect');
-        history.push(redirect || '/posts');
+        navigate(redirect || '/posts');
         localStorage.removeItem('redirect');
       } else {
         setLoading(false);
@@ -56,9 +51,13 @@ const LoginPage = () => {
     mutation.mutate({ username, password });
   };
 
-  const handleAvatarSelection = (avatar: string | null) => {
+  const handleAvatarSelection = (avatar: string) => {
     setLoading(true);
-    mutation.mutate({ username, password, avatar: { publicId: avatar } });
+    mutation.mutate({
+      username,
+      password,
+      avatar,
+    });
   };
 
   return (
@@ -91,7 +90,7 @@ const LoginPage = () => {
                 onChange={(e) => {
                   if (e.target.value.length <= 50) setUsername(e.target.value);
                 }}
-                placeholder="Enter your username..."
+                placeholder="Enter your username"
                 required
                 maxLength={255}
               />
@@ -104,7 +103,7 @@ const LoginPage = () => {
                 onChange={(e) => {
                   if (e.target.value.length <= 50) setPassword(e.target.value);
                 }}
-                placeholder="Enter your password..."
+                placeholder="Enter your password"
                 type="password"
                 required
                 maxLength={255}
@@ -129,6 +128,6 @@ const LoginPage = () => {
       </div>
     </>
   );
-};
+}
 
 export default LoginPage;
