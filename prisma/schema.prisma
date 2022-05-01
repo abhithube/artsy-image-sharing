@@ -14,7 +14,7 @@ model User {
   avatarUrl String     @map("avatar_url")
   confirmed Boolean    @default(false)
   createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
+  updatedAt DateTime   @updatedAt @default(now()) @map("updated_at")
   posts     Post[]
   favorites Favorite[]
   comments  Comment[]
@@ -27,7 +27,7 @@ model Post {
   userId    Int        @map("user_id")
   imageUrl  String     @map("image_url")
   createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
+  updatedAt DateTime   @updatedAt @default(now()) @map("updated_at")
   user      User       @relation(fields: [userId], references: [id])
   favorites Favorite[]
   comments  Comment[]
@@ -38,7 +38,7 @@ model Favorite {
   postId    Int      @map("post_id")
   userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
   post      Post     @relation(fields: [postId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 
@@ -51,7 +51,7 @@ model Comment {
   postId    Int      @map("post_id")
   userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
   post      Post     @relation(fields: [postId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
