@@ -1,4 +1,16 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
+import AuthContextProvider from './lib/context/AuthContext';
+import AboutPage from './pages/AboutPage';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import PostPage from './pages/PostPage';
+import PostsPage from './pages/PostsPage';
+import ProfilePage from './pages/ProfilePage';
+import RegisterPage from './pages/RegisterPage';
+import UploadPage from './pages/UploadPage';
 
 const client = new ApolloClient({
   uri: process.env.SERVER_URL,
@@ -29,7 +41,7 @@ export default function App() {
   return (
     <div>
       <ApolloProvider client={client}>
-        {/* <AuthContextProvider>
+        <AuthContextProvider>
           <BrowserRouter>
             <Navbar />
             <main className="max-w-[80%] mx-auto mt-16 pt-8 pb-16">
@@ -67,7 +79,7 @@ export default function App() {
               </Routes>
             </main>
           </BrowserRouter>
-        </AuthContextProvider> */}
+        </AuthContextProvider>
       </ApolloProvider>
     </div>
   );
