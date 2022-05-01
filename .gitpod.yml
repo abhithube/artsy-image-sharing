@@ -1,0 +1,18 @@
+tasks:
+  - name: Server
+    init: |
+      npm install
+      npm run generate
+    command: npm run dev
+  
+  - name: Client
+    before: cd client
+    init: |
+      npm install
+      npm run generate
+    command: |
+      export CLIENT_URL=$(gp url 3000)
+      export SERVER_URL=$(gp url 4000)
+      npm start
+
+
