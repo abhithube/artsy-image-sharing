@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
 const { merge } = require('webpack-merge');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const DotenvWebpackPlugin = require('dotenv-webpack');
+const { DefinePlugin } = require('webpack');
 const common = require('./webpack.common');
 
 module.exports = merge(common, {
@@ -20,19 +19,23 @@ module.exports = merge(common, {
   },
   plugins: [
     new ReactRefreshWebpackPlugin(),
-    new DotenvWebpackPlugin({
-      path: path.resolve(__dirname, '.env'),
+    new DefinePlugin({
+      'process.env': {
+        S3_BUCKET_ENDPOINT: `${process.env.CLIENT_URL}/uploads`,
+        SERVER_URL: process.env.SERVER_URL,
+      },
     }),
   ],
   target: 'web',
   devServer: {
     host: '0.0.0.0',
     port: 3000,
+    allowedHosts: ['.gitpod.io'],
     historyApiFallback: true,
     hot: true,
     client: {
       logging: 'warn',
     },
   },
-  devtool: 'eval-cheap-module-source-map',
+  devtool: 'eval-source-map',
 });

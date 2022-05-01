@@ -1,54 +1,26 @@
+import { useQuery } from '@apollo/client';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
-import { useMemo, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { useState } from 'react';
 import Button from '../lib/components/Button';
-import {
-  PostsDocument,
-  PostsFragment,
-  usePostsQuery,
-} from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { POSTS } from '../lib/graphql';
 import PreviewImage from './PreviewImage';
 
 type PostsGalleryProps = {
   userId: number;
-  initPosts: PostsFragment;
 };
 
-const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
+export default function PostsGallery({ userId }: PostsGalleryProps) {
   const [page, setPage] = useState(0);
 
-  const variables = useMemo(
-    () => ({
+  const { data, loading } = useQuery(POSTS, {
+    variables: {
       userId,
-      limit: 5,
       page,
-    }),
-    [page, userId]
-  );
-
-  const queryClient = useQueryClient();
-  const queryKey = usePostsQuery.getKey({
-    ...variables,
-    page: variables.page + 1,
-  });
-
-  const { data, isLoading } = usePostsQuery(graphQLClient, variables, {
-    initialData: { posts: initPosts },
-    keepPreviousData: true,
-    onSuccess: ({ posts }) => {
-      if (posts.nextPage) {
-        queryClient.prefetchQuery(queryKey, () =>
-          graphQLClient.request(PostsDocument, {
-            ...variables,
-            page: posts.nextPage,
-          })
-        );
-      }
+      limit: 5,
     },
   });
 
-  if (isLoading) return null;
+  if (loading) return null;
 
   return (
     <div className="mt-8">
@@ -63,13 +35,12 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
             <ChevronLeftIcon className="w-8" aria-label="previous page" />
           </Button>
           <div className="grid grid-cols-5 gap-4 w-full">
-            {data.posts.results.map((post) => (
+            {data.posts.results.map((post: any) => (
               <PreviewImage key={post.id} post={post} />
             ))}
           </div>
           <Button
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            onClick={() => setPage(data.posts.nextPage!)}
+            onClick={() => setPage(data.posts.nextPage)}
             isDisabled={!data.posts.nextPage}
             color="indigo"
           >
@@ -82,6 +53,4 @@ const PostsGallery = ({ userId, initPosts }: PostsGalleryProps) => {
       )}
     </div>
   );
-};
-
-export default PostsGallery;
+}

@@ -1,5 +1,0 @@
-query relatedPosts($postId: Int!) {
-  relatedPosts(postId: $postId) {
-    ...postSummary
-  }
-}

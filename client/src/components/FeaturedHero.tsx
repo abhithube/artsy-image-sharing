@@ -3,14 +3,14 @@ import { ChatAltIcon, HeartIcon } from '@heroicons/react/solid';
 import { Link } from 'react-router-dom';
 import Avatar from '../lib/components/Avatar';
 import Button from '../lib/components/Button';
-import { PostDetailsFragment } from '../lib/generated/graphql';
+import { PostDetails } from '../lib/interfaces';
 import PreviewImage from './PreviewImage';
 
 type FeaturedHeroProps = {
-  featuredPost: PostDetailsFragment;
+  featuredPost: PostDetails;
 };
 
-function FeaturedHero({ featuredPost }: FeaturedHeroProps) {
+export default function FeaturedHero({ featuredPost }: FeaturedHeroProps) {
   return (
     <div className="flex justify-center items-center space-x-12 mb-8 p-8 h-[50vh] bg-gray-800">
       <div className="flex flex-col items-center space-y-4 w-1/3">
@@ -61,5 +61,3 @@ function FeaturedHero({ featuredPost }: FeaturedHeroProps) {
     </div>
   );
 }
-
-export default FeaturedHero;

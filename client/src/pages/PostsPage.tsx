@@ -1,39 +1,39 @@
-import { useInfiniteQuery } from 'react-query';
+import { useQuery } from '@apollo/client';
 import PreviewImage from '../components/PreviewImage';
 import Button from '../lib/components/Button';
-import { PostsQuery, usePostsQuery } from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { POSTS } from '../lib/graphql';
 
-const PostsPage = () => {
-  const { data, fetchNextPage, hasNextPage, isFetching } =
-    useInfiniteQuery<PostsQuery>(
-      'posts',
-      (ctx) =>
-        graphQLClient.request(usePostsQuery.document, {
-          limit: 20,
-          page: ctx.pageParam,
-        }),
-      {
-        getNextPageParam: (lastPage) => lastPage.posts.nextPage,
-      }
-    );
+export default function PostsPage() {
+  const { data, loading, fetchMore } = useQuery(POSTS, {
+    variables: {
+      page: 0,
+      limit: 20,
+    },
+  });
 
   return (
     <div className="flex flex-col space-y-4">
       <h1 className="text-2xl font-semibold">Browse All Posts</h1>
       <div className="grid grid-cols-5 gap-4">
-        {data?.pages.map((page) =>
-          page.posts.results.map((post) => (
-            <PreviewImage key={post.id} post={post} />
-          ))
-        )}
+        {data?.posts.results.map((post: any) => (
+          <PreviewImage key={post.id} post={post} />
+        ))}
       </div>
-      {data?.pages.length === 0 && <p>Posts are not available at this time.</p>}
-      {hasNextPage && (
+      {data?.posts.results.length === 0 && (
+        <p>Posts are not available at this time.</p>
+      )}
+      {data?.nextPage && (
         <Button
-          onClick={() => fetchNextPage()}
-          isDisabled={isFetching}
-          isLoading={isFetching}
+          onClick={() =>
+            fetchMore({
+              variables: {
+                page: data.nextPage,
+                limit: 20,
+              },
+            })
+          }
+          isDisabled={loading}
+          isLoading={loading}
           color="indigo"
         >
           Load More Posts
@@ -41,6 +41,4 @@ const PostsPage = () => {
       )}
     </div>
   );
-};
-
-export default PostsPage;
+}

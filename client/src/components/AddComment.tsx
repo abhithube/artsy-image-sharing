@@ -1,74 +1,35 @@
+import { useMutation } from '@apollo/client';
 import { FormEvent, useContext, useState } from 'react';
-import { InfiniteData, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import Button from '../lib/components/Button';
-import { AuthContext } from '../lib/context/AuthContext';
-import {
-  CommentsQuery,
-  useCommentsQuery,
-  useCreateCommentMutation,
-  usePostQuery,
-} from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { AuthContext } from '../lib/context';
+import { CREATE_COMMENT } from '../lib/graphql';
 
 type AddCommentProps = {
   postId: number;
 };
 
-function AddComment({ postId }: AddCommentProps) {
+export default function AddComment({ postId }: AddCommentProps) {
   const { authenticatedUser } = useContext(AuthContext);
 
   const [comment, setComment] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
-  const commentsQueryKey = useCommentsQuery.getKey({ postId });
-  const postQueryKey = usePostQuery.getKey({ id: postId });
-
-  const mutation = useCreateCommentMutation(graphQLClient, {
-    onMutate: () => {
-      const data =
-        queryClient.getQueryData<InfiniteData<CommentsQuery>>(commentsQueryKey);
-
-      if (!authenticatedUser || !data) return;
-
-      const optimisticUpdate = {
-        id: 0,
-        body: comment,
-        createdAt: new Date(),
-        user: {
-          id: authenticatedUser.id,
-          username: authenticatedUser.username,
-          avatarUrl: authenticatedUser.avatarUrl,
-        },
-      };
-
-      data.pages[0].comments.results = [
-        optimisticUpdate,
-        ...data.pages[0].comments.results,
-      ];
-
-      queryClient.setQueryData<InfiniteData<CommentsQuery>>(
-        commentsQueryKey,
-        (d) => {
-          if (d)
-            return {
-              pages: data.pages,
-              pageParams: d?.pageParams,
-            };
-          return { pages: [], pageParams: [] };
-        }
-      );
+  const [createComment, { loading }] = useMutation(CREATE_COMMENT, {
+    optimisticResponse: {
+      id: 0,
+      body: comment,
+      createdAt: new Date(),
+      user: authenticatedUser,
     },
-    onSuccess: () => {
-      setComment('');
-      setLoading(false);
-
-      queryClient.fetchInfiniteQuery(commentsQueryKey);
-      queryClient.fetchQuery(postQueryKey);
-    },
+    // update: (cache, { data }) => {
+    //   cache.modify({
+    //     fields: {
+    //       comments: () => {},
+    //     },
+    //   });
+    // },
   });
 
   const handleSubmit = (e: FormEvent) => {
@@ -76,10 +37,18 @@ function AddComment({ postId }: AddCommentProps) {
 
     if (!authenticatedUser) {
       localStorage.setItem('redirect', `/posts/${postId}`);
-      navigate('/login', { state: { unauthenticated: true } });
+      navigate('/login', {
+        state: {
+          unauthenticated: true,
+        },
+      });
     } else {
-      setLoading(true);
-      mutation.mutate({ body: comment, postId });
+      createComment({
+        variables: {
+          body: comment,
+          postId,
+        },
+      });
     }
   };
 
@@ -114,5 +83,3 @@ function AddComment({ postId }: AddCommentProps) {
     </form>
   );
 }
-
-export default AddComment;

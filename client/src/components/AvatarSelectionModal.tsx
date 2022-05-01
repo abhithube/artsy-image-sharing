@@ -10,7 +10,7 @@ type AvatarSelectionModalProps = {
   handleAvatarSelection: (avatarUrl: string) => void;
 };
 
-function AvatarSelectionModal({
+export default function AvatarSelectionModal({
   isOpen,
   setIsOpen,
   handleAvatarSelection,
@@ -74,5 +74,3 @@ function AvatarSelectionModal({
     </>
   );
 }
-
-export default AvatarSelectionModal;

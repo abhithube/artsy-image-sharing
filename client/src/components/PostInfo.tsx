@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import {
   DownloadIcon,
   HeartIcon as HeartOutlineIcon,
@@ -8,62 +9,73 @@ import {
 } from '@heroicons/react/solid';
 import classnames from 'classnames';
 import { useContext } from 'react';
-import { useQueryClient } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import Avatar from '../lib/components/Avatar';
-import { AuthContext } from '../lib/context/AuthContext';
-import {
-  PostDetailsFragment,
-  PostQuery,
-  useCreateFavoriteMutation,
-  useDeleteFavoriteMutation,
-  usePostQuery,
-} from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { AuthContext } from '../lib/context';
+import { CREATE_FAVORITE, DELETE_FAVORITE } from '../lib/graphql';
+import { PostDetails } from '../lib/interfaces';
 import CommentsList from './CommentsList';
 
-type PostDetailsProps = {
-  post: PostDetailsFragment;
+type PostInfoProps = {
+  post: PostDetails;
   isFavorite: boolean;
 };
 
-function PostDetails({ post, isFavorite }: PostDetailsProps) {
+export default function PostInfo({ post, isFavorite }: PostInfoProps) {
   const { authenticatedUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
-  const queryKey = usePostQuery.getKey({ id: post.id });
-
-  const handleSuccess = () => queryClient.fetchQuery(queryKey);
-
-  const updateFavorited = (favorited: boolean) => {
-    const data2 = queryClient.getQueryData<PostQuery>(queryKey);
-
-    if (data2?.post) {
-      queryClient.setQueryData<PostQuery>(queryKey, {
-        post: { ...data2.post, isFavorite: favorited },
+  const [createFavorite] = useMutation(CREATE_FAVORITE, {
+    optimisticResponse: {},
+    update: (cache) => {
+      cache.modify({
+        fields: {
+          post: (existingData) => ({
+            ...existingData,
+            isFavorite: true,
+          }),
+        },
       });
-    }
-  };
-
-  const createMutation = useCreateFavoriteMutation(graphQLClient, {
-    onMutate: () => updateFavorited(true),
-    onSuccess: handleSuccess,
-    onError: () => updateFavorited(false),
+    },
   });
-  const deleteMutation = useDeleteFavoriteMutation(graphQLClient, {
-    onMutate: () => updateFavorited(false),
-    onSuccess: handleSuccess,
-    onError: () => updateFavorited(true),
+
+  const [deleteFavorite] = useMutation(DELETE_FAVORITE, {
+    optimisticResponse: {},
+    update: (cache) => {
+      cache.modify({
+        fields: {
+          post: (existingData) => ({
+            ...existingData,
+            isFavorite: false,
+          }),
+        },
+      });
+    },
   });
 
   const handleFavorite = async () => {
     if (!authenticatedUser) {
       localStorage.setItem('redirect', `/posts/${post.id}`);
-      navigate('/login', { state: { unauthenticated: true } });
-    } else if (isFavorite) deleteMutation.mutate({ postId: post.id });
-    else createMutation.mutate({ postId: post.id });
+
+      navigate('/login', {
+        state: {
+          unauthenticated: true,
+        },
+      });
+    } else if (isFavorite) {
+      deleteFavorite({
+        variables: {
+          postId: post.id,
+        },
+      });
+    } else {
+      createFavorite({
+        variables: {
+          postId: post.id,
+        },
+      });
+    }
   };
 
   return (
@@ -123,5 +135,3 @@ function PostDetails({ post, isFavorite }: PostDetailsProps) {
     </>
   );
 }
-
-export default PostDetails;

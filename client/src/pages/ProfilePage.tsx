@@ -1,19 +1,35 @@
+import { useApolloClient, useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import FavoritesGallery from '../components/FavoritesGallery';
 import PostsGallery from '../components/PostsGallery';
-import { useUserQuery } from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { FAVORITES, USER } from '../lib/graphql';
 
 type Params = {
   id: string;
 };
 
-const ProfilePage = () => {
+export default function ProfilePage() {
   const { id } = useParams<Params>();
 
-  const { data, isLoading } = useUserQuery(graphQLClient, { id: Number(id) });
+  const client = useApolloClient();
 
-  if (isLoading) return null;
+  const { data, loading } = useQuery(USER, {
+    variables: {
+      id: Number(id),
+    },
+    onCompleted: (userData: any) => {
+      client.writeQuery({
+        query: FAVORITES,
+        data: userData.user.favorites,
+      });
+      client.writeQuery({
+        query: FAVORITES,
+        data: userData.user.favorites,
+      });
+    },
+  });
+
+  if (loading) return null;
 
   return (
     <div>
@@ -22,19 +38,11 @@ const ProfilePage = () => {
           <h1 className="text-2xl font-semibold">
             {data.user.username}&apos;s Gallery
           </h1>
-          <PostsGallery
-            userId={data.user.id}
-            initPosts={data.user.posts || { results: [] }}
-          />
-          <FavoritesGallery
-            userId={data.user.id}
-            initFavorites={data.user.favorites || { results: [] }}
-          />
+          <PostsGallery userId={data.user.id} />
+          <FavoritesGallery userId={data.user.id} />
         </>
       )}
       {!data && <p>This user does not exist.</p>}
     </div>
   );
-};
-
-export default ProfilePage;
+}

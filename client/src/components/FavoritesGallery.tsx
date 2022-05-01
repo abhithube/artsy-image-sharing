@@ -1,54 +1,26 @@
+import { useQuery } from '@apollo/client';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
-import { useMemo, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { useState } from 'react';
 import Button from '../lib/components/Button';
-import {
-  FavoritesDocument,
-  FavoritesFragment,
-  useFavoritesQuery,
-} from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { FAVORITES } from '../lib/graphql';
 import PreviewImage from './PreviewImage';
 
 type FavoritesGalleryProps = {
   userId: number;
-  initFavorites: FavoritesFragment;
 };
 
-const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
+export default function FavoritesGallery({ userId }: FavoritesGalleryProps) {
   const [page, setPage] = useState(0);
 
-  const variables = useMemo(
-    () => ({
+  const { data, loading } = useQuery(FAVORITES, {
+    variables: {
       userId,
-      limit: 5,
       page,
-    }),
-    [page, userId]
-  );
-
-  const queryClient = useQueryClient();
-  const queryKey = useFavoritesQuery.getKey({
-    ...variables,
-    page: variables.page + 1,
-  });
-
-  const { data, isLoading } = useFavoritesQuery(graphQLClient, variables, {
-    initialData: { favorites: initFavorites },
-    keepPreviousData: true,
-    onSuccess: ({ favorites }) => {
-      if (favorites.nextPage) {
-        queryClient.prefetchQuery(queryKey, () =>
-          graphQLClient.request(FavoritesDocument, {
-            ...variables,
-            page: favorites.nextPage,
-          })
-        );
-      }
+      limit: 5,
     },
   });
 
-  if (isLoading) return null;
+  if (loading) return null;
 
   return (
     <div className="mt-8">
@@ -63,13 +35,12 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
             <ChevronLeftIcon className="w-8" aria-label="previous page" />
           </Button>
           <div className="grid grid-cols-5 gap-4 w-full">
-            {data.favorites.results.map((favorite) => (
+            {data.favorites.results.map((favorite: any) => (
               <PreviewImage key={favorite.id} post={favorite.post} />
             ))}
           </div>
           <Button
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            onClick={() => setPage(data.favorites.nextPage!)}
+            onClick={() => setPage(data.favorites.nextPage)}
             isDisabled={data.favorites.nextPage === null}
             color="indigo"
           >
@@ -82,6 +53,4 @@ const FavoritesGallery = ({ userId, initFavorites }: FavoritesGalleryProps) => {
       )}
     </div>
   );
-};
-
-export default FavoritesGallery;
+}

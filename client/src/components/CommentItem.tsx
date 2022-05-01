@@ -1,11 +1,11 @@
 import Avatar from '../lib/components/Avatar';
-import { CommentFragment } from '../lib/generated/graphql';
+import { Comment } from '../lib/interfaces';
 
 type CommentProps = {
-  comment: CommentFragment;
+  comment: Comment;
 };
 
-function CommentItem({ comment }: CommentProps) {
+export default function CommentItem({ comment }: CommentProps) {
   return (
     <div className="flex items-center p-4 bg-gray-800 rounded-lg">
       <Avatar url={comment.user.avatarUrl} size="md" margin="md" />
@@ -23,5 +23,3 @@ function CommentItem({ comment }: CommentProps) {
     </div>
   );
 }
-
-export default CommentItem;

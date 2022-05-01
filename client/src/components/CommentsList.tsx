@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { useInfiniteQuery } from 'react-query';
+import { useLazyQuery } from '@apollo/client';
 import Button from '../lib/components/Button';
-import { CommentsQuery, useCommentsQuery } from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { COMMENTS } from '../lib/graphql';
 import AddComment from './AddComment';
 import CommentItem from './CommentItem';
 
@@ -11,22 +9,11 @@ type CommentsListProp = {
   commentCount: number;
 };
 
-const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
-  const [shouldFetch, setShouldFetch] = useState(false);
-
-  const { data, fetchNextPage, hasNextPage, isFetching } =
-    useInfiniteQuery<CommentsQuery>(
-      ['comments', { postId }],
-      (ctx) =>
-        graphQLClient.request(useCommentsQuery.document, {
-          postId,
-          page: ctx.pageParam,
-        }),
-      {
-        getNextPageParam: (lastPage) => lastPage.comments.nextPage,
-        enabled: shouldFetch,
-      }
-    );
+export default function CommentsList({
+  postId,
+  commentCount,
+}: CommentsListProp) {
+  const [fetchComments, { data, loading, fetchMore }] = useLazyQuery(COMMENTS);
 
   return (
     <div>
@@ -35,26 +22,40 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
       <div className="flex flex-col items-stretch space-y-4 mt-4">
         {(commentCount > 0 || data?.pages) && (
           <>
-            {data?.pages.map((page) =>
-              page.comments.results.map((comment) => (
-                <CommentItem key={comment.id} comment={comment} />
-              ))
-            )}
+            {data?.comments.results.map((comment: any) => (
+              <CommentItem key={comment.id} comment={comment} />
+            ))}
             {!data?.pages && (
               <Button
-                onClick={() => setShouldFetch(true)}
-                isDisabled={isFetching}
-                isLoading={isFetching}
+                onClick={() =>
+                  fetchComments({
+                    variables: {
+                      postId,
+                      limit: 20,
+                      page: 0,
+                    },
+                  })
+                }
+                isDisabled={loading}
+                isLoading={loading}
                 color="indigo"
               >
                 Load Comments
               </Button>
             )}
-            {hasNextPage && (
+            {data.nextPage && (
               <Button
-                onClick={() => fetchNextPage()}
-                isDisabled={isFetching}
-                isLoading={isFetching}
+                onClick={() =>
+                  fetchMore({
+                    variables: {
+                      postId,
+                      page: data.nextPage,
+                      limit: 20,
+                    },
+                  })
+                }
+                isDisabled={loading}
+                isLoading={loading}
                 color="indigo"
               >
                 Load More Comments
@@ -68,6 +69,4 @@ const CommentsList = ({ postId, commentCount }: CommentsListProp) => {
       </div>
     </div>
   );
-};
-
-export default CommentsList;
+}

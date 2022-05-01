@@ -1,22 +1,27 @@
+import { useQuery } from '@apollo/client';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import PostDetails from '../components/PostDetails';
+import PostInfo from '../components/PostInfo';
 import RelatedPosts from '../components/RelatedPosts';
-import { usePostQuery } from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { POST } from '../lib/graphql';
+import { PostResponse, PostVars } from '../lib/types';
 
 type Params = {
   id: string;
 };
 
-function PostPage() {
+export default function PostPage() {
   const { id } = useParams<Params>();
 
-  const { data, isLoading } = usePostQuery(graphQLClient, { id: Number(id) });
+  const { data, loading } = useQuery<PostResponse, PostVars>(POST, {
+    variables: {
+      id: Number(id),
+    },
+  });
 
   useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [id]);
 
-  if (isLoading) return null;
+  if (loading) return null;
 
   return (
     <div className="flex items-start space-x-16">
@@ -35,7 +40,7 @@ function PostPage() {
                 alt={data.post.result.title}
               />
             </div>
-            <PostDetails
+            <PostInfo
               post={data.post.result}
               isFavorite={data.post.isFavorite}
             />
@@ -49,5 +54,3 @@ function PostPage() {
     </div>
   );
 }
-
-export default PostPage;

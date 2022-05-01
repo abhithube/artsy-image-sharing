@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { PostSummaryFragment } from '../lib/generated/graphql';
+import { PostSummary } from '../lib/interfaces';
 
 type PreviewImageProps = {
-  post: PostSummaryFragment;
+  post: PostSummary;
 };
 
-function PreviewImage({ post }: PreviewImageProps) {
+export default function PreviewImage({ post }: PreviewImageProps) {
   return (
     <Link
       className="bg-gray-800 rounded-md overflow-hidden"
@@ -15,5 +15,3 @@ function PreviewImage({ post }: PreviewImageProps) {
     </Link>
   );
 }
-
-export default PreviewImage;

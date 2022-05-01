@@ -1,20 +1,24 @@
+import { useQuery } from '@apollo/client';
 import FeaturedHero from '../components/FeaturedHero';
 import FeaturedPost from '../components/FeaturedPost';
+import { FEATURED } from '../lib/graphql';
 import {
+  FeaturedResponse,
+  FeaturedVars,
   PostSortField,
   SortDirection,
-  useFeaturedQuery,
-} from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+} from '../lib/types';
 
-const HomePage = () => {
-  const { data, isLoading } = useFeaturedQuery(graphQLClient, {
-    field: PostSortField.FavoriteCount,
-    direction: SortDirection.Desc,
-    limit: 5,
+export default function HomePage() {
+  const { data, loading } = useQuery<FeaturedResponse, FeaturedVars>(FEATURED, {
+    variables: {
+      field: PostSortField.FavoriteCount,
+      direction: SortDirection.Desc,
+      limit: 5,
+    },
   });
 
-  if (isLoading) return null;
+  if (loading) return null;
 
   return (
     <div>
@@ -40,6 +44,4 @@ const HomePage = () => {
       )}
     </div>
   );
-};
-
-export default HomePage;
+}

@@ -1,14 +1,14 @@
 import { ChatAltIcon, HeartIcon } from '@heroicons/react/solid';
 import { Link } from 'react-router-dom';
 import Avatar from '../lib/components/Avatar';
-import { PostDetailsFragment } from '../lib/generated/graphql';
+import { PostDetails } from '../lib/interfaces';
 import PreviewImage from './PreviewImage';
 
 type FeaturedPostProps = {
-  post: PostDetailsFragment;
+  post: PostDetails;
 };
 
-function FeaturedPost({ post }: FeaturedPostProps) {
+export default function FeaturedPost({ post }: FeaturedPostProps) {
   return (
     <div className="space-y-4 p-4 bg-gray-800 rounded-lg">
       <PreviewImage post={post} />
@@ -34,5 +34,3 @@ function FeaturedPost({ post }: FeaturedPostProps) {
     </div>
   );
 }
-
-export default FeaturedPost;

@@ -1,5 +1,0 @@
-query auth {
-  auth {
-    ...auth
-  }
-}

@@ -1,8 +1,0 @@
-query post($id: Int!) {
-  post(id: $id) {
-    result {
-      ...postDetails
-    }
-    isFavorite
-  }
-}

@@ -1,14 +1,11 @@
+import { useApolloClient, useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import FileUpload from '../components/FileUpload';
 import Button from '../lib/components/Button';
-import { useCreatePostMutation, usePostQuery } from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { CREATE_POST, POST } from '../lib/graphql';
 
-function UploadPage() {
-  const queryClient = useQueryClient();
-
+export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -16,19 +13,22 @@ function UploadPage() {
 
   const navigate = useNavigate();
 
-  const mutation = useCreatePostMutation(graphQLClient, {
-    onSuccess: async ({ post }) => {
-      queryClient.setQueryData(
-        usePostQuery.getKey({
+  const client = useApolloClient();
+
+  const [createPost] = useMutation(CREATE_POST, {
+    onCompleted: async ({ post }) => {
+      client.writeQuery({
+        query: POST,
+        variables: {
           id: post.id,
-        }),
-        {
+        },
+        data: {
           post: {
             result: post,
             isFavorite: false,
           },
-        }
-      );
+        },
+      });
 
       navigate(`/posts/${post.id}`);
     },
@@ -45,11 +45,15 @@ function UploadPage() {
     reader.onload = () => {
       setLoading(true);
 
-      mutation.mutate({
-        title: `${title}.${extension}`,
-        body,
-        file: reader.result!.toString(),
-      });
+      if (reader.result) {
+        createPost({
+          variables: {
+            title: `${title}.${extension}`,
+            body,
+            file: reader.result.toString(),
+          },
+        });
+      }
     };
 
     reader.readAsDataURL(file);
@@ -94,5 +98,3 @@ function UploadPage() {
     </div>
   );
 }
-
-export default UploadPage;

@@ -1,15 +1,14 @@
+import { useApolloClient, useMutation } from '@apollo/client';
 import { LockClosedIcon, UserCircleIcon } from '@heroicons/react/solid';
 import { useContext, useState } from 'react';
-import { useQueryClient } from 'react-query';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AvatarSelectionModal from '../components/AvatarSelectionModal';
 import Alert from '../lib/components/Alert';
 import Button from '../lib/components/Button';
-import { AuthContext } from '../lib/context/AuthContext';
-import { useAuthQuery, useLoginMutation } from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { AuthContext } from '../lib/context';
+import { AUTH, LOGIN } from '../lib/graphql';
 
-function LoginPage() {
+export default function LoginPage() {
   const { setAuthenticatedUser } = useContext(AuthContext);
 
   const [username, setUsername] = useState('');
@@ -22,14 +21,14 @@ function LoginPage() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const queryClient = useQueryClient();
-  const queryKey = useAuthQuery.getKey();
+  const client = useApolloClient();
 
-  const mutation = useLoginMutation(graphQLClient, {
-    onSuccess: (data) => {
+  const [login] = useMutation(LOGIN, {
+    onCompleted: (data) => {
       if (data.auth.confirmed) {
         setAuthenticatedUser(data.auth);
-        queryClient.setQueryData(queryKey, data);
+        client.writeQuery({ query: AUTH, data });
+
         const redirect = localStorage.getItem('redirect');
         navigate(redirect || '/posts');
         localStorage.removeItem('redirect');
@@ -48,15 +47,22 @@ function LoginPage() {
     e.preventDefault();
 
     setLoading(true);
-    mutation.mutate({ username, password });
+    login({
+      variables: {
+        username,
+        password,
+      },
+    });
   };
 
   const handleAvatarSelection = (avatar: string) => {
     setLoading(true);
-    mutation.mutate({
-      username,
-      password,
-      avatar,
+    login({
+      variables: {
+        username,
+        password,
+        avatar,
+      },
     });
   };
 
@@ -73,10 +79,10 @@ function LoginPage() {
           className="flex flex-col p-8 w-[400px] bg-gray-800 rounded-lg shadow-md"
           onSubmit={handleSubmit}
         >
-          {location.state?.registered && (
+          {(location as any).state?.registered && (
             <Alert type="success" message="Created account successfully" />
           )}
-          {location.state?.unauthenticated && (
+          {(location as any).state?.unauthenticated && (
             <Alert type="error" message="You must be signed in to proceed" />
           )}
           {error && <Alert type="error" message={error} />}
@@ -129,5 +135,3 @@ function LoginPage() {
     </>
   );
 }
-
-export default LoginPage;

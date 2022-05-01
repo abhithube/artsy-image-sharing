@@ -7,7 +7,7 @@ type FileUploadProps = {
   setFile: React.Dispatch<React.SetStateAction<File | null>>;
 };
 
-function FileUpload({ setFile }: FileUploadProps) {
+export default function FileUpload({ setFile }: FileUploadProps) {
   const [thumbnail, setThumbnail] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -101,5 +101,3 @@ function FileUpload({ setFile }: FileUploadProps) {
     </div>
   );
 }
-
-export default FileUpload;

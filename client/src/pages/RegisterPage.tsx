@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import {
   ExclamationCircleIcon,
   LockClosedIcon,
@@ -6,10 +7,9 @@ import {
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../lib/components/Button';
-import { useRegisterMutation } from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { REGISTER } from '../lib/graphql';
 
-function RegisterPage() {
+export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -18,8 +18,8 @@ function RegisterPage() {
 
   const navigate = useNavigate();
 
-  const mutation = useRegisterMutation(graphQLClient, {
-    onSuccess: (data) => {
+  const [register] = useMutation(REGISTER, {
+    onCompleted: (data) => {
       if (data.registered) navigate('/login', { state: { registered: true } });
     },
     onError: () => {
@@ -34,7 +34,12 @@ function RegisterPage() {
     if (password !== passwordConfirm) setError('Passwords do not match');
     else {
       setLoading(true);
-      mutation.mutate({ username, password });
+      register({
+        variables: {
+          username,
+          password,
+        },
+      });
     }
   };
 
@@ -115,5 +120,3 @@ function RegisterPage() {
     </div>
   );
 }
-
-export default RegisterPage;

@@ -1,13 +1,12 @@
-import { createContext, useState } from 'react';
-import { AuthFragment, useAuthQuery } from '../generated/graphql';
-import { graphQLClient } from '../graphql/client';
+import { useQuery } from '@apollo/client';
+import { createContext, useMemo, useState } from 'react';
+import { AUTH } from '../graphql';
+import { User } from '../interfaces';
 
 type AuthContextType = {
-  isLoading: boolean;
-  authenticatedUser: AuthFragment | null;
-  setAuthenticatedUser: React.Dispatch<
-    React.SetStateAction<AuthFragment | null>
-  >;
+  loading: boolean;
+  authenticatedUser: User | null;
+  setAuthenticatedUser: React.Dispatch<React.SetStateAction<User | null>>;
 };
 
 type AuthContextProviderProps = {
@@ -15,32 +14,30 @@ type AuthContextProviderProps = {
 };
 
 export const AuthContext = createContext<AuthContextType>({
-  isLoading: false,
+  loading: false,
   authenticatedUser: null,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setAuthenticatedUser: () => {},
 });
 
-const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [authenticatedUser, setAuthenticatedUser] =
-    useState<AuthFragment | null>(null);
+export default function AuthContextProvider({
+  children,
+}: AuthContextProviderProps) {
+  const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null);
 
-  const { isLoading } = useAuthQuery(graphQLClient, undefined, {
-    onSuccess: (data) =>
+  const { loading } = useQuery(AUTH, {
+    onCompleted: (data) =>
       setAuthenticatedUser(data.auth?.confirmed ? data.auth : null),
   });
 
-  return (
-    <AuthContext.Provider
-      value={{
-        isLoading,
-        authenticatedUser,
-        setAuthenticatedUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      loading,
+      authenticatedUser,
+      setAuthenticatedUser,
+    }),
+    [authenticatedUser, loading]
   );
-};
 
-export default AuthContextProvider;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}

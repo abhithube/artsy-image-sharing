@@ -1,5 +1,0 @@
-mutation createPost($title: String!, $body: String, $file: String!) {
-  post: createPost(title: $title, body: $body, file: $file) {
-    ...postDetails
-  }
-}

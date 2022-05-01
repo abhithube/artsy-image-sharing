@@ -1,8 +1,0 @@
-mutation createFavorite($postId: Int!) {
-  favorite: createFavorite(postId: $postId) {
-    result {
-      id
-    }
-    count
-  }
-}

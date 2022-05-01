@@ -1,8 +1,0 @@
-fragment comment on Comment {
-  id
-  body
-  user {
-    ...user
-  }
-  createdAt
-}

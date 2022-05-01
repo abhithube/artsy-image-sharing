@@ -6,7 +6,7 @@ type AvatarProps = {
   margin?: 'sm' | 'md' | 'lg';
 };
 
-function Avatar({ url, size = 'md', margin }: AvatarProps) {
+export default function Avatar({ url, size = 'md', margin }: AvatarProps) {
   return (
     <div className="rounded-full overflow-hidden">
       <img
@@ -29,5 +29,3 @@ function Avatar({ url, size = 'md', margin }: AvatarProps) {
     </div>
   );
 }
-
-export default Avatar;

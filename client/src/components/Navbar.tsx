@@ -1,33 +1,37 @@
+import { useApolloClient, useMutation } from '@apollo/client';
 import { CameraIcon } from '@heroicons/react/solid';
 import classnames from 'classnames';
 import { useContext, useState } from 'react';
-import { useQueryClient } from 'react-query';
 import { Link, useLocation } from 'react-router-dom';
 import Avatar from '../lib/components/Avatar';
 import Button from '../lib/components/Button';
-import { AuthContext } from '../lib/context/AuthContext';
-import { useAuthQuery, useLogoutMutation } from '../lib/generated/graphql';
-import { graphQLClient } from '../lib/graphql/client';
+import { AuthContext } from '../lib/context';
+import { AUTH, LOGOUT } from '../lib/graphql';
 
-function Navbar() {
-  const { isLoading, authenticatedUser, setAuthenticatedUser } =
+export default function Navbar() {
+  const { loading, authenticatedUser, setAuthenticatedUser } =
     useContext(AuthContext);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const queryClient = useQueryClient();
-  const queryKey = useAuthQuery.getKey();
+  const location = useLocation();
 
-  const mutation = useLogoutMutation(graphQLClient, {
-    onSuccess: (data) => {
+  const client = useApolloClient();
+
+  const [logout] = useMutation(LOGOUT, {
+    onCompleted: (data) => {
       if (data.isLoggedOut) {
         setAuthenticatedUser(null);
-        queryClient.setQueryData(queryKey, { auth: null });
+
+        client.writeQuery({
+          query: AUTH,
+          data: {
+            auth: null,
+          },
+        });
       }
     },
   });
-
-  const location = useLocation();
 
   return (
     <nav className="fixed top-0 z-10 w-full bg-gray-800 shadow-sm">
@@ -46,7 +50,7 @@ function Navbar() {
           </Link>
           <Link to="/about">About</Link>
         </div>
-        {!isLoading && authenticatedUser && (
+        {!loading && authenticatedUser && (
           <div>
             <div className="relative">
               <Button
@@ -77,7 +81,7 @@ function Navbar() {
                 <button
                   className="bg-gray-700 px-4 py-2 text-left hover:bg-gray-600"
                   type="button"
-                  onClick={() => mutation.mutate({})}
+                  onClick={() => logout()}
                 >
                   Logout
                 </button>
@@ -85,7 +89,7 @@ function Navbar() {
             </div>
           </div>
         )}
-        {!isLoading && !authenticatedUser && (
+        {!loading && !authenticatedUser && (
           <Link
             to="/login"
             onClick={() => {
@@ -103,5 +107,3 @@ function Navbar() {
     </nav>
   );
 }
-
-export default Navbar;

@@ -1,5 +1,0 @@
-mutation createComment($body: String!, $postId: Int!) {
-  comment: createComment(body: $body, postId: $postId) {
-    ...comment
-  }
-}
