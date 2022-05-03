@@ -3,13 +3,15 @@ tasks:
     init: |
       npm install
       npm run generate
-    command: npm run dev
+    command: |
+      export CLIENT_URL=$(gp url 3000)
+      npm run dev
 
   - name: Client
     before: cd client
     init: |
       npm install
     command: |
-      export CLIENT_URL=$(gp url 3000)
+      export S3_BUCKET_ENDPOINT=$(gp url 3000)/uploads
       export SERVER_URL=$(gp url 4000)
       npm start

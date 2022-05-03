@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { merge } = require('webpack-merge');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const { DefinePlugin } = require('webpack');
+const { EnvironmentPlugin } = require('webpack');
 const common = require('./webpack.common');
 
 module.exports = merge(common, {
@@ -19,12 +19,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new ReactRefreshWebpackPlugin(),
-    new DefinePlugin({
-      'process.env': {
-        S3_BUCKET_ENDPOINT: `${process.env.CLIENT_URL}/uploads`,
-        SERVER_URL: process.env.SERVER_URL,
-      },
-    }),
+    new EnvironmentPlugin(['S3_BUCKET_ENDPOINT', 'SERVER_URL']),
   ],
   target: 'web',
   devServer: {
