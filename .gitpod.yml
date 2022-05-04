@@ -1,3 +1,14 @@
+image:
+  file: .gitpod.Dockerfile
+
+ports:
+  - port: 3000
+    onOpen: open-browser
+    visibility: public
+  - port: 4000
+    onOpen: open-browser
+    visibility: public
+
 tasks:
   - name: Server
     init: |
@@ -15,3 +26,11 @@ tasks:
       export S3_BUCKET_ENDPOINT=$(gp url 3000)/uploads
       export SERVER_URL=$(gp url 4000)
       npm start
+
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint
+    - GraphQL.vscode-graphql
+    - esbenp.prettier-vscode
+    - Prisma.prisma
+    - bradlc.vscode-tailwindcss
