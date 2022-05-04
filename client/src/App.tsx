@@ -13,7 +13,7 @@ import RegisterPage from './pages/RegisterPage';
 import UploadPage from './pages/UploadPage';
 
 const client = new ApolloClient({
-  uri: process.env.SERVER_URL,
+  uri: `${process.env.SERVER_URL}/graphql`,
 
   cache: new InMemoryCache({
     typePolicies: {

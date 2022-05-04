@@ -1,4 +1,6 @@
-import { app } from '.';
+import { startServer } from '.';
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
+startServer().then((server) => {
+  const PORT = process.env.PORT || 4000;
+  server.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
+});

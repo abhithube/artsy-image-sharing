@@ -1,30 +1,41 @@
-import { createServer } from '@graphql-yoga/node';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
+import { createServer } from 'http';
 import { configureSession, prisma } from './config';
 import { schema } from './schema';
 
-export const app = express();
+export const startServer = async () => {
+  const app = express();
 
-app.use(
-  express.json({
-    limit: '10mb',
-  })
-);
+  const httpServer = createServer(app);
 
-app.use(configureSession());
+  const server = new ApolloServer({
+    schema,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: (req) => ({
+      req: req.req,
+      prisma,
+    }),
+  });
 
-app.use(
-  '/graphql',
-  createServer({
+  await server.start();
+
+  app.use(
+    express.json({
+      limit: '10mb',
+    })
+  );
+
+  app.use(configureSession());
+
+  server.applyMiddleware({
+    app,
     cors: {
-      origin: [process.env.CLIENT_URL!],
+      origin: [process.env.CLIENT_URL!, 'https://studio.apollographql.com'],
       credentials: true,
     },
-    schema,
-    context: (req) => ({
-      prisma,
-      req: req.req,
-    }),
-    graphiql: true,
-  })
-);
+  });
+
+  return httpServer;
+};

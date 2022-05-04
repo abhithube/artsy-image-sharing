@@ -14,6 +14,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: any;
+  Upload: any;
 };
 
 export type Auth = {
@@ -23,6 +24,11 @@ export type Auth = {
   id: Scalars['Int'];
   username: Scalars['String'];
 };
+
+export enum CacheControlScope {
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
+}
 
 export type Comment = {
   __typename?: 'Comment';
@@ -389,6 +395,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Auth: ResolverTypeWrapper<Auth>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  CacheControlScope: CacheControlScope;
   Comment: ResolverTypeWrapper<Comment>;
   CommentOrderByInput: CommentOrderByInput;
   CommentSortField: CommentSortField;
@@ -409,6 +416,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   SortDirection: SortDirection;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Upload: ResolverTypeWrapper<Scalars['Upload']>;
   User: ResolverTypeWrapper<User>;
 };
 
@@ -432,8 +440,16 @@ export type ResolversParentTypes = {
   PostsResponse: PostsResponse;
   Query: {};
   String: Scalars['String'];
+  Upload: Scalars['Upload'];
   User: User;
 };
+
+export type CacheControlDirectiveArgs = {
+  maxAge?: Maybe<Scalars['Int']>;
+  scope?: Maybe<CacheControlScope>;
+};
+
+export type CacheControlDirectiveResolver<Result, Parent, ContextType = Context, Args = CacheControlDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type AuthResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Auth'] = ResolversParentTypes['Auth']> = {
   avatarUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -543,6 +559,10 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 };
 
+export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
+  name: 'Upload';
+}
+
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   avatarUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   commentCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -571,6 +591,10 @@ export type Resolvers<ContextType = Context> = {
   PostResponse?: PostResponseResolvers<ContextType>;
   PostsResponse?: PostsResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Upload?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
 };
 
+export type DirectiveResolvers<ContextType = Context> = {
+  cacheControl?: CacheControlDirectiveResolver<any, any, ContextType>;
+};
