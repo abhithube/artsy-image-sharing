@@ -2,7 +2,7 @@ import { useApolloClient, useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import FavoritesGallery from '../components/FavoritesGallery';
 import PostsGallery from '../components/PostsGallery';
-import { FAVORITES, USER } from '../lib/graphql';
+import { FAVORITES, POSTS, USER } from '../lib/graphql';
 
 type Params = {
   id: string;
@@ -19,12 +19,16 @@ export default function ProfilePage() {
     },
     onCompleted: (userData: any) => {
       client.writeQuery({
-        query: FAVORITES,
-        data: userData.user.favorites,
+        query: POSTS,
+        data: {
+          posts: userData.user.posts,
+        },
       });
       client.writeQuery({
         query: FAVORITES,
-        data: userData.user.favorites,
+        data: {
+          favorites: userData.user.favorites,
+        },
       });
     },
   });

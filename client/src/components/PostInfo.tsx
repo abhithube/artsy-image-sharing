@@ -27,7 +27,6 @@ export default function PostInfo({ post, isFavorite }: PostInfoProps) {
   const navigate = useNavigate();
 
   const [createFavorite] = useMutation(CREATE_FAVORITE, {
-    optimisticResponse: {},
     update: (cache) => {
       cache.modify({
         fields: {
@@ -41,7 +40,6 @@ export default function PostInfo({ post, isFavorite }: PostInfoProps) {
   });
 
   const [deleteFavorite] = useMutation(DELETE_FAVORITE, {
-    optimisticResponse: {},
     update: (cache) => {
       cache.modify({
         fields: {

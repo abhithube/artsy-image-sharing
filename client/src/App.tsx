@@ -14,22 +14,49 @@ import UploadPage from './pages/UploadPage';
 
 const client = new ApolloClient({
   uri: `${process.env.SERVER_URL}/graphql`,
-
+  credentials: 'include',
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
         fields: {
           posts: {
             keyArgs: ['userId'],
-            merge: (existing = [], incoming = []) => [...existing, ...incoming],
+            merge: (existing, incoming) => {
+              if (existing?.results) {
+                return {
+                  ...incoming,
+                  results: [...existing.results, incoming.results],
+                };
+              }
+
+              return incoming;
+            },
           },
           comments: {
             keyArgs: ['postId'],
-            merge: (existing = [], incoming = []) => [...existing, ...incoming],
+            merge: (existing, incoming) => {
+              if (existing?.results) {
+                return {
+                  ...incoming,
+                  results: [...existing.results, incoming.results],
+                };
+              }
+
+              return incoming;
+            },
           },
           favorites: {
             keyArgs: ['userId'],
-            merge: (existing = [], incoming = []) => [...existing, ...incoming],
+            merge: (existing, incoming) => {
+              if (existing?.results) {
+                return {
+                  ...incoming,
+                  results: [...existing.results, incoming.results],
+                };
+              }
+
+              return incoming;
+            },
           },
         },
       },

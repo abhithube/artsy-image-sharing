@@ -17,19 +17,16 @@ export default function AddComment({ postId }: AddCommentProps) {
   const navigate = useNavigate();
 
   const [createComment, { loading }] = useMutation(CREATE_COMMENT, {
-    optimisticResponse: {
-      id: 0,
-      body: comment,
-      createdAt: new Date(),
-      user: authenticatedUser,
+    update: (cache, { data }) => {
+      cache.modify({
+        fields: {
+          comments: (existing) => ({
+            ...existing,
+            results: [data.comment, ...existing.results],
+          }),
+        },
+      });
     },
-    // update: (cache, { data }) => {
-    //   cache.modify({
-    //     fields: {
-    //       comments: () => {},
-    //     },
-    //   });
-    // },
   });
 
   const handleSubmit = (e: FormEvent) => {

@@ -20,12 +20,12 @@ export default function CommentsList({
       <AddComment postId={postId} />
       <h2 className="mb-4 text-xl font-semibold">Comments</h2>
       <div className="flex flex-col items-stretch space-y-4 mt-4">
-        {(commentCount > 0 || data?.pages) && (
+        {(commentCount > 0 || data?.comments) && (
           <>
             {data?.comments.results.map((comment: any) => (
               <CommentItem key={comment.id} comment={comment} />
             ))}
-            {!data?.pages && (
+            {!data?.comments && (
               <Button
                 onClick={() =>
                   fetchComments({
@@ -43,7 +43,7 @@ export default function CommentsList({
                 Load Comments
               </Button>
             )}
-            {data.nextPage && (
+            {data?.comments.nextPage && (
               <Button
                 onClick={() =>
                   fetchMore({
