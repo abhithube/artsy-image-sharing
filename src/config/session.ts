@@ -11,6 +11,12 @@ const sessionOptions: SessionOptions = {
   secret: process.env.EXPRESS_SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24,
+    sameSite: 'lax',
+    // secure: true,
+  },
 };
 
 declare module 'express-session' {

@@ -2,6 +2,7 @@ import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import { createServer } from 'http';
+import { join } from 'path';
 import { configureSession, prisma } from './config';
 import { schema } from './schema';
 
@@ -13,8 +14,9 @@ export const startServer = async () => {
   const server = new ApolloServer({
     schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    context: (req) => ({
-      req: req.req,
+    context: ({ req, res }) => ({
+      req,
+      res,
       prisma,
     }),
   });
@@ -28,6 +30,14 @@ export const startServer = async () => {
   );
 
   app.use(configureSession());
+
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(join(__dirname, '..', 'client', 'dist')));
+
+    app.get('*', (_, res) => {
+      res.sendFile(join(__dirname, '..', 'client', 'dist', 'index.html'));
+    });
+  }
 
   server.applyMiddleware({
     app,

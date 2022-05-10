@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "start": "node -r dotenv/config dist/server.js",
-    "dev": "nodemon -r dotenv/config src/server.ts --ext ts,graphql",
-    "build": "tsc && cp \"src/**/*.graphql\" dist && npm run build --prefix client",
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts --ext ts,graphql",
+    "build": "tsc && cp -r \"src/types\" dist",
     "generate": "graphql-codegen",
     "prepare": "husky install"
   },

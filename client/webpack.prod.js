@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { merge } = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const DotenvWebpackPlugin = require('dotenv-webpack');
+const { EnvironmentPlugin } = require('webpack');
 const common = require('./webpack.common');
 
 module.exports = merge(common, {
@@ -17,7 +17,10 @@ module.exports = merge(common, {
       },
     ],
   },
-  plugins: [new MiniCssExtractPlugin(), new DotenvWebpackPlugin()],
+  plugins: [
+    new MiniCssExtractPlugin(),
+    new EnvironmentPlugin(['S3_BUCKET_ENDPOINT', 'SERVER_URL']),
+  ],
   optimization: {
     moduleIds: 'deterministic',
     runtimeChunk: 'single',
