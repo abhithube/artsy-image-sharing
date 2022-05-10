@@ -16,5 +16,5 @@ export const upload = async (filename: string, buffer: Buffer) => {
     })
     .promise();
 
-  return `${process.env.S3_BUCKET_ENDPOINT}/${filename}`;
+  return `${process.env.S3_BUCKET_ENDPOINT}/uploads/${filename}`;
 };

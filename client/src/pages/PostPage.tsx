@@ -32,7 +32,7 @@ export default function PostPage() {
               <img
                 className="max-w-full max-h-full"
                 src={data.post.result.imageUrl
-                  .replace('/images', '/images/original')
+                  .replace('/uploads/', '/uploads/original/')
                   .replace(
                     '.webp',
                     `.${data.post.result.title.split('.').pop()}`
