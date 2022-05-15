@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ ! -d "/etc/letsencrypt" ]
 then
   sudo wget -r --no-parent -A 'epel-release-*.rpm' https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/
