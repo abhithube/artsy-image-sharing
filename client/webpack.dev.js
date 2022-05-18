@@ -19,7 +19,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new ReactRefreshWebpackPlugin(),
-    new EnvironmentPlugin(['S3_BUCKET_ENDPOINT', 'SERVER_URL']),
+    new EnvironmentPlugin(['SERVER_URL', 'IMAGES_URL']),
   ],
   target: 'web',
   devServer: {

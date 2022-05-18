@@ -47,7 +47,7 @@ export const resolvers: Resolvers = {
           },
           data: {
             confirmed: true,
-            avatarUrl: `${process.env.S3_BUCKET_ENDPOINT}/${avatar}.webp`,
+            avatarUrl: `${process.env.IMAGES_URL}/avatars/${avatar}.webp`,
           },
         });
       }

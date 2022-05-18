@@ -50,7 +50,7 @@ export default function AvatarSelectionModal({
                   />
                   <div className="border-[5px] border-gray-500 rounded-full hover:cursor-pointer filter brightness-75 sibling-checked:border-indigo-400 sibling-checked:brightness-105">
                     <Avatar
-                      url={`${process.env.S3_BUCKET_ENDPOINT}/avatars/${option}.webp`}
+                      url={`${process.env.IMAGES_URL}/avatars/${option}.webp`}
                       size="xl"
                     />
                   </div>
