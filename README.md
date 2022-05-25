@@ -1,4 +1,5 @@
 # Artsy Image Sharing
+![Uptime Robot status](https://img.shields.io/uptimerobot/status/m791863761-8263eb6a3f4716b2a32ed73e)
 
 Artsy is a full-stack web application that allows users to upload images, browse all uploaded content, and leave feedback on other users' posts.
 
