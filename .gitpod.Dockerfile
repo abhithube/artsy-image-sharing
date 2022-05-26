@@ -1,3 +1,3 @@
 FROM gitpod/workspace-full
 
-RUN brew install aws awsebcli postgresql
+RUN brew install awscli awsebcli postgresql
