@@ -7,14 +7,14 @@ const s3 = new S3({
   },
 });
 
-export const upload = async (filename: string, buffer: Buffer) => {
+export const upload = async (path: string, buffer: Buffer) => {
   await s3
     .putObject({
       Bucket: process.env.S3_BUCKET_NAME!,
-      Key: filename,
+      Key: path,
       Body: buffer,
     })
     .promise();
 
-  return `${process.env.IMAGES_URL}/uploads/${filename}`;
+  return `${process.env.IMAGES_URL}/${path}`;
 };

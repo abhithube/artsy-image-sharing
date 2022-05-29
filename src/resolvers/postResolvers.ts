@@ -243,8 +243,8 @@ export const resolvers: Resolvers = {
       const extension = title.split('.').pop();
 
       const uuid = randomUUID();
-      const imageUrl = await upload(`${uuid}.webp`, thumbnailBuffer);
-      await upload(`original/${uuid}.${extension}`, imageBuffer);
+      const imageUrl = await upload(`uploads/${uuid}.webp`, thumbnailBuffer);
+      await upload(`uploads/original/${uuid}.${extension}`, imageBuffer);
 
       return ctx.prisma.post.create({
         data: {
