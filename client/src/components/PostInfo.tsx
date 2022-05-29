@@ -81,7 +81,9 @@ export default function PostInfo({ post, isFavorite }: PostInfoProps) {
       <div className="flex mb-4">
         <Avatar url={post.user.avatarUrl} size="lg" margin="md" />
         <div className="flex-1 pr-4">
-          <h1 className="text-4xl font-semibold">{post.title}</h1>
+          <h1 className="text-4xl font-semibold">
+            {post.title.substring(0, post.title.lastIndexOf('.')) || post.title}
+          </h1>
           <span>
             {`by `}
             <Link className="underline" to={`/users/${post.user?.id}`}>
