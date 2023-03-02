@@ -1,12 +1,10 @@
 # Artsy Image Sharing
 
-![Uptime Robot status](https://img.shields.io/uptimerobot/status/m791863761-8263eb6a3f4716b2a32ed73e)
-
 Artsy is a full-stack web application that allows users to upload images, browse all uploaded content, and leave feedback on other users' posts.
 
-The app, hosted on AWS, can be found at https://artsy.abhithube.com.
+<!-- The app, hosted on AWS, can be found at https://artsy.abhithube.com.
 
-_IMPORTANT: To minimize server costs, the underlying EC2 instance on AWS is only running from 9 am to 5 pm._
+_IMPORTANT: To minimize server costs, the underlying EC2 instance on AWS is only running from 9 am to 5 pm._ -->
 
 ## Tech Stack
 
@@ -26,13 +24,13 @@ _IMPORTANT: To minimize server costs, the underlying EC2 instance on AWS is only
 - Add comments to posts, or add posts to your favorites
 - View user profiles, which list a user's uploaded and favorited posts
 
-## How It Works - Frontend
+## Frontend Design
 
-The frontend is built in React and TypeScript, using a custom build process. `Babel` compiles the Typescript and ES6+ code into the backwards-compatible version of JS that common web browsers can interpret. `Webpack` is used to bunde the compiled JS. In development, all of the code and dependencies are bundled into a single file, which is served by webpack-dev-server. Hot module replacement is also configured in development, which allows updates to React components to be reflected immediately, without resetting the state of the DOM. In production, the application and dependencies are minified and bundled separately.
+The frontend is built in React and TypeScript. Data fetching, caching, and prefetching is handled by the `Apollo Client` GraphQL library. Routing is done by `React Router`, and styling is taken of by `Tailwind CSS`.
 
-Data fetching, caching, and prefetching is handled by the `Apollo Client` GraphQL library. Routing is done by `React Router`, and styling is taken of by `Tailwind CSS`.
+The frontend also has a custom build process. `Babel` compiles the Typescript and ES6+ code into the backwards-compatible version of JS that common web browsers can interpret. `Webpack` is used to bunde the compiled JS. In development, all of the code and dependencies are bundled into a single file, which is served by webpack-dev-server. Hot module replacement is also configured in development, which allows updates to React components to be reflected immediately, without resetting the state of the DOM. In production, the application and dependencies are minified and bundled separately.
 
-## How It Works - Backend
+## Backend Design
 
 The backend is built in Node.js, TypeScript, and Express. The API is designed according the GraphQL specification, as opposed to REST. Type definitions are written in _.graphql_ files, which are parsed by the graphql-codegen library to generate TypeScript definitions to be used in the resolver implementations. The graphql-tools library creates the schema, and `Apollo Server` fires up a GraphQL server using the `Express` web framework. Express is necessary because its middleware functionality enables access to the request/response lifecyle, which is useful for things such as attaching cookies to the response or verifying authentication status on every request.
 
